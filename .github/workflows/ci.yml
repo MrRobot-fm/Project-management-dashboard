@@ -56,7 +56,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # Configura .env file per l'API in modo sicuro
+      - name: Generate Prisma Client
+        run: pnpm turbo db:generate
+
       - name: Configure API environment
         run: |
           cd apps/api
@@ -67,32 +69,24 @@ jobs:
           cd apps/web
           echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > .env.local
 
-      # Prima compila l'API
       - name: Build API
-        run: |
-          cd apps/api
-          pnpm build
+        run: pnpm build --filter api
 
-      # Avvia l'API in background usando la variabile segreta
       - name: Start API server
         run: |
           cd apps/api
           pnpm dev > api.log 2>&1 &
           echo "API_PID=$!" >> $GITHUB_ENV
-          # Attendi che l'API sia disponibile
           echo "Waiting for API to be ready..."
           sleep 15
 
-      # Verifica che l'API sia in esecuzione
       - name: Check API status
         run: |
           curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:${{ secrets.API_PORT }}/api/status || (echo "API failed to start" && cat apps/api/api.log && exit 1)
 
-      # Build Next.js app
       - name: Build with Turborepo
         run: pnpm turbo run build
 
-      # Termina l'API dopo la build
       - name: Stop API server
         if: always()
         run: kill $API_PID || true

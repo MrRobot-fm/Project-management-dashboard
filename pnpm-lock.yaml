@@ -113,6 +113,9 @@ importers:
         specifier: ^6.5.0
         version: 6.5.0(prisma@6.5.0(typescript@5.8.2))(typescript@5.8.2)
     devDependencies:
+      '@types/node':
+        specifier: ^22.13.10
+        version: 22.13.10
       prisma:
         specifier: ^6.5.0
         version: 6.5.0(typescript@5.8.2)
@@ -4809,7 +4812,7 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 20.17.24
+      '@types/node': 22.13.10
 
   '@types/http-errors@2.0.4': {}
 
@@ -4857,7 +4860,7 @@ snapshots:
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 20.17.24
+      '@types/node': 22.13.10
 
   '@types/tinycolor2@1.4.6': {}
 
