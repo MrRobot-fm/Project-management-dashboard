@@ -37,6 +37,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -58,35 +72,40 @@ jobs:
 
       - name: Generate Prisma Client
         run: pnpm turbo db:generate
+        env:
+          env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
+      # 🔧 Configuro gli env file per API e Next.js con i secrets
       - name: Configure API environment
         run: |
-          cd apps/api
-          echo "PORT=${{ secrets.API_PORT }}" > .env
+          echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env
 
       - name: Configure Next.js environment
         run: |
-          cd apps/web
-          echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > .env.local
+          echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > apps/web/.env.local
 
+      # 🛠️ Buildo e avvio l'API backend
       - name: Build API
         run: pnpm build --filter api
 
       - name: Start API server
         run: |
           cd apps/api
-          pnpm dev > api.log 2>&1 &
+          pnpm dev > ../../api.log 2>&1 &
           echo "API_PID=$!" >> $GITHUB_ENV
-          echo "Waiting for API to be ready..."
-          sleep 15
 
-      - name: Check API status
-        run: |
-          curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:${{ secrets.API_PORT }}/api/status || (echo "API failed to start" && cat apps/api/api.log && exit 1)
+      - name: Wait for API to be ready
+        run: npx wait-on http://localhost:${{ secrets.API_PORT }}/api/status
 
-      - name: Build with Turborepo
+      # 🛠️ Ora buildo il frontend (Next.js) che farà fetch verso l'API appena avviata
+      - name: Build frontend with Turborepo
         run: pnpm turbo run build
+        env:
+          NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
 
+      # 🛑 Stoppo l'API server alla fine
       - name: Stop API server
         if: always()
         run: kill $API_PID || true
@@ -95,6 +114,21 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     needs: build
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -111,6 +145,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: Generate Prisma Client
+        run: pnpm turbo db:generate
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
 
       - name: Run Tests with Turborepo
         run: pnpm turbo run test
