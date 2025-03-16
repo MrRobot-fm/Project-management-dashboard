@@ -56,6 +56,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Set API_BASE_URL environment variable
+        run: echo "API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" >> $GITHUB_ENV
+
       - name: Build with Turborepo
         run: pnpm turbo run build
 

@@ -9,7 +9,7 @@
     },
     "web#build": {
       "dependsOn": ["^build"],
-      "env": ["API_BASE_URL"],
+      "env": ["NEXT_PUBLIC_API_BASE_URL"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "api#build": {
