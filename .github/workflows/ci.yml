@@ -65,6 +65,9 @@ jobs:
       - name: Configure API environment
         run: |
           echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> apps/api/.env
+          echo "DIRECT_URL=${{ secrets.DIRECT_URL }}" >> apps/api/.env
+          echo "NODE_ENV=production" >> apps/api/.env  # Aggiungi la variabile NODE_ENV in modalità produzione
 
       - name: Configure Next.js environment
         run: |
@@ -73,10 +76,10 @@ jobs:
       - name: Build API
         run: pnpm build --filter api
 
-      - name: Start API server
+      - name: Start API server in production mode
         run: |
           cd apps/api
-          pnpm dev > ../../api.log 2>&1 &
+          pnpm start > ../../api.log 2>&1 &
           echo "API_PID=$!" >> $GITHUB_ENV
           echo "Waiting for API to be ready..."
           sleep 5
