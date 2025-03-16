@@ -1,0 +1,20 @@
+{
+  "name": "@workspace/vitest-config",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Centralized Vitest configuration for the monorepo",
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    "./config": {
+      "import": "./vitest.config.mjs",
+      "types": "./index.d.ts"
+    },
+    "./setup": "./vitest-setup.ts"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vitest": "^3.0.8"
+  }
+}

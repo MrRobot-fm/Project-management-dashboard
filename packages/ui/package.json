@@ -4,9 +4,13 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@radix-ui/react-accordion": "^1.2.3",
+    "@radix-ui/react-avatar": "^1.1.3",
     "@radix-ui/react-slot": "^1.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -20,14 +24,20 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.8",
+    "@testing-library/react": "^16.2.0",
     "@turbo/gen": "^2.4.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/ui": "3.0.8",
     "@workspace/eslint-config": "workspace:*",
+    "@workspace/theme": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
+    "@workspace/vitest-config": "workspace:*",
+    "jsdom": "^26.0.0",
     "tailwindcss": "^4.0.8",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.8"
   },
   "exports": {
     "./globals.css": "./src/styles/globals.css",

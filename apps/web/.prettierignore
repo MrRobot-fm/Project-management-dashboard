@@ -1,0 +1,9 @@
+.env
+.next
+.turbo
+.next.evn.d.ts
+node_modules
+build
+public/build
+README.md
+pnpm-lock.yaml
