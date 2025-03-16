@@ -77,7 +77,6 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
-      # 🔧 Configuro gli env file per API e Next.js con i secrets
       - name: Configure API environment
         run: |
           echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env
@@ -86,7 +85,6 @@ jobs:
         run: |
           echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > apps/web/.env.local
 
-      # 🛠️ Buildo e avvio l'API backend
       - name: Build API
         run: pnpm build --filter api
 
@@ -99,13 +97,11 @@ jobs:
       - name: Wait for API to be ready
         run: npx wait-on http://localhost:${{ secrets.API_PORT }}/api/status
 
-      # 🛠️ Ora buildo il frontend (Next.js) che farà fetch verso l'API appena avviata
       - name: Build frontend with Turborepo
         run: pnpm turbo run build
         env:
           NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
 
-      # 🛑 Stoppo l'API server alla fine
       - name: Stop API server
         if: always()
         run: kill $API_PID || true
