@@ -14,7 +14,7 @@ import { getUserById } from "@/services/get-user-by-id";
 
 export default async function Page() {
   const data = await getUserById({
-    id: "37619e3f-c957-4043-b19d-8095edfb70f7",
+    id: "fbeceef3-fa78-410b-af06-7ef28a12d000",
   });
 
   return (
