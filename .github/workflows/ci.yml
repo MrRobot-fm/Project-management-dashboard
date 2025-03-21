@@ -67,7 +67,7 @@ jobs:
           echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> apps/api/.env
           echo "DIRECT_URL=${{ secrets.DIRECT_URL }}" >> apps/api/.env
-          echo "NODE_ENV=production" >> apps/api/.env  # Aggiungi la variabile NODE_ENV in modalità produzione
+          echo "NODE_ENV=production" >> apps/api/.env
 
       - name: Configure Next.js environment
         run: |

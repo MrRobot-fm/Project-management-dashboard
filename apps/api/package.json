@@ -7,7 +7,10 @@
     "lint": "eslint . --max-warnings 0",
     "dev": "tsx watch --env-file=.env src/server.ts",
     "start": "node --env-file=.env dist/index.cjs",
-    "build": "tsup"
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui"
   },
   "keywords": [],
   "author": "",
@@ -17,11 +20,17 @@
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.9",
+    "@types/supertest": "^6.0.2",
+    "@vitest/ui": "^3.0.9",
     "@workspace/db": "workspace:*",
     "@workspace/eslint-config": "workspace:*",
+    "@workspace/vitest-config": "workspace:*",
+    "dotenv": "^16.4.7",
+    "supertest": "^7.1.0",
     "tsup": "^8.4.0",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.8"
   },
   "dependencies": {
     "express": "^4.21.2"

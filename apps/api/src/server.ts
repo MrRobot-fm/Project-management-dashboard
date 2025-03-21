@@ -1,7 +1,7 @@
 import express from "express";
 import { rootRouter } from "@/routes/root";
 
-const app = express();
+export const app = express();
 const PORT = process.env.PORT;
 
 app.use(express.json());
