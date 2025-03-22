@@ -1,6 +1,6 @@
 import { defineConfig } from "cypress";
 
-const config = defineConfig({
+export const config = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
       const configOverrides: Partial<Cypress.PluginConfigOptions> = {
@@ -20,5 +20,3 @@ const config = defineConfig({
     },
   },
 });
-
-export default config;
