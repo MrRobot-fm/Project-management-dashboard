@@ -5,9 +5,9 @@ on:
     secrets:
       API_PORT:
         required: true
-      TEST_DATABASE_URL:
+      DATABASE_URL:
         required: true
-      TEST_DIRECT_URL:
+      DIRECT_URL:
         required: true
       NEXT_PUBLIC_API_BASE_URL:
         required: true
@@ -64,6 +64,10 @@ jobs:
       - name: Wait for API to be ready
         run: |
           npx wait-on http://localhost:${{ secrets.API_PORT }}/api/status
+           if [ $? -ne 0 ]; then
+             echo "API did not start in time"
+             exit 1
+           fi
 
       - name: Start Next.js app
         run: |
