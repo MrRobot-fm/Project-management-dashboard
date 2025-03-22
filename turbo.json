@@ -31,6 +31,10 @@
       "outputs": ["coverage/**"],
       "dependsOn": []
     },
+    "test:e2e": {
+      "outputs": ["coverage/**"],
+      "dependsOn": []
+    },
     "dev": {
       "env": ["API_BASE_URL"],
       "cache": false,

@@ -1,0 +1,48 @@
+name: Test
+
+on:
+  workflow_call:
+    secrets:
+      API_PORT:
+        required: true
+      TEST_DATABASE_URL:
+        required: true
+      TEST_DIRECT_URL:
+        required: true
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Configure API environment for testing
+        run: |
+          echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env.test
+          echo "DATABASE_URL=${{ secrets.TEST_DATABASE_URL }}" >> apps/api/.env.test
+          echo "DIRECT_URL=${{ secrets.TEST_DIRECT_URL }}" >> apps/api/.env.test
+          echo "NODE_ENV=test" >> apps/api/.env.test
+
+      - name: Generate Prisma Client
+        run: pnpm turbo db:generate
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+
+      - name: Run Tests with Turborepo
+        run: pnpm turbo run test
