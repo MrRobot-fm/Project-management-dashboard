@@ -37,8 +37,8 @@ jobs:
       - name: Configure API environment
         run: |
           echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env
-          echo "DATABASE_URL=${{ secrets.TEST_DATABASE_URL }}" >> apps/api/.env
-          echo "DIRECT_URL=${{ secrets.TEST_DIRECT_URL }}" >> apps/api/.env
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> apps/api/.env
+          echo "DIRECT_URL=${{ secrets.DIRECT_URL }}" >> apps/api/.env
           echo "NODE_ENV=test" >> apps/api/.env
 
       - name: Configure Next.js environment
@@ -48,7 +48,7 @@ jobs:
       - name: Generate Prisma Client
         run: pnpm turbo db:generate
         env:
-          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
 
       - name: Build API for E2E tests
         run: pnpm build --filter api
