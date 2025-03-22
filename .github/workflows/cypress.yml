@@ -31,8 +31,12 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Install all workspace dependencies
+        run: pnpm install --recursive
+
+      - name: Install Cypress binary
+        run: pnpm exec cypress install
+        working-directory: apps/web
 
       - name: Configure API environment
         run: |
@@ -63,11 +67,7 @@ jobs:
 
       - name: Wait for API to be ready
         run: |
-          npx wait-on http://localhost:${{ secrets.API_PORT }}/api/status
-           if [ $? -ne 0 ]; then
-             echo "API did not start in time"
-             exit 1
-           fi
+          npx wait-on http://localhost:${{ secrets.API_PORT }}/api/status || exit 1
 
       - name: Start Next.js app
         run: |
@@ -80,15 +80,15 @@ jobs:
 
       - name: Wait for Next.js to be ready
         run: |
-          npx wait-on http://localhost:3000
+          npx wait-on http://localhost:3000 || exit 1
 
       - name: Run Cypress E2E tests
         uses: cypress-io/github-action@v6
         with:
-          working-directory: .
+          working-directory: ./apps/web
           browser: chrome
           headed: false
-          project: ./apps/web
+          install: true
           config: baseUrl=http://localhost:3000
 
       - name: Upload Cypress screenshots if failure
