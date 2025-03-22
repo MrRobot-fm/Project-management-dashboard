@@ -1,6 +1,6 @@
 import { defineConfig } from "cypress";
 
-export default defineConfig({
+const config = defineConfig({
   e2e: {
     setupNodeEvents(on, config) {
       const configOverrides: Partial<Cypress.PluginConfigOptions> = {
@@ -8,10 +8,10 @@ export default defineConfig({
         viewportWidth: 1440,
         viewportHeight: 1024,
       };
+
       on("task", {
         log: (message) => {
           console.log(message);
-
           return null;
         },
       });
@@ -20,3 +20,5 @@ export default defineConfig({
     },
   },
 });
+
+export default config;
