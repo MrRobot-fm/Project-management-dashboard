@@ -18,6 +18,9 @@ importers:
       '@workspace/typescript-config':
         specifier: workspace:*
         version: link:packages/typescript-config
+      cypress:
+        specifier: ^14.2.0
+        version: 14.2.0
       prettier:
         specifier: ^3.5.1
         version: 3.5.3
@@ -5535,7 +5538,7 @@ snapshots:
       sirv: 3.0.1
       tinyglobby: 0.2.12
       tinyrainbow: 2.0.0
-      vitest: 3.0.8(@types/node@20.17.24)(@vitest/ui@3.0.8)(jiti@2.4.2)(jsdom@26.0.0)(lightningcss@1.29.2)(tsx@4.19.3)
+      vitest: 3.0.8(@types/node@22.13.10)(@vitest/ui@3.0.8)(jiti@2.4.2)(jsdom@26.0.0)(lightningcss@1.29.2)(tsx@4.19.3)
 
   '@vitest/ui@3.0.9(vitest@3.0.8)':
     dependencies:
