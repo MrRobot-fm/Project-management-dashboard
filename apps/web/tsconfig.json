@@ -22,5 +22,5 @@
     "eslint.config.js",
     "cypress/tsconfig.json"
   ],
-  "exclude": ["node_modules", "./cypress", "./cypress.config.ts"]
+  "exclude": ["node_modules"]
 }
