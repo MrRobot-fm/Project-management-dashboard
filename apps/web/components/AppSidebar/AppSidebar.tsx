@@ -1,6 +1,7 @@
 "use client";
 
 import type { ComponentProps } from "react";
+import Link from "next/link";
 import {
   Sidebar,
   SidebarContent,
@@ -24,6 +25,7 @@ import {
   IconFileWord,
   IconFolder,
   IconHelp,
+  IconHome,
   IconInnerShadowTop,
   IconListDetails,
   IconReport,
@@ -40,8 +42,13 @@ const data = {
   },
   navMain: [
     {
+      title: "Home",
+      url: "/",
+      icon: IconHome,
+    },
+    {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
@@ -151,7 +158,7 @@ const data = {
 
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -159,10 +166,10 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <Link href="/">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
+                <span className="text-base font-semibold">Fede Inc.</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
