@@ -1,4 +1,4 @@
-import { ModeToggle } from "@workspace/ui/components/mode-toggle";
+import { ModeToggle } from "@workspace/ui/components/ModeToggle";
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 

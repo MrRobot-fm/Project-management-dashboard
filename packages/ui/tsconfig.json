@@ -7,7 +7,7 @@
     },
     "types": ["vitest/globals", "@testing-library/user-event"],
     "module": "ESNext",
-    "moduleResolution": "node"
+    "moduleResolution": "bundler"
   },
   "include": ["."],
   "exclude": ["node_modules", "dist"]

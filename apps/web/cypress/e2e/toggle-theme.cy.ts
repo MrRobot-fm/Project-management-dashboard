@@ -18,6 +18,15 @@ describe("Toggle theme", () => {
   it("opens the dropdown and selects System mode", () => {
     cy.findByTestId("mode-toggle").click();
     cy.findByRole("menuitem", { name: /system/i }).click();
-    cy.get("html").should("have.class", "dark");
+
+    cy.window().then((win) => {
+      const isDark = win.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      if (isDark) {
+        cy.get("html").should("have.class", "dark");
+      } else {
+        cy.get("html").should("not.have.class", "dark");
+      }
+    });
   });
 });
