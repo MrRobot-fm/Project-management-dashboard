@@ -3,13 +3,13 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from "@workspace/ui/components/accordion";
+} from "@workspace/ui/components/Accordion/Accordion";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@workspace/ui/components/avatar";
-import { Button } from "@workspace/ui/components/button";
+} from "@workspace/ui/components/Avatar/Avatar";
+import { Button } from "@workspace/ui/components/Button/Button";
 import { getUserById } from "@/services/get-user-by-id";
 
 export default async function Page() {
