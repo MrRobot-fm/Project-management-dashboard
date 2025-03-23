@@ -8,8 +8,8 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@workspace/ui/components/Avatar/Avatar";
-import { Button } from "@workspace/ui/components/Button/Button";
+} from "@workspace/ui/components/Avatar";
+import { Button } from "@workspace/ui/components/Button";
 import { getUserById } from "@/services/get-user-by-id";
 
 export default async function Page() {
