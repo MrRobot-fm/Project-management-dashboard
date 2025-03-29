@@ -6,7 +6,17 @@
   "author": "",
   "license": "ISC",
   "description": "Packages contains Exception for Errors handling",
+  "scripts": {
+    "build": "tsup"
+  },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2"
   }
 }
