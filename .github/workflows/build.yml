@@ -63,11 +63,11 @@ jobs:
           pnpm start > ../../api.log 2>&1 &
           echo "API_PID=$!" >> $GITHUB_ENV
           echo "Waiting for API to be ready..."
-          sleep 5
+          sleep 10
 
       - name: Wait for API to be ready
         run: |
-          npx wait-on http://localhost:${{ secrets.API_PORT }}/api/status
+          npx wait-on http://localhost:${{ secrets.API_PORT }}/api/status -t 30000
           if [ $? -ne 0 ]; then
             echo "API did not start in time"
             exit 1
