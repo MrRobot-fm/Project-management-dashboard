@@ -11,8 +11,7 @@
     "skipLibCheck": true,
     "types": ["vitest/globals"],
     "paths": {
-      "@/*": ["./src/*"],
-      "@workspace/exceptions": ["../../packages/exceptions/src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"],
