@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { prisma } from "@workspace/db";
+import { NotFoundError } from "@workspace/exceptions";
 
 export const createUser = async (req: Request, res: Response) => {
   const { name, email, password, role } = req.body;
@@ -30,6 +31,10 @@ export const getUserById = async (req: Request, res: Response) => {
       id,
     },
   });
+
+  if (!user) {
+    throw new NotFoundError(`User with ID: ${id} not found`);
+  }
 
   res.status(200).json({ user });
 };

@@ -24,27 +24,28 @@
     "@tanstack/react-table": "^8.21.2",
     "@workspace/ui": "workspace:*",
     "lucide-react": "^0.475.0",
-    "next": "^15.2.0",
-    "next-themes": "^0.4.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "next": "^15.2.4",
+    "next-themes": "^0.4.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "recharts": "^2.15.1",
-    "sonner": "^2.0.1",
-    "zod": "^3.24.2"
+    "sonner": "^2.0.2",
+    "zod": "^3.24.2",
+    "@workspace/exceptions": "workspace:*"
   },
   "devDependencies": {
     "@testing-library/cypress": "^10.0.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@vitest/ui": "^3.0.8",
+    "@types/node": "^20.17.28",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "@vitest/ui": "^3.0.9",
     "@workspace/eslint-config": "workspace:^",
     "@workspace/typescript-config": "workspace:*",
     "@workspace/vitest-config": "workspace:*",
-    "cypress": "^14.2.0",
-    "typescript": "^5.7.3",
-    "vitest": "^3.0.8"
+    "cypress": "^14.2.1",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.9"
   }
 }
