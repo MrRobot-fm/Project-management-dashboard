@@ -1,10 +1,11 @@
 {
   "name": "@workspace/exceptions",
+  "type": "module",
   "version": "1.0.0",
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Packages contains Exception for Errors handling",
   "exports": {
     ".": "./src/index.ts"
   }

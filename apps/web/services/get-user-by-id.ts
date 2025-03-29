@@ -9,6 +9,7 @@ export const getUserById = async ({ id }: { id: string }) => {
     }
     const res = await fetch(`${baseUrl}/users/${id}`);
 
+    console.log(res.ok);
     if (!res.ok) {
       if (res.status === 404) {
         const errorData = await res.json();
