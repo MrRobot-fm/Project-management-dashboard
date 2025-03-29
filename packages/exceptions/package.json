@@ -6,6 +6,9 @@
   "author": "",
   "license": "ISC",
   "description": "Packages contains Exception for Errors handling",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup"
   },
