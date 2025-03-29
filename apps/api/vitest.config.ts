@@ -21,6 +21,10 @@ export default mergeConfig(
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+        "@workspace/exceptions": path.resolve(
+          __dirname,
+          "../../packages/exceptions/dist",
+        ),
       },
     },
   }),
