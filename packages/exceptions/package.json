@@ -1,0 +1,11 @@
+{
+  "name": "@workspace/exceptions",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

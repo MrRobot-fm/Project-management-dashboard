@@ -31,6 +31,11 @@ export const getUserById = async (req: Request, res: Response) => {
     },
   });
 
+  if (!user) {
+    res.status(404).json({ message: `User with ID: ${id} not found` });
+    return;
+  }
+
   res.status(200).json({ user });
 };
 
