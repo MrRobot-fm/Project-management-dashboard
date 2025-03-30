@@ -3,7 +3,7 @@ import { prisma } from "../setup.js";
 import request from "supertest";
 
 describe("API Users", () => {
-  it("GET /api/users restituisce gli utenti", async () => {
+  beforeEach(async () => {
     await prisma.user.createMany({
       data: [
         { name: "Test User 1", email: "test1@example.com", password: "ciao" },
@@ -11,6 +11,13 @@ describe("API Users", () => {
       ],
     });
 
+    await request(app)
+      .post("/api/auth/login")
+      .send({ email: "test1@example.com", password: "ciao" })
+      .expect(200);
+  });
+
+  it("GET /api/users restituisce gli utenti", async () => {
     const response: { body: { email: string }[] } = await request(app)
       .get("/api/users")
       .expect(200);
