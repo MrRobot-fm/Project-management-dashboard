@@ -9,6 +9,10 @@ on:
         required: true
       TEST_DIRECT_URL:
         required: true
+      TEST_JWT_SECRET:
+        required: true
+      TEST_JWT_REFRESH_SECRET:
+        required: true
 
 jobs:
   test:

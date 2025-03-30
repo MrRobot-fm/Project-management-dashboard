@@ -26,6 +26,8 @@ jobs:
       API_PORT: ${{ secrets.API_PORT }}
       TEST_DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
       TEST_DIRECT_URL: ${{ secrets.TEST_DIRECT_URL }}
+      TEST_JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
+      TEST_JWT_REFRESH_SECRET: ${{ secrets.TEST_JWT_REFRESH_SECRET }}
 
   cypress:
     needs: build
