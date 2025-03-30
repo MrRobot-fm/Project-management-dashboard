@@ -14,7 +14,7 @@
     },
     "api#build": {
       "dependsOn": ["^build"],
-      "env": ["PORT"],
+      "env": ["PORT", "JWT_SECRET", "JWT_REFRESH_SECRET", "NODE_ENV"],
       "outputs": ["dist"]
     },
     "lint": {
