@@ -1,5 +1,6 @@
 import { app } from "../../server.js";
 import { prisma } from "../setup.js";
+import { hashSync } from "bcrypt";
 import request from "supertest";
 
 describe("API Users", () => {
@@ -8,7 +9,11 @@ describe("API Users", () => {
   beforeEach(async () => {
     await prisma.user.createMany({
       data: [
-        { name: "Test User 1", email: "test1@example.com", password: "ciao" },
+        {
+          name: "Test User 1",
+          email: "test1@example.com",
+          password: hashSync("ciao", 10),
+        },
         { name: "Test User 2", email: "test2@example.com", password: "test" },
       ],
     });
