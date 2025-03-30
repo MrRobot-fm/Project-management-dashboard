@@ -6,8 +6,10 @@ import {
   HttpExceptionError,
   InternalServerError,
   NotFoundError,
+  UnauthorizedError,
   ValidationError,
 } from "@workspace/exceptions";
+import jwt from "jsonwebtoken";
 import { ZodError } from "zod";
 
 export const errorMiddleware = (
@@ -52,6 +54,26 @@ export const errorMiddleware = (
       res.status(conflictError.status).json(conflictError.toJSON());
       return;
     }
+  }
+
+  if (error instanceof jwt.TokenExpiredError) {
+    const unauthorizedError = new UnauthorizedError(
+      "Your token has expired. Please login again.",
+      error,
+    );
+
+    res.status(unauthorizedError.status).json(unauthorizedError.toJSON());
+    return;
+  }
+
+  if (error instanceof jwt.JsonWebTokenError) {
+    const unauthorizedError = new UnauthorizedError(
+      "Invalid token. Please authenticate again.",
+      error,
+    );
+
+    res.status(unauthorizedError.status).json(unauthorizedError.toJSON());
+    return;
   }
 
   const internalException = new InternalServerError(
