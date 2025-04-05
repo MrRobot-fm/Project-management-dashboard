@@ -27,12 +27,12 @@ import {
   IconHelp,
   IconHome,
   IconInnerShadowTop,
-  IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
+import { MessageCircle } from "lucide-react";
 
 const data = {
   user: {
@@ -52,9 +52,9 @@ const data = {
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
+      title: "Messages",
+      url: "/messages",
+      icon: MessageCircle,
     },
     {
       title: "Analytics",

@@ -43,7 +43,7 @@ export default function RootLayout({
               } as CSSProperties
             }
           >
-            <AppSidebar variant="inset" />
+            <AppSidebar variant="floating" />
             <SidebarInset>
               <SiteHeader />
               {children}
