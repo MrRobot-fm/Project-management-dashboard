@@ -8,7 +8,6 @@ interface MessagePillProps {
 export const MessagePill = ({ message }: MessagePillProps) => {
   return (
     <div
-      key={message.id}
       className={cn(
         "max-w-[75%] px-4 py-1.5 rounded-3xl text-sm break-words font-medium bg-blue-400 self-start text-white",
         message.from === "me" &&
