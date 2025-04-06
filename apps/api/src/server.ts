@@ -13,14 +13,14 @@ const server = createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL,
     methods: ["GET", "POST"],
   },
 });
 
 app.use(cookieParser());
 
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ origin: process.env.CLIENT_URL }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

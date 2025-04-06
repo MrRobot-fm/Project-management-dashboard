@@ -1,68 +1,40 @@
 "use client";
 
-import { type FormEvent, useEffect, useState } from "react";
-import { Button } from "@workspace/ui/components/Button";
-import { cn } from "@workspace/ui/lib/utils";
-import { io } from "socket.io-client";
-
-const socket = io("http://localhost:8001");
-
-type ChatMessage = {
-  text: string;
-  from: "me" | "other";
-};
+import { type FormEvent, useEffect, useRef, useState } from "react";
+import { MessageForm } from "@/components/MessageForm/MessageForm";
+import { MessagePill } from "@/components/MessagePill/MessagePill";
+import { useChatSocket } from "@/hooks/use-chat-socket";
 
 export default function Messages() {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const { messages, sendMessage } = useChatSocket();
 
-  const sendMessage = (e: FormEvent) => {
-    if (!message.trim()) return;
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    socket.emit("send_message", { message });
-    setMessages((prev) => [...prev, { text: message, from: "me" }]);
+    if (!message.trim()) return;
+    sendMessage(message);
     setMessage("");
   };
 
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      setMessages((prev) => [...prev, { text: data.message, from: "other" }]);
-    });
-
-    return () => {
-      socket.off("receive_message");
-    };
-  }, []);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <div className="h-full flex flex-col p-4 relative">
-      <div className="flex-1 overflow-y-auto flex flex-col space-y-2 px-2">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={cn(
-              "max-w-[75%] px-4 py-1.5 rounded-3xl text-sm break-words font-medium bg-blue-400 self-start text-white",
-              msg.from === "me" && "bg-primary/90 self-end text-white",
-            )}
-          >
-            {msg.text}
-          </div>
+      <div className="flex-1 overflow-y-auto flex flex-col space-y-2 px-2 pb-12">
+        {messages.map((message) => (
+          <MessagePill key={message.id} message={message} />
         ))}
+        <div ref={messagesEndRef} />
       </div>
-      <form
-        onSubmit={sendMessage}
-        className="pt-4 flex gap-2 items-center absolute bottom-4 left-6 right-6"
-      >
-        <input
-          placeholder="Write a message..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 py-2 px-5 rounded-full border border-gray-300 focus:outline-none bg-white text-sm"
-        />
-        <Button type="submit" className="opacity-90" disabled={!message}>
-          Send
-        </Button>
-      </form>
+      <MessageForm
+        handleSubmit={handleSubmit}
+        message={message}
+        setMessage={setMessage}
+      />
     </div>
   );
 }
