@@ -36,6 +36,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Build schemas package
+        run: pnpm --filter @workspace/schemas build
+
       - name: Configure API environment for testing
         run: |
           echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env.test
