@@ -5,13 +5,13 @@ import { refreshToken } from "@/utils/refresh-token";
 import { setCookie } from "@/utils/set-cookie";
 import { prisma } from "@workspace/db";
 import { NotFoundError, UnauthorizedError } from "@workspace/exceptions";
-import { loginUserSchema, registerUserSchema } from "@workspace/schemas/auth";
+import { LoginUserSchema, RegisterUserSchema } from "@workspace/schemas";
 import { compareSync, hashSync } from "bcrypt";
 
 export const signUpController = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
-  registerUserSchema.parse(req.body);
+  RegisterUserSchema.parse(req.body);
 
   const newUser = await prisma.user.create({
     data: {
@@ -27,7 +27,7 @@ export const signUpController = async (req: Request, res: Response) => {
 export const loginController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
-  loginUserSchema.parse(req.body);
+  LoginUserSchema.parse(req.body);
 
   const user = await prisma.user.findFirst({
     where: {

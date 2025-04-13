@@ -10,7 +10,7 @@ import { Label } from "@workspace/ui/components/Label";
 import { cn } from "@workspace/ui/lib/utils";
 import { FieldInfo } from "../Form/FieldInfo";
 import { useForm } from "@tanstack/react-form";
-import { registerUserSchemaWithRepeatPassword } from "@workspace/schemas/auth";
+import { RegisterUserSchemaWithRepeatPassword } from "@workspace/schemas";
 import { Eye, EyeOff } from "lucide-react";
 
 interface SignupFormProps extends ComponentProps<"div"> {
@@ -29,8 +29,8 @@ export const SignupForm = ({ className, ...props }: SignupFormProps) => {
       repeatPassword: "",
     },
     validators: {
-      onSubmit: registerUserSchemaWithRepeatPassword,
-      onMount: registerUserSchemaWithRepeatPassword,
+      onSubmit: RegisterUserSchemaWithRepeatPassword,
+      onMount: RegisterUserSchemaWithRepeatPassword,
     },
     onSubmit: async ({ value }) => {
       const response = await fetch("/api/signup", {

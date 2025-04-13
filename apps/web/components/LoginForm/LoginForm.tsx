@@ -10,7 +10,7 @@ import { Label } from "@workspace/ui/components/Label";
 import { cn } from "@workspace/ui/lib/utils";
 import { FieldInfo } from "../Form/FieldInfo";
 import { useForm } from "@tanstack/react-form";
-import { loginUserSchema } from "@workspace/schemas/auth";
+import { LoginUserSchema } from "@workspace/schemas";
 import { Eye, EyeOff } from "lucide-react";
 
 interface LoginFormProps extends ComponentProps<"div"> {
@@ -27,8 +27,8 @@ export const LoginForm = ({ className, ...props }: LoginFormProps) => {
       password: "",
     },
     validators: {
-      onSubmit: loginUserSchema,
-      onMount: loginUserSchema,
+      onSubmit: LoginUserSchema,
+      onMount: LoginUserSchema,
     },
     onSubmit: async ({ value }) => {
       const response = await fetch("/api/login", {
