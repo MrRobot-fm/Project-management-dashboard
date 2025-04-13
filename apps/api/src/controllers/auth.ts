@@ -1,12 +1,17 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import { clearCookie } from "@/utils/clear-cookie";
 import { createJwtToken } from "@/utils/create-jwt-token";
+import { refreshToken } from "@/utils/refresh-token";
 import { setCookie } from "@/utils/set-cookie";
 import { prisma } from "@workspace/db";
 import { NotFoundError, UnauthorizedError } from "@workspace/exceptions";
+import { loginUserSchema, registerUserSchema } from "@workspace/schemas/auth";
 import { compareSync, hashSync } from "bcrypt";
 
 export const signUpController = async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
+
+  registerUserSchema.parse(req.body);
 
   const newUser = await prisma.user.create({
     data: {
@@ -21,6 +26,8 @@ export const signUpController = async (req: Request, res: Response) => {
 
 export const loginController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
+
+  loginUserSchema.parse(req.body);
 
   const user = await prisma.user.findFirst({
     where: {
@@ -40,14 +47,14 @@ export const loginController = async (req: Request, res: Response) => {
     userId: user.id,
     secretOrPrivateKey: process.env.JWT_SECRET as string,
     options: {
-      expiresIn: "10s",
+      expiresIn: "15m",
     },
   });
   const refreshToken = createJwtToken({
     userId: user.id,
     secretOrPrivateKey: process.env.JWT_REFRESH_SECRET as string,
     options: {
-      expiresIn: "30s",
+      expiresIn: "7d",
     },
   });
 
@@ -66,5 +73,45 @@ export const loginController = async (req: Request, res: Response) => {
     cookieOpts: { maxAge: 7 * 24 * 60 * 60 * 1000 },
   });
 
-  res.status(200).json({ user, token, refreshToken });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password: userPassword, ...userWithoutPassword } = user;
+
+  res.status(200).json({ user: userWithoutPassword });
+};
+
+export const logoutController = async (req: Request, res: Response) => {
+  const pastDate = new Date(0);
+
+  if (req.cookies.jwt_token) {
+    console.log("JWT token found in cookies");
+    clearCookie({
+      res,
+      cookieName: "jwt_token",
+      cookieOpts: {
+        expires: pastDate,
+      },
+    });
+  }
+
+  if (req.cookies.refresh_token) {
+    clearCookie({
+      res,
+      cookieName: "refresh_token",
+      cookieOpts: {
+        expires: pastDate,
+      },
+    });
+  }
+
+  res.status(200).json({ message: "Logged out successfully", success: true });
+};
+
+export const refreshTokenController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  await refreshToken(req, res);
+
+  next();
 };

@@ -1,15 +1,11 @@
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response } from "express";
 import { setCookie } from "@/utils//set-cookie";
 import { createJwtToken } from "@/utils/create-jwt-token";
 import { verifyJwtToken } from "@/utils/verify-jwt-token";
 import { prisma } from "@workspace/db";
 import { UnauthorizedError } from "@workspace/exceptions";
 
-export const refreshToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const refreshToken = async (req: Request, res: Response) => {
   const refreshToken = req.cookies.refresh_token;
 
   if (!refreshToken) {
@@ -36,9 +32,16 @@ export const refreshToken = async (
     secretOrPrivateKey: process.env.JWT_SECRET as string,
   });
 
-  setCookie({ res, cookieName: "jwt_token", cookieValue: newToken });
+  setCookie({
+    res,
+    cookieName: "jwt_token",
+    cookieValue: newToken,
+    cookieOpts: {
+      maxAge: 15 * 60 * 1000,
+    },
+  });
 
   req.user = user;
 
-  next();
+  res.status(200).json({ message: "Token refreshed successfully" });
 };

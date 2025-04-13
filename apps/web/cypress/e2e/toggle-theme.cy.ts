@@ -1,6 +1,25 @@
+import { generateUser } from "../support/utils";
+
 describe("Toggle theme", () => {
+  let user: ReturnType<typeof generateUser>;
+
   beforeEach(() => {
-    cy.visit("/dashboard");
+    user = generateUser();
+
+    cy.createUserAndLogin({
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    }).then(() => {
+      cy.visit("/dashboard");
+    });
+  });
+
+  afterEach(() => {
+    cy.deleteCurrentUser({
+      email: user.email,
+      password: user.password,
+    });
   });
 
   it("opens the dropdown and selects Dark mode", () => {

@@ -129,7 +129,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/federicomigliore/Desktop/Sviluppo/Formazione/Monorepo/shadcn/packages/database/generated/client",
+      "value": "/Users/federicomigliore/Desktop/Sviluppo/Formazione/Monorepo/Project management dashboard/packages/database/generated/client",
       "fromEnvVar": null
     },
     "config": {
@@ -147,7 +147,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/federicomigliore/Desktop/Sviluppo/Formazione/Monorepo/shadcn/packages/database/prisma/schema.prisma",
+    "sourceFilePath": "/Users/federicomigliore/Desktop/Sviluppo/Formazione/Monorepo/Project management dashboard/packages/database/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

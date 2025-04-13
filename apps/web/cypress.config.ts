@@ -1,4 +1,7 @@
 import { defineConfig } from "cypress";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const config = defineConfig({
   e2e: {
@@ -14,6 +17,9 @@ const config = defineConfig({
       });
 
       return config;
+    },
+    env: {
+      API_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
     },
   },
 });

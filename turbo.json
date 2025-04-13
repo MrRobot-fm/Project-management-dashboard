@@ -9,12 +9,18 @@
     },
     "web#build": {
       "dependsOn": ["^build"],
-      "env": ["NEXT_PUBLIC_API_BASE_URL"],
+      "env": ["NEXT_PUBLIC_API_BASE_URL", "NODE_ENV"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "api#build": {
       "dependsOn": ["^build"],
-      "env": ["PORT", "JWT_SECRET", "JWT_REFRESH_SECRET", "NODE_ENV"],
+      "env": [
+        "PORT",
+        "JWT_SECRET",
+        "JWT_REFRESH_SECRET",
+        "NODE_ENV",
+        "CLIENT_URL"
+      ],
       "outputs": ["dist"]
     },
     "lint": {

@@ -1,8 +1,8 @@
 import {
   Accordion,
+  AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  AccordionContent,
 } from "@workspace/ui/components/Accordion/Accordion";
 import {
   Avatar,
@@ -10,12 +10,12 @@ import {
   AvatarImage,
 } from "@workspace/ui/components/Avatar";
 import { Button } from "@workspace/ui/components/Button";
-import { getUserById } from "@/services/get-user-by-id";
+import { getCurrentUser } from "@/services/get-current-user";
+
+export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const data = await getUserById({
-    id: "36aa7530-a4f0-49d0-ae2f-3047d9e1e5d2",
-  });
+  const data = await getCurrentUser();
 
   return (
     <div className="flex items-center justify-center min-h-svh">

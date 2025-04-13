@@ -20,6 +20,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/Sidebar";
+import { logoutAction } from "@/services/auth/logout";
 import {
   IconCreditCard,
   IconDotsVertical,
@@ -45,6 +46,7 @@ export function NavUser({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
+              data-test-id="nav-user"
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
@@ -97,9 +99,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={logoutAction}>
               <IconLogout />
-              Log out
+              Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

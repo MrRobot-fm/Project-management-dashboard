@@ -14,8 +14,7 @@ export const setCookie = ({
   res.cookie(cookieName, cookieValue, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 10000,
+    sameSite: "lax",
     ...cookieOpts,
   });
 };
