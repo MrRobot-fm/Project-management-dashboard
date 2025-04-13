@@ -80,7 +80,7 @@ jobs:
           pnpm start > ../../api.log 2>&1 &
           echo "API_PID=$!" >> $GITHUB_ENV
           echo "Waiting for API to be ready..."
-          sleep 5
+          sleep 15
 
       - name: Wait for API to be ready
         run: |
