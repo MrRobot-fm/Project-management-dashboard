@@ -112,6 +112,8 @@ jobs:
           headed: false
           install: false
           config: baseUrl=http://localhost:3000
+        env:
+          CYPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
 
       - name: Upload Cypress screenshots if failure
         uses: actions/upload-artifact@v4
