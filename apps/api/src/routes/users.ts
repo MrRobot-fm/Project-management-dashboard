@@ -3,6 +3,7 @@ import {
   createUser,
   deleteUser,
   getAllUsers,
+  getCurrentUser,
   getUserById,
   updateUser,
 } from "@/controllers/users";
@@ -12,6 +13,7 @@ export const usersRouter: Router = Router();
 
 usersRouter.post("/", createUser);
 usersRouter.get("/", [authMiddleware], getAllUsers);
-usersRouter.get("/:id", getUserById);
+usersRouter.get("/me", [authMiddleware], getCurrentUser);
+usersRouter.get("/:id", [authMiddleware], getUserById);
 usersRouter.put("/:id", [authMiddleware], updateUser);
 usersRouter.delete("/:id", [authMiddleware], deleteUser);

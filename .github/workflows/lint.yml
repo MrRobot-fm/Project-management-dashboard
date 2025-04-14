@@ -8,6 +8,10 @@ jobs:
     name: Lint the code
     runs-on: ubuntu-latest
 
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4

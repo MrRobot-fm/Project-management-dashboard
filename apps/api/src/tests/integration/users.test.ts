@@ -12,15 +12,19 @@ describe("API Users", () => {
         {
           name: "Test User 1",
           email: "test1@example.com",
-          password: hashSync("ciao", 10),
+          password: hashSync("test.user1", 10),
         },
-        { name: "Test User 2", email: "test2@example.com", password: "test" },
+        {
+          name: "Test User 2",
+          email: "test2@example.com",
+          password: "test.user2",
+        },
       ],
     });
 
     const loginResponse = await request(app)
       .post("/api/auth/login")
-      .send({ email: "test1@example.com", password: "ciao" })
+      .send({ email: "test1@example.com", password: "test.user1" })
       .expect(200);
 
     const cookies = loginResponse.headers["set-cookie"] as unknown as string[];
@@ -35,6 +39,8 @@ describe("API Users", () => {
       .set("Cookie", cookie)
       .expect(200);
 
+    console.log("POST /api/users response:", response.body);
+
     expect(response.body.length).toBeGreaterThanOrEqual(2);
     expect(response.body.some((u) => u.email === "test1@example.com")).toBe(
       true,
@@ -45,7 +51,7 @@ describe("API Users", () => {
     const newUser = {
       name: "Nuovo Utente",
       email: "nuovo@example.com",
-      password: "XXXXXXXX",
+      password: "new.user",
     };
 
     const response = await request(app)
@@ -71,7 +77,7 @@ describe("API Users", () => {
       data: {
         name: "Da Aggiornare",
         email: "update@example.com",
-        password: "XXXX",
+        password: "user.to.update",
       },
     });
 
@@ -96,7 +102,7 @@ describe("API Users", () => {
       data: {
         name: "Da Eliminare",
         email: "delete@example.com",
-        password: "XXXX",
+        password: "user.to.delete",
       },
     });
 

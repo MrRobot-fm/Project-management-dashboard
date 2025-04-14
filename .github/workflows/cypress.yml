@@ -5,9 +5,13 @@ on:
     secrets:
       API_PORT:
         required: true
-      DATABASE_URL:
+      TEST_DATABASE_URL:
         required: true
-      DIRECT_URL:
+      TEST_DIRECT_URL:
+        required: true
+      TEST_JWT_SECRET:
+        required: true
+      TEST_JWT_REFRESH_SECRET:
         required: true
       NEXT_PUBLIC_API_BASE_URL:
         required: true
@@ -16,6 +20,10 @@ jobs:
   cypress:
     name: Cypress E2E Tests
     runs-on: ubuntu-latest
+
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
     steps:
       - name: Check out code
@@ -42,16 +50,21 @@ jobs:
       - name: Install all workspace dependencies
         run: pnpm install --recursive
 
+      - name: Build schemas package
+        run: pnpm --filter @workspace/schemas build
+
       - name: Install Cypress binary
         run: pnpm exec cypress install
         working-directory: apps/web
 
       - name: Configure API environment
         run: |
-          echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env
-          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> apps/api/.env
-          echo "DIRECT_URL=${{ secrets.DIRECT_URL }}" >> apps/api/.env
-          echo "NODE_ENV=test" >> apps/api/.env
+          echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env.test
+          echo "DATABASE_URL=${{ secrets.TEST_DATABASE_URL }}" >> apps/api/.env.test
+          echo "DIRECT_URL=${{ secrets.TEST_DIRECT_URL }}" >> apps/api/.env.test
+          echo "JWT_SECRET=${{ secrets.TEST_JWT_SECRET }}" >> apps/api/.env.test
+          echo "JWT_REFRESH_SECRET=${{ secrets.TEST_JWT_REFRESH_SECRET }}" >> apps/api/.env.test
+          echo "NODE_ENV=test" >> apps/api/.env.test
 
       - name: Configure Next.js environment
         run: |
@@ -68,10 +81,11 @@ jobs:
       - name: Start API server
         run: |
           cd apps/api
-          pnpm start > ../../api.log 2>&1 &
+          pnpm start:test > ../../api.log 2>&1 &
           echo "API_PID=$!" >> $GITHUB_ENV
           echo "Waiting for API to be ready..."
-          sleep 5
+          tail -n 50 ../../api.log
+          sleep 15
 
       - name: Wait for API to be ready
         run: |
@@ -98,6 +112,8 @@ jobs:
           headed: false
           install: false
           config: baseUrl=http://localhost:3000
+        env:
+          CYPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
 
       - name: Upload Cypress screenshots if failure
         uses: actions/upload-artifact@v4
