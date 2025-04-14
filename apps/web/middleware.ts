@@ -3,18 +3,23 @@ import { NextResponse } from "next/server";
 import { refreshToken } from "@/services/auth/refresh-token";
 
 export async function middleware(req: NextRequest) {
-  if (process.env.NODE_ENV === "test") {
-    return NextResponse.next(); // Salta la logica del middleware nei test
-  }
+  const { pathname } = req.nextUrl;
 
   const token = req.cookies.get("jwt_token")?.value;
+
+  if (pathname.startsWith("/login") || pathname.startsWith("/signup")) {
+    if (token) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    return NextResponse.next();
+  }
 
   if (token) {
     return NextResponse.next();
   }
 
   const response = await refreshToken(req);
-
   if (response) {
     return response;
   }
@@ -24,6 +29,6 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!login|signup|api|_next|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|webp|ico|css|js|txt|xml|json|webmanifest)).*)",
+    "/((?!api|_next|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|webp|ico|css|js|txt|xml|json|webmanifest)).*)",
   ],
 };
