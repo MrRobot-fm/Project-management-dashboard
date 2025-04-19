@@ -4,12 +4,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@workspace/ui/components/Accordion/Accordion";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@workspace/ui/components/Avatar";
 import { Button } from "@workspace/ui/components/Button";
+import { Avatar } from "@/components/Avatar";
+import { AvatarStack } from "@/components/AvatarStack";
 import { getCurrentUser } from "@/services/get-current-user";
 
 export const dynamic = "force-dynamic";
@@ -20,10 +17,27 @@ export default async function Page() {
   return (
     <div className="flex items-center justify-center min-h-svh">
       <div className="flex flex-col items-center justify-center gap-4">
-        <Avatar className="size-20">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        <Avatar image="" />
+        <AvatarStack
+          avatars={[
+            {
+              name: "federico Migliore",
+              image: "https://github.com/shadcn.png",
+            },
+            { name: "maria chiara", image: "https://github.com/shadcn.png" },
+            {
+              name: "federico Migliore",
+              image: "https://github.com/shadcn.png",
+            },
+            { name: "maria chiara", image: "https://github.com/shadcn.png" },
+            {
+              name: "federico Migliore",
+              image: "https://github.com/shadcn.png",
+            },
+            { name: "maria chiara", image: "https://github.com/shadcn.png" },
+          ]}
+          avatarStyles="size-10"
+        />
         <h1 className="text-2xl font-bold">
           Welcome back, {`${data.user.name}!`}
         </h1>

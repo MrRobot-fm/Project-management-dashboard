@@ -26,6 +26,7 @@
     "@workspace/exceptions": "workspace:*",
     "@workspace/schemas": "workspace:*",
     "@workspace/ui": "workspace:*",
+    "class-variance-authority": "^0.7.1",
     "lucide-react": "^0.475.0",
     "next": "^15.2.4",
     "next-themes": "^0.4.6",
