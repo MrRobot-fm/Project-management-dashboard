@@ -9,6 +9,7 @@ import "@workspace/ui/globals.css";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { getCurrentUser } from "@/services/get-current-user";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -24,11 +25,13 @@ export const metadata: Metadata = {
   title: "Project management dashboard",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const data = await getCurrentUser();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -43,9 +46,15 @@ export default function RootLayout({
               } as CSSProperties
             }
           >
-            <AppSidebar variant="inset" />
+            <AppSidebar variant="floating" />
             <SidebarInset>
-              <SiteHeader />
+              <SiteHeader
+                user={{
+                  name: data.user.name,
+                  avatar: "https://github.com/shadcn.png",
+                  email: data.user.email,
+                }}
+              />
               {children}
             </SidebarInset>
           </SidebarProvider>

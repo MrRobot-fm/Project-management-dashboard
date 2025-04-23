@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentProps } from "react";
+import { type ComponentProps } from "react";
 import Link from "next/link";
 import {
   Sidebar,
@@ -14,7 +14,7 @@ import {
 import { NavDocuments } from "@/components/NavDocuments";
 import { NavMain } from "@/components/NavMain";
 import { NavSecondary } from "@/components/NavSecondary";
-import { NavUser } from "@/components/NavUser";
+import { WorkspaceSelector } from "@/components/WorkspaceSelector";
 import {
   IconCamera,
   IconChartBar,
@@ -156,6 +156,12 @@ const data = {
   ],
 };
 
+const workspaces = [
+  { id: "2", name: "Wolf Pixel", logo: "https://github.com/shadcn.png" },
+  { id: "3", name: "Cloud Studio", logo: "https://github.com/shadcn.png" },
+  { id: "4", name: "Dev Space", logo: "https://github.com/shadcn.png" },
+];
+
 export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -174,13 +180,13 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-background">
         <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
+      <SidebarFooter className="bg-background">
+        <WorkspaceSelector workspaces={workspaces} />
       </SidebarFooter>
     </Sidebar>
   );
