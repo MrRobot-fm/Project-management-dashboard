@@ -1,6 +1,6 @@
 "use client";
 
-import { type ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import Link from "next/link";
 import {
   Sidebar,
@@ -186,7 +186,13 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter className="bg-background">
-        <WorkspaceSelector workspaces={workspaces} />
+        <WorkspaceSelector
+          workspaces={workspaces}
+          sidebarMenuButtonWrapper={{
+            component: SidebarMenuButton,
+            props: { asChild: true, size: "lg" },
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   );
