@@ -14,6 +14,8 @@ vi.mock("js-cookie", () => {
   };
 });
 
+const userId = "2";
+
 const workspaces = [
   {
     id: "1",
@@ -42,7 +44,7 @@ const workspaces = [
 ];
 
 const renderComponent = () => {
-  render(<WorkspaceSelector workspaces={workspaces} userId="2" />);
+  render(<WorkspaceSelector workspaces={workspaces} userId={userId} />);
 
   return {
     selectTrigger: screen.getByTestId("workspaces-select"),
@@ -67,7 +69,7 @@ describe("WorkspaceSelector", () => {
     });
 
     expect(Cookies.set).toHaveBeenCalledWith(
-      SELECTED_WS_ID_COOKIE_KEY,
+      `${SELECTED_WS_ID_COOKIE_KEY}_${userId}`,
       "2",
       expect.objectContaining({ expires: 365 }),
     );
