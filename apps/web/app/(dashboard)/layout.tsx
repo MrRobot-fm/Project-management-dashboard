@@ -10,7 +10,6 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { getCurrentUser } from "@/services/get-current-user";
-import { getWorkspaces } from "@/services/get-workspaces";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -32,7 +31,6 @@ export default async function RootLayout({
   children: ReactNode;
 }>) {
   const data = await getCurrentUser();
-  const { workspaces } = await getWorkspaces();
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -48,7 +46,7 @@ export default async function RootLayout({
               } as CSSProperties
             }
           >
-            <AppSidebar variant="floating" workspaces={workspaces} />
+            <AppSidebar variant="floating" />
             <SidebarInset>
               <SiteHeader
                 user={{

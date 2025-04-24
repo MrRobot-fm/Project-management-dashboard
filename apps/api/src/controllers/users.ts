@@ -4,13 +4,14 @@ import { NotFoundError } from "@workspace/exceptions";
 import { hashSync } from "bcrypt";
 
 export const createUser = async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   const user = await prisma.user.create({
     data: {
       name,
       email,
       password: hashSync(password, 10),
+      role,
     },
   });
 

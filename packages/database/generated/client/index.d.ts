@@ -37,7 +37,7 @@ export namespace $Enums {
   ADMIN: 'ADMIN',
   OWNER: 'OWNER',
   EDITOR: 'EDITOR',
-  COLLABORATOR: 'COLLABORATOR'
+  COLLABORATORS: 'COLLABORATORS'
 };
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
@@ -1155,7 +1155,6 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    logo: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1165,7 +1164,6 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
-    logo: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1175,7 +1173,6 @@ export namespace Prisma {
     name: number
     email: number
     password: number
-    logo: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1187,7 +1184,6 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    logo?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1197,7 +1193,6 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    logo?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1207,7 +1202,6 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
-    logo?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1290,7 +1284,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    logo: string | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -1317,7 +1310,6 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    logo?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     ownedWorkspaces?: boolean | User$ownedWorkspacesArgs<ExtArgs>
@@ -1330,7 +1322,6 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    logo?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1340,7 +1331,6 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    logo?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1350,12 +1340,11 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
-    logo?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "logo" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     ownedWorkspaces?: boolean | User$ownedWorkspacesArgs<ExtArgs>
     workspaceMember?: boolean | User$workspaceMemberArgs<ExtArgs>
@@ -1375,7 +1364,6 @@ export namespace Prisma {
       name: string
       email: string
       password: string
-      logo: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -1807,7 +1795,6 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
-    readonly logo: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -2277,7 +2264,6 @@ export namespace Prisma {
   export type WorkspaceMinAggregateOutputType = {
     id: string | null
     name: string | null
-    logo: string | null
     ownerId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2286,7 +2272,6 @@ export namespace Prisma {
   export type WorkspaceMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    logo: string | null
     ownerId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2295,7 +2280,6 @@ export namespace Prisma {
   export type WorkspaceCountAggregateOutputType = {
     id: number
     name: number
-    logo: number
     ownerId: number
     createdAt: number
     updatedAt: number
@@ -2306,7 +2290,6 @@ export namespace Prisma {
   export type WorkspaceMinAggregateInputType = {
     id?: true
     name?: true
-    logo?: true
     ownerId?: true
     createdAt?: true
     updatedAt?: true
@@ -2315,7 +2298,6 @@ export namespace Prisma {
   export type WorkspaceMaxAggregateInputType = {
     id?: true
     name?: true
-    logo?: true
     ownerId?: true
     createdAt?: true
     updatedAt?: true
@@ -2324,7 +2306,6 @@ export namespace Prisma {
   export type WorkspaceCountAggregateInputType = {
     id?: true
     name?: true
-    logo?: true
     ownerId?: true
     createdAt?: true
     updatedAt?: true
@@ -2406,7 +2387,6 @@ export namespace Prisma {
   export type WorkspaceGroupByOutputType = {
     id: string
     name: string
-    logo: string | null
     ownerId: string
     createdAt: Date
     updatedAt: Date
@@ -2432,7 +2412,6 @@ export namespace Prisma {
   export type WorkspaceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    logo?: boolean
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2444,7 +2423,6 @@ export namespace Prisma {
   export type WorkspaceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    logo?: boolean
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2454,7 +2432,6 @@ export namespace Prisma {
   export type WorkspaceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    logo?: boolean
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2464,13 +2441,12 @@ export namespace Prisma {
   export type WorkspaceSelectScalar = {
     id?: boolean
     name?: boolean
-    logo?: boolean
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type WorkspaceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "logo" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["workspace"]>
+  export type WorkspaceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["workspace"]>
   export type WorkspaceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     owner?: boolean | UserDefaultArgs<ExtArgs>
     members?: boolean | Workspace$membersArgs<ExtArgs>
@@ -2492,7 +2468,6 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      logo: string | null
       ownerId: string
       createdAt: Date
       updatedAt: Date
@@ -2923,7 +2898,6 @@ export namespace Prisma {
   interface WorkspaceFieldRefs {
     readonly id: FieldRef<"Workspace", 'String'>
     readonly name: FieldRef<"Workspace", 'String'>
-    readonly logo: FieldRef<"Workspace", 'String'>
     readonly ownerId: FieldRef<"Workspace", 'String'>
     readonly createdAt: FieldRef<"Workspace", 'DateTime'>
     readonly updatedAt: FieldRef<"Workspace", 'DateTime'>
@@ -4463,7 +4437,6 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     password: 'password',
-    logo: 'logo',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4474,7 +4447,6 @@ export namespace Prisma {
   export const WorkspaceScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    logo: 'logo',
     ownerId: 'ownerId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -4509,14 +4481,6 @@ export namespace Prisma {
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
-
-
-  export const NullsOrder: {
-    first: 'first',
-    last: 'last'
-  };
-
-  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -4591,7 +4555,6 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-    logo?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     ownedWorkspaces?: WorkspaceListRelationFilter
@@ -4603,7 +4566,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    logo?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     ownedWorkspaces?: WorkspaceOrderByRelationAggregateInput
@@ -4618,7 +4580,6 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
-    logo?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     ownedWorkspaces?: WorkspaceListRelationFilter
@@ -4630,7 +4591,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    logo?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -4646,7 +4606,6 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
-    logo?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -4657,7 +4616,6 @@ export namespace Prisma {
     NOT?: WorkspaceWhereInput | WorkspaceWhereInput[]
     id?: StringFilter<"Workspace"> | string
     name?: StringFilter<"Workspace"> | string
-    logo?: StringNullableFilter<"Workspace"> | string | null
     ownerId?: StringFilter<"Workspace"> | string
     createdAt?: DateTimeFilter<"Workspace"> | Date | string
     updatedAt?: DateTimeFilter<"Workspace"> | Date | string
@@ -4668,7 +4626,6 @@ export namespace Prisma {
   export type WorkspaceOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    logo?: SortOrderInput | SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -4682,7 +4639,6 @@ export namespace Prisma {
     OR?: WorkspaceWhereInput[]
     NOT?: WorkspaceWhereInput | WorkspaceWhereInput[]
     name?: StringFilter<"Workspace"> | string
-    logo?: StringNullableFilter<"Workspace"> | string | null
     ownerId?: StringFilter<"Workspace"> | string
     createdAt?: DateTimeFilter<"Workspace"> | Date | string
     updatedAt?: DateTimeFilter<"Workspace"> | Date | string
@@ -4693,7 +4649,6 @@ export namespace Prisma {
   export type WorkspaceOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    logo?: SortOrderInput | SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -4708,7 +4663,6 @@ export namespace Prisma {
     NOT?: WorkspaceScalarWhereWithAggregatesInput | WorkspaceScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Workspace"> | string
     name?: StringWithAggregatesFilter<"Workspace"> | string
-    logo?: StringNullableWithAggregatesFilter<"Workspace"> | string | null
     ownerId?: StringWithAggregatesFilter<"Workspace"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Workspace"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Workspace"> | Date | string
@@ -4783,7 +4737,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     ownedWorkspaces?: WorkspaceCreateNestedManyWithoutOwnerInput
@@ -4795,7 +4748,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     ownedWorkspaces?: WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -4807,7 +4759,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ownedWorkspaces?: WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -4819,7 +4770,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ownedWorkspaces?: WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -4831,7 +4781,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4841,7 +4790,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4851,7 +4799,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4859,7 +4806,6 @@ export namespace Prisma {
   export type WorkspaceCreateInput = {
     id?: string
     name: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -4869,7 +4815,6 @@ export namespace Prisma {
   export type WorkspaceUncheckedCreateInput = {
     id?: string
     name: string
-    logo?: string | null
     ownerId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -4879,7 +4824,6 @@ export namespace Prisma {
   export type WorkspaceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -4889,7 +4833,6 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4899,7 +4842,6 @@ export namespace Prisma {
   export type WorkspaceCreateManyInput = {
     id?: string
     name: string
-    logo?: string | null
     ownerId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -4908,7 +4850,6 @@ export namespace Prisma {
   export type WorkspaceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4916,7 +4857,6 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4998,21 +4938,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -5036,11 +4961,6 @@ export namespace Prisma {
     none?: WorkspaceMemberWhereInput
   }
 
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
-  }
-
   export type WorkspaceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -5054,7 +4974,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    logo?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5064,7 +4983,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    logo?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5074,7 +4992,6 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    logo?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5095,24 +5012,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -5137,7 +5036,6 @@ export namespace Prisma {
   export type WorkspaceCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    logo?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -5146,7 +5044,6 @@ export namespace Prisma {
   export type WorkspaceMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    logo?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -5155,7 +5052,6 @@ export namespace Prisma {
   export type WorkspaceMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    logo?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -5245,10 +5141,6 @@ export namespace Prisma {
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -5413,20 +5305,6 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -5466,34 +5344,6 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -5528,7 +5378,6 @@ export namespace Prisma {
   export type WorkspaceCreateWithoutOwnerInput = {
     id?: string
     name: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
@@ -5537,7 +5386,6 @@ export namespace Prisma {
   export type WorkspaceUncheckedCreateWithoutOwnerInput = {
     id?: string
     name: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5601,7 +5449,6 @@ export namespace Prisma {
     NOT?: WorkspaceScalarWhereInput | WorkspaceScalarWhereInput[]
     id?: StringFilter<"Workspace"> | string
     name?: StringFilter<"Workspace"> | string
-    logo?: StringNullableFilter<"Workspace"> | string | null
     ownerId?: StringFilter<"Workspace"> | string
     createdAt?: DateTimeFilter<"Workspace"> | Date | string
     updatedAt?: DateTimeFilter<"Workspace"> | Date | string
@@ -5640,7 +5487,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workspaceMember?: WorkspaceMemberCreateNestedManyWithoutUserInput
@@ -5651,7 +5497,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     workspaceMember?: WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
@@ -5704,7 +5549,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workspaceMember?: WorkspaceMemberUpdateManyWithoutUserNestedInput
@@ -5715,7 +5559,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workspaceMember?: WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -5742,7 +5585,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     ownedWorkspaces?: WorkspaceCreateNestedManyWithoutOwnerInput
@@ -5753,7 +5595,6 @@ export namespace Prisma {
     name: string
     email: string
     password: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     ownedWorkspaces?: WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -5767,7 +5608,6 @@ export namespace Prisma {
   export type WorkspaceCreateWithoutMembersInput = {
     id?: string
     name: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     owner: UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -5776,7 +5616,6 @@ export namespace Prisma {
   export type WorkspaceUncheckedCreateWithoutMembersInput = {
     id?: string
     name: string
-    logo?: string | null
     ownerId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -5803,7 +5642,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ownedWorkspaces?: WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -5814,7 +5652,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ownedWorkspaces?: WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -5834,7 +5671,6 @@ export namespace Prisma {
   export type WorkspaceUpdateWithoutMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     owner?: UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -5843,7 +5679,6 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateWithoutMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -5852,7 +5687,6 @@ export namespace Prisma {
   export type WorkspaceCreateManyOwnerInput = {
     id?: string
     name: string
-    logo?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5868,7 +5702,6 @@ export namespace Prisma {
   export type WorkspaceUpdateWithoutOwnerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
@@ -5877,7 +5710,6 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5886,7 +5718,6 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateManyWithoutOwnerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    logo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

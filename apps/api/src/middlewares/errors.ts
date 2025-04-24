@@ -54,17 +54,6 @@ export const errorMiddleware = (
       res.status(conflictError.status).json(conflictError.toJSON());
       return;
     }
-
-    if (error.code === "P2003") {
-      const message = error.meta
-        ? `${error.meta.modelName} ${error.meta.field_name} not found.`
-        : "Foreign key constraint failed";
-
-      const notFoundError = new NotFoundError(message, error.meta);
-
-      res.status(notFoundError.status).json(notFoundError.toJSON());
-      return;
-    }
   }
 
   if (error instanceof jwt.TokenExpiredError) {
