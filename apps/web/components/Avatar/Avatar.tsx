@@ -11,7 +11,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 export type AvatarSize = VariantProps<typeof avatarSize>;
 
 interface AvatarProps extends ComponentProps<typeof AvatarRoot>, AvatarSize {
-  image?: string;
+  image?: string | null;
   fallback?: string;
 }
 
