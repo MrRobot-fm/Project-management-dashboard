@@ -1,45 +1,35 @@
-import { app } from "../../server.js";
-import { prisma } from "../setup.js";
-import { hashSync } from "bcrypt";
+import { app } from "@/server";
+import { createUsers, loginUser } from "@/tests/utils/auth";
+import { prisma } from "@workspace/db";
 import request from "supertest";
 
 describe("API Users", () => {
   let cookie: string;
 
   beforeEach(async () => {
-    await prisma.user.createMany({
-      data: [
-        {
-          name: "Test User 1",
-          email: "test1@example.com",
-          password: hashSync("test.user1", 10),
-        },
-        {
-          name: "Test User 2",
-          email: "test2@example.com",
-          password: "test.user2",
-        },
-      ],
-    });
+    await createUsers([
+      {
+        name: "Test User 1",
+        email: "test1@example.com",
+        password: "test.user1",
+      },
+      {
+        name: "Test User 2",
+        email: "test2@example.com",
+        password: "test.user2",
+      },
+    ]);
 
-    const loginResponse = await request(app)
-      .post("/api/auth/login")
-      .send({ email: "test1@example.com", password: "test.user1" })
-      .expect(200);
+    const login = await loginUser("test1@example.com", "test.user1");
 
-    const cookies = loginResponse.headers["set-cookie"] as unknown as string[];
-
-    cookie =
-      cookies.find((cookie: string) => cookie.startsWith("jwt_token=")) || "";
+    cookie = login.cookie;
   });
 
-  it("GET /api/users restituisce gli utenti", async () => {
+  it("GET /api/users - returns users", async () => {
     const response: { body: { email: string }[] } = await request(app)
       .get("/api/users")
       .set("Cookie", cookie)
       .expect(200);
-
-    console.log("POST /api/users response:", response.body);
 
     expect(response.body.length).toBeGreaterThanOrEqual(2);
     expect(response.body.some((u) => u.email === "test1@example.com")).toBe(
@@ -47,10 +37,10 @@ describe("API Users", () => {
     );
   });
 
-  it("POST /api/users crea un nuovo utente", async () => {
+  it("POST /api/users - creates a new user", async () => {
     const newUser = {
-      name: "Nuovo Utente",
-      email: "nuovo@example.com",
+      name: "New User",
+      email: "new@example.com",
       password: "new.user",
     };
 
@@ -72,16 +62,16 @@ describe("API Users", () => {
     expect(savedUser?.email).toBe(newUser.email);
   });
 
-  it("PUT /api/users/:id aggiorna un utente", async () => {
+  it("PUT /api/users/:id - updates a user", async () => {
     const user = await prisma.user.create({
       data: {
-        name: "Da Aggiornare",
+        name: "To Be Updated",
         email: "update@example.com",
         password: "user.to.update",
       },
     });
 
-    const updateData = { name: "Nome Aggiornato" };
+    const updateData = { name: "Updated Name" };
 
     await request(app)
       .put(`/api/users/${user.id}`)
@@ -97,10 +87,10 @@ describe("API Users", () => {
     expect(updated?.email).toBe(user.email);
   });
 
-  it("DELETE /api/users/:id elimina un utente", async () => {
+  it("DELETE /api/users/:id - deletes a user", async () => {
     const user = await prisma.user.create({
       data: {
-        name: "Da Eliminare",
+        name: "To Be Deleted",
         email: "delete@example.com",
         password: "user.to.delete",
       },

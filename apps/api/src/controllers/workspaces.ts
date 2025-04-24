@@ -70,7 +70,7 @@ export const getWorkspaces = async (req: Request, res: Response) => {
     })),
   }));
 
-  res.status(201).json({ workspaces: formattedWorkspaces });
+  res.status(200).json({ workspaces: formattedWorkspaces });
 };
 
 export const insertUserIntoWorkspace = async (req: Request, res: Response) => {
@@ -109,5 +109,5 @@ export const deleteWorkspace = async (req: Request, res: Response) => {
     },
   });
 
-  res.status(201).json({ workspace, success: true });
+  res.status(204).json({ workspace, success: true });
 };
