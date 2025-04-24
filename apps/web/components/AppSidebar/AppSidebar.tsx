@@ -158,10 +158,11 @@ const data = {
 };
 
 interface AppSidebarProps extends ComponentProps<typeof Sidebar> {
+  userId: string;
   workspaces: Workspace[];
 }
 
-export function AppSidebar({ workspaces, ...props }: AppSidebarProps) {
+export function AppSidebar({ userId, workspaces, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -186,6 +187,7 @@ export function AppSidebar({ workspaces, ...props }: AppSidebarProps) {
       </SidebarContent>
       <SidebarFooter className="bg-background">
         <WorkspaceSelector
+          userId={userId}
           workspaces={workspaces}
           sidebarMenuButtonWrapper={{
             component: SidebarMenuButton,

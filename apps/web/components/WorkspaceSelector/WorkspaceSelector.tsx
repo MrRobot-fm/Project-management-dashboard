@@ -36,6 +36,7 @@ type SidebarWrapper = {
 interface WorkspaceSelectorProps {
   workspaces: Workspace[];
   sidebarMenuButtonWrapper?: SidebarWrapper;
+  userId: string;
 }
 
 const WorkspaceInfo = ({
@@ -60,6 +61,7 @@ const WorkspaceInfo = ({
 export const WorkspaceSelector = ({
   workspaces,
   sidebarMenuButtonWrapper,
+  userId,
 }: WorkspaceSelectorProps) => {
   const [selectedId, setSelectedId] = useState<string>(ALL_WORKSPACES_ID);
 
@@ -69,16 +71,18 @@ export const WorkspaceSelector = ({
   );
 
   useEffect(() => {
-    const savedWorkspace = Cookies.get(SELECTED_WS_ID_COOKIE_KEY);
+    const savedWorkspace = Cookies.get(
+      `${SELECTED_WS_ID_COOKIE_KEY}_${userId}`,
+    );
 
     if (savedWorkspace && options.some((w) => w.id === savedWorkspace)) {
       setSelectedId(savedWorkspace);
     }
-  }, [options]);
+  }, [options, userId]);
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
-    Cookies.set(SELECTED_WS_ID_COOKIE_KEY, id, { expires: 365 });
+    Cookies.set(`${SELECTED_WS_ID_COOKIE_KEY}_${userId}`, id, { expires: 365 });
   };
 
   const selectedWorkspace = useMemo(() => {

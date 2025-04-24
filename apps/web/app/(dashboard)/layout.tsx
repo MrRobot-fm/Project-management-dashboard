@@ -48,7 +48,11 @@ export default async function RootLayout({
               } as CSSProperties
             }
           >
-            <AppSidebar variant="floating" workspaces={workspaces} />
+            <AppSidebar
+              userId={data.user.id}
+              workspaces={workspaces}
+              variant="floating"
+            />
             <SidebarInset>
               <SiteHeader
                 user={{

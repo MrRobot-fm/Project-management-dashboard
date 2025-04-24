@@ -93,3 +93,21 @@ export const insertUserIntoWorkspace = async (req: Request, res: Response) => {
 
   res.status(201).json({ workspaceMember, success: true });
 };
+
+export const deleteWorkspace = async (req: Request, res: Response) => {
+  const { params } = req;
+
+  if (!params?.workspaceId) {
+    throw new BadRequestError("Workspace ID is required");
+  }
+
+  const { workspaceId } = params;
+
+  const workspace = await prisma.workspace.delete({
+    where: {
+      id: workspaceId,
+    },
+  });
+
+  res.status(201).json({ workspace, success: true });
+};
