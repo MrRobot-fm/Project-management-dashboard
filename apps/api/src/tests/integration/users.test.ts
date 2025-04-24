@@ -1,27 +1,27 @@
 import { app } from "@/server";
 import { createUsers, loginUser } from "@/tests/utils/auth";
+import { generateUser } from "@/tests/utils/generate-user";
 import { prisma } from "@workspace/db";
+import { hashSync } from "bcrypt";
 import request from "supertest";
 
 describe("API Users", () => {
   let cookie: string;
+  let adminUser: { name: string; password: string; email: string };
 
   beforeEach(async () => {
+    adminUser = generateUser();
+    const regularUser = generateUser();
+
     await createUsers([
       {
-        name: "Test User 1",
-        email: "test1@example.com",
-        password: "test.user1",
+        ...adminUser,
+        password: adminUser.password,
       },
-      {
-        name: "Test User 2",
-        email: "test2@example.com",
-        password: "test.user2",
-      },
+      regularUser,
     ]);
 
-    const login = await loginUser("test1@example.com", "test.user1");
-
+    const login = await loginUser(adminUser.email, adminUser.password);
     cookie = login.cookie;
   });
 
@@ -32,17 +32,11 @@ describe("API Users", () => {
       .expect(200);
 
     expect(response.body.length).toBeGreaterThanOrEqual(2);
-    expect(response.body.some((u) => u.email === "test1@example.com")).toBe(
-      true,
-    );
+    expect(response.body.some((u) => u.email === adminUser.email)).toBe(true);
   });
 
   it("POST /api/users - creates a new user", async () => {
-    const newUser = {
-      name: "New User",
-      email: "new@example.com",
-      password: "new.user",
-    };
+    const newUser = generateUser();
 
     const response = await request(app)
       .post("/api/users")
@@ -63,11 +57,12 @@ describe("API Users", () => {
   });
 
   it("PUT /api/users/:id - updates a user", async () => {
+    const userToUpdate = generateUser();
+
     const user = await prisma.user.create({
       data: {
-        name: "To Be Updated",
-        email: "update@example.com",
-        password: "user.to.update",
+        ...userToUpdate,
+        password: hashSync(userToUpdate.password, 10),
       },
     });
 
@@ -84,15 +79,16 @@ describe("API Users", () => {
     });
 
     expect(updated?.name).toBe(updateData.name);
-    expect(updated?.email).toBe(user.email);
+    expect(updated?.email).toBe(userToUpdate.email);
   });
 
   it("DELETE /api/users/:id - deletes a user", async () => {
+    const userToDelete = generateUser();
+
     const user = await prisma.user.create({
       data: {
-        name: "To Be Deleted",
-        email: "delete@example.com",
-        password: "user.to.delete",
+        ...userToDelete,
+        password: hashSync(userToDelete.password, 10),
       },
     });
 

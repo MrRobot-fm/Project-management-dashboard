@@ -1,24 +1,23 @@
 import { createUsers, loginUser } from "@/tests/utils/auth";
+import { generateUser } from "@/tests/utils/generate-user";
 import {
   createWorkspace,
   deleteWorkspace,
   getWorkspaces,
 } from "@/tests/utils/workspaces";
+import { faker } from "@faker-js/faker";
 
 describe("API Workspaces", () => {
   let cookie: string;
   let userId: string;
+  let testUser: { name: string; password: string; email: string };
 
   beforeEach(async () => {
-    await createUsers([
-      {
-        name: "Test User",
-        email: "test@example.com",
-        password: "test.user1",
-      },
-    ]);
+    testUser = generateUser();
 
-    const login = await loginUser("test@example.com", "test.user1");
+    await createUsers([testUser]);
+
+    const login = await loginUser(testUser.email, testUser.password);
 
     cookie = login.cookie;
     userId = login.userId;
@@ -26,7 +25,7 @@ describe("API Workspaces", () => {
 
   it("POST /api/workspaces - create a new workspace", async () => {
     const newWorkspace = {
-      name: "Test Workspace",
+      name: faker.company.name(),
     };
 
     const response = await createWorkspace(cookie, newWorkspace.name);
@@ -37,7 +36,7 @@ describe("API Workspaces", () => {
 
   it("GET /api/workspaces - retrieve list of workspaces", async () => {
     const newWorkspace = {
-      name: "Another Workspace",
+      name: faker.company.name(),
     };
 
     await createWorkspace(cookie, newWorkspace.name);
@@ -50,7 +49,7 @@ describe("API Workspaces", () => {
 
   it("DELETE /api/workspaces/:workspaceId - delete a workspace", async () => {
     const newWorkspace = {
-      name: "Workspace to Delete",
+      name: faker.company.name(),
     };
 
     const response = await createWorkspace(cookie, newWorkspace.name);
