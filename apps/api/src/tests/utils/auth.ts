@@ -21,7 +21,7 @@ export async function loginUser(email: string, password: string) {
     .expect(200);
 
   const cookies = res.headers["set-cookie"] as unknown as string[];
-  const cookie = cookies.find((c) => c.startsWith("jwt_token=")) || "";
+  const cookie = cookies.join("; ") || "";
 
   return { cookie, userId: res.body.user.id };
 }
