@@ -14,7 +14,7 @@ enum UserRole {
   ADMIN
   OWNER
   EDITOR
-  COLLABORATORS
+  COLLABORATOR
 }
 
 model User {
@@ -22,6 +22,7 @@ model User {
   name            String
   email           String            @unique
   password        String
+  logo            String?
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
   ownedWorkspaces Workspace[]       @relation("ownedWorkspaces")
@@ -33,6 +34,7 @@ model User {
 model Workspace {
   id        String            @id @default(uuid())
   name      String
+  logo      String?
   ownerId   String            @map("owner_id")
   createdAt DateTime          @default(now()) @map("created_at")
   updatedAt DateTime          @default(now()) @updatedAt @map("updated_at")
@@ -46,7 +48,7 @@ model WorkspaceMember {
   id          String    @id @default(uuid())
   userId      String    @map("user_id")
   workspaceId String    @map("workspace_id")
-  role        UserRole  @default(COLLABORATORS)
+  role        UserRole  @default(COLLABORATOR)
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
   user        User      @relation(fields: [userId], references: [id])

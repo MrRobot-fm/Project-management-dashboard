@@ -23,14 +23,10 @@ import {
   allWorkspacesOption,
   SELECTED_WS_ID_COOKIE_KEY,
 } from "@/constants/workspaces";
+import type { AllWorkspaces } from "@/types/models/api-get-workspaces";
+import type { Workspace } from "@workspace/db";
 import Cookies from "js-cookie";
 import { ChevronsUpDownIcon } from "lucide-react";
-
-interface Workspace {
-  id: string;
-  name: string;
-  logo: string;
-}
 
 type SidebarWrapper = {
   component: ComponentType<ComponentProps<typeof SidebarMenuButton>>;
@@ -42,9 +38,18 @@ interface WorkspaceSelectorProps {
   sidebarMenuButtonWrapper?: SidebarWrapper;
 }
 
-const WorkspaceInfo = ({ workspace }: { workspace: Workspace }) => (
+const WorkspaceInfo = ({
+  workspace,
+}: {
+  workspace: Workspace | AllWorkspaces;
+}) => (
   <div className="flex items-center gap-3">
-    <Avatar image={workspace.logo} size="lg" className="rounded" />
+    <Avatar
+      image={workspace?.logo}
+      fallback={workspace.name}
+      size="lg"
+      className="rounded"
+    />
     <div className="flex flex-col items-start">
       <span className="font-medium text-foreground">{workspace.name}</span>
       <span className="text-sm text-muted-foreground">Workspace</span>

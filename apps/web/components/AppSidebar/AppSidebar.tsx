@@ -33,6 +33,7 @@ import {
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
+import type { Workspace } from "@workspace/db";
 
 const data = {
   user: {
@@ -156,13 +157,11 @@ const data = {
   ],
 };
 
-const workspaces = [
-  { id: "2", name: "Wolf Pixel", logo: "https://github.com/shadcn.png" },
-  { id: "3", name: "Cloud Studio", logo: "https://github.com/shadcn.png" },
-  { id: "4", name: "Dev Space", logo: "https://github.com/shadcn.png" },
-];
+interface AppSidebarProps extends ComponentProps<typeof Sidebar> {
+  workspaces: Workspace[];
+}
 
-export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ workspaces, ...props }: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
