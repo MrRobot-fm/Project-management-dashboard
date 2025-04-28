@@ -6,6 +6,6 @@ export default defineConfig((options: Options) => ({
   },
   outDir: "dist",
   clean: true,
-  format: ["cjs"],
+  format: ["esm"],
   ...options,
 }));
