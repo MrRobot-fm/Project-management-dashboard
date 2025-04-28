@@ -23,14 +23,10 @@ import {
   allWorkspacesOption,
   SELECTED_WS_ID_COOKIE_KEY,
 } from "@/constants/workspaces";
+import type { AllWorkspaces } from "@/types/models/api-get-workspaces";
+import type { Workspace } from "@workspace/db";
 import Cookies from "js-cookie";
 import { ChevronsUpDownIcon } from "lucide-react";
-
-interface Workspace {
-  id: string;
-  name: string;
-  logo: string;
-}
 
 type SidebarWrapper = {
   component: ComponentType<ComponentProps<typeof SidebarMenuButton>>;
@@ -40,11 +36,21 @@ type SidebarWrapper = {
 interface WorkspaceSelectorProps {
   workspaces: Workspace[];
   sidebarMenuButtonWrapper?: SidebarWrapper;
+  userId: string;
 }
 
-const WorkspaceInfo = ({ workspace }: { workspace: Workspace }) => (
+const WorkspaceInfo = ({
+  workspace,
+}: {
+  workspace: Workspace | AllWorkspaces;
+}) => (
   <div className="flex items-center gap-3">
-    <Avatar image={workspace.logo} size="lg" className="rounded" />
+    <Avatar
+      image={workspace?.logo}
+      fallback={workspace.name}
+      size="lg"
+      className="rounded"
+    />
     <div className="flex flex-col items-start">
       <span className="font-medium text-foreground">{workspace.name}</span>
       <span className="text-sm text-muted-foreground">Workspace</span>
@@ -55,6 +61,7 @@ const WorkspaceInfo = ({ workspace }: { workspace: Workspace }) => (
 export const WorkspaceSelector = ({
   workspaces,
   sidebarMenuButtonWrapper,
+  userId,
 }: WorkspaceSelectorProps) => {
   const [selectedId, setSelectedId] = useState<string>(ALL_WORKSPACES_ID);
 
@@ -64,16 +71,18 @@ export const WorkspaceSelector = ({
   );
 
   useEffect(() => {
-    const savedWorkspace = Cookies.get(SELECTED_WS_ID_COOKIE_KEY);
+    const savedWorkspace = Cookies.get(
+      `${SELECTED_WS_ID_COOKIE_KEY}_${userId}`,
+    );
 
     if (savedWorkspace && options.some((w) => w.id === savedWorkspace)) {
       setSelectedId(savedWorkspace);
     }
-  }, [options]);
+  }, [options, userId]);
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
-    Cookies.set(SELECTED_WS_ID_COOKIE_KEY, id, { expires: 365 });
+    Cookies.set(`${SELECTED_WS_ID_COOKIE_KEY}_${userId}`, id, { expires: 365 });
   };
 
   const selectedWorkspace = useMemo(() => {

@@ -14,14 +14,37 @@ vi.mock("js-cookie", () => {
   };
 });
 
+const userId = "2";
+
 const workspaces = [
-  { id: "1", name: "Wolf Pixel", logo: "https://github.com/shadcn.png" },
-  { id: "2", name: "Cloud Studio", logo: "https://github.com/shadcn.png" },
-  { id: "3", name: "Dev Space", logo: "https://github.com/shadcn.png" },
+  {
+    id: "1",
+    name: "Wolf Pixel",
+    logo: "https://github.com/shadcn.png",
+    ownerId: "owner1",
+    createdAt: new Date("2023-01-01"),
+    updatedAt: new Date("2023-01-10"),
+  },
+  {
+    id: "2",
+    name: "Cloud Studio",
+    logo: "https://github.com/shadcn.png",
+    ownerId: "owner2",
+    createdAt: new Date("2023-02-01"),
+    updatedAt: new Date("2023-02-10"),
+  },
+  {
+    id: "3",
+    name: "Dev Space",
+    logo: "https://github.com/shadcn.png",
+    ownerId: "owner3",
+    createdAt: new Date("2023-03-01"),
+    updatedAt: new Date("2023-03-10"),
+  },
 ];
 
 const renderComponent = () => {
-  render(<WorkspaceSelector workspaces={workspaces} />);
+  render(<WorkspaceSelector workspaces={workspaces} userId={userId} />);
 
   return {
     selectTrigger: screen.getByTestId("workspaces-select"),
@@ -46,7 +69,7 @@ describe("WorkspaceSelector", () => {
     });
 
     expect(Cookies.set).toHaveBeenCalledWith(
-      SELECTED_WS_ID_COOKIE_KEY,
+      `${SELECTED_WS_ID_COOKIE_KEY}_${userId}`,
       "2",
       expect.objectContaining({ expires: 365 }),
     );

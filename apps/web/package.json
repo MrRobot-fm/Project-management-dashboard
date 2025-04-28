@@ -25,6 +25,7 @@
     "@tanstack/react-table": "^8.21.2",
     "@workspace/exceptions": "workspace:*",
     "@workspace/schemas": "workspace:*",
+    "@workspace/db": "workspace:*",
     "@workspace/ui": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "js-cookie": "^3.0.5",

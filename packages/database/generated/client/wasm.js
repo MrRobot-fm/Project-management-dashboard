@@ -122,6 +122,24 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
+  logo: 'logo',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WorkspaceScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  logo: 'logo',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WorkspaceMemberScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  workspaceId: 'workspaceId',
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -136,15 +154,22 @@ exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
 };
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
 exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN',
   OWNER: 'OWNER',
   EDITOR: 'EDITOR',
-  COLLABORATORS: 'COLLABORATORS'
+  COLLABORATOR: 'COLLABORATOR'
 };
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Workspace: 'Workspace',
+  WorkspaceMember: 'WorkspaceMember'
 };
 
 /**
