@@ -17,7 +17,17 @@ export default mergeConfig(
       env: {
         NODE_ENV: "test",
       },
+      sequence: {
+        shuffle: false,
+      },
+      pool: "threads",
+      poolOptions: {
+        threads: {
+          singleThread: true,
+        },
+      },
     },
+
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

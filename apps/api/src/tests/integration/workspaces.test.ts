@@ -10,7 +10,7 @@ import { faker } from "@faker-js/faker";
 describe("API Workspaces", () => {
   let cookie: string;
   let userId: string;
-  let testUser: { name: string; password: string; email: string };
+  let testUser;
 
   beforeEach(async () => {
     testUser = generateUser();
@@ -63,7 +63,7 @@ describe("API Workspaces", () => {
 
   it("POST /api/workspaces - fails with invalid body", async () => {
     const invalidBody = {
-      name: "a",
+      name: "a", // Manteniamo questo corto per farlo fallire intenzionalmente
     };
 
     const response = await createWorkspace(cookie, invalidBody.name, 422);
