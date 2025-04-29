@@ -16,6 +16,11 @@ on:
       NEXT_PUBLIC_API_BASE_URL:
         required: true
 
+      TEST_SUPABASE_URL:
+        required: true
+      TEST_SUPABASE_SERVICE_ROLE_KEY:
+        required: true
+
 jobs:
   cypress:
     name: Cypress E2E Tests
@@ -64,6 +69,8 @@ jobs:
           echo "DIRECT_URL=${{ secrets.TEST_DIRECT_URL }}" >> apps/api/.env.test
           echo "JWT_SECRET=${{ secrets.TEST_JWT_SECRET }}" >> apps/api/.env.test
           echo "JWT_REFRESH_SECRET=${{ secrets.TEST_JWT_REFRESH_SECRET }}" >> apps/api/.env.test
+          echo "SUPABASE_URL=${{ secrets.TEST_SUPABASE_URL }}" >> apps/api/.env.test
+          echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}" >> apps/api/.env.test
           echo "NODE_ENV=test" >> apps/api/.env.test
 
       - name: Configure Next.js environment

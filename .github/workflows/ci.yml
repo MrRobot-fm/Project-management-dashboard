@@ -18,7 +18,8 @@ jobs:
       DIRECT_URL: ${{ secrets.DIRECT_URL }}
       API_PORT: ${{ secrets.API_PORT }}
       NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
-
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
   test:
     needs: build
     uses: ./.github/workflows/test.yml
@@ -28,6 +29,8 @@ jobs:
       TEST_DIRECT_URL: ${{ secrets.TEST_DIRECT_URL }}
       TEST_JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
       TEST_JWT_REFRESH_SECRET: ${{ secrets.TEST_JWT_REFRESH_SECRET }}
+      TEST_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
 
   cypress:
     needs: build
@@ -39,3 +42,5 @@ jobs:
       TEST_JWT_SECRET: ${{ secrets.TEST_JWT_SECRET }}
       TEST_JWT_REFRESH_SECRET: ${{ secrets.TEST_JWT_REFRESH_SECRET }}
       NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+      TEST_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}

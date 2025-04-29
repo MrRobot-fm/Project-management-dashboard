@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
+import { uploadFile } from "@/utils/storage";
 import { prisma } from "@workspace/db";
-import { NotFoundError } from "@workspace/exceptions";
+import { NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { hashSync } from "bcrypt";
 
 export const createUser = async (req: Request, res: Response) => {
@@ -56,18 +57,33 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const { body, params } = req;
+  const { body, params, file, user } = req;
 
-  const user = await prisma.user.update({
+  if (!user) {
+    throw new UnauthorizedError("User can't update workspace");
+  }
+
+  let publicUrl: string | null = null;
+
+  if (file) {
+    publicUrl = await uploadFile({
+      bucket: "user-logo",
+      file,
+      userId: user?.id,
+    });
+  }
+
+  const updatedUser = await prisma.user.update({
     where: {
       id: params.id,
     },
     data: {
       ...body,
+      logo: publicUrl,
     },
   });
 
-  res.status(200).json({ user });
+  res.status(200).json({ user: updatedUser, success: true });
 };
 
 export const deleteUser = async (req: Request, res: Response) => {

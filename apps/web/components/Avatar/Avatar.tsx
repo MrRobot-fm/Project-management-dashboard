@@ -26,7 +26,9 @@ export const Avatar = ({
 
   return (
     <AvatarRoot className={cn(className, avatarSize({ size }))} {...props}>
-      {image && <AvatarImage src={image} alt={initials} />}
+      {image && (
+        <AvatarImage src={image} alt={initials} className="object-cover" />
+      )}
       <AvatarFallback>{initials}</AvatarFallback>
     </AvatarRoot>
   );

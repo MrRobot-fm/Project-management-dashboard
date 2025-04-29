@@ -13,6 +13,10 @@ on:
         required: true
       TEST_JWT_REFRESH_SECRET:
         required: true
+      TEST_SUPABASE_URL:
+        required: true
+      TEST_SUPABASE_SERVICE_ROLE_KEY:
+        required: true
 
 jobs:
   test:
@@ -43,6 +47,9 @@ jobs:
       - name: Build schemas package
         run: pnpm --filter @workspace/schemas build
 
+      - name: Build supabase package
+        run: pnpm --filter @workspace/supabase build
+
       - name: Configure API environment for testing
         run: |
           echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env.test
@@ -50,6 +57,8 @@ jobs:
           echo "DIRECT_URL=${{ secrets.TEST_DIRECT_URL }}" >> apps/api/.env.test
           echo "JWT_SECRET=${{ secrets.TEST_JWT_SECRET }}" >> apps/api/.env.test
           echo "JWT_REFRESH_SECRET=${{ secrets.TEST_JWT_REFRESH_SECRET }}" >> apps/api/.env.test
+          echo "SUPABASE_URL=${{ secrets.TEST_SUPABASE_URL }}" >> apps/api/.env.test
+          echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}" >> apps/api/.env.test
           echo "NODE_ENV=test" >> apps/api/.env.test
 
       - name: Generate Prisma Client
