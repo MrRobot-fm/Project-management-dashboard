@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { verifyJwtToken } from "@/utils/verify-jwt-token";
+import { verifyJwtToken } from "@/utils/auth";
 import { prisma } from "@workspace/db";
 import { UnauthorizedError } from "@workspace/exceptions";
 

@@ -10,11 +10,7 @@ export default async function Page() {
   return (
     <div className="flex items-center justify-center min-h-svh">
       <div className="flex flex-col items-center justify-center gap-4">
-        <Avatar
-          image="https://github.com/shadcn.png"
-          fallback="Federico Migliore"
-          size="3xl"
-        />
+        <Avatar image={data.user.logo} fallback={data.user.name} size="3xl" />
         <h1 className="text-2xl font-bold">Welcome back, {data.user.name}!</h1>
         <Button size="sm">Action</Button>
       </div>

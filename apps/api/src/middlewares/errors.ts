@@ -2,6 +2,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { Prisma } from "@workspace/db";
 import {
+  BadRequestError,
   ConflictError,
   HttpExceptionError,
   InternalServerError,
@@ -10,6 +11,7 @@ import {
   ValidationError,
 } from "@workspace/exceptions";
 import jwt from "jsonwebtoken";
+import multer from "multer";
 import { ZodError } from "zod";
 
 export const errorMiddleware = (
@@ -84,6 +86,12 @@ export const errorMiddleware = (
     );
 
     res.status(unauthorizedError.status).json(unauthorizedError.toJSON());
+    return;
+  }
+
+  if (error instanceof multer.MulterError) {
+    const badRequestError = new BadRequestError(error.message, error);
+    res.status(badRequestError.status).json(badRequestError.toJSON());
     return;
   }
 

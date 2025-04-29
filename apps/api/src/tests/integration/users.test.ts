@@ -57,29 +57,26 @@ describe("API Users", () => {
   });
 
   it("PUT /api/users/:id - updates a user", async () => {
-    const userToUpdate = generateUser();
+    const updateData = { name: "Updated Admin Name" };
 
-    const user = await prisma.user.create({
-      data: {
-        ...userToUpdate,
-        password: hashSync(userToUpdate.password, 10),
-      },
+    const user = await prisma.user.findUnique({
+      where: { email: adminUser.email },
     });
 
-    const updateData = { name: "Updated Name" };
+    expect(user).not.toBeNull();
 
     await request(app)
-      .put(`/api/users/${user.id}`)
+      .put(`/api/users/${user?.id}`)
       .set("Cookie", cookie)
       .send(updateData)
       .expect(200);
 
     const updated = await prisma.user.findUnique({
-      where: { id: user.id },
+      where: { id: user!.id },
     });
 
     expect(updated?.name).toBe(updateData.name);
-    expect(updated?.email).toBe(userToUpdate.email);
+    expect(updated?.email).toBe(adminUser.email);
   });
 
   it("DELETE /api/users/:id - deletes a user", async () => {

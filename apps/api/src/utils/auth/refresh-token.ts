@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { setCookie } from "@/utils//set-cookie";
-import { createJwtToken } from "@/utils/create-jwt-token";
-import { verifyJwtToken } from "@/utils/verify-jwt-token";
+import { createJwtToken } from "@/utils/auth/create-jwt-token";
+import { setCookie } from "@/utils/auth/set-cookie";
+import { verifyJwtToken } from "@/utils/auth/verify-jwt-token";
 import { prisma } from "@workspace/db";
 import { UnauthorizedError } from "@workspace/exceptions";
 

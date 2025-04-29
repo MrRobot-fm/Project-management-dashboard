@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { uploadFile } from "@/utils/storage";
 import { prisma } from "@workspace/db";
 import { BadRequestError, UnauthorizedError } from "@workspace/exceptions";
 
@@ -110,4 +111,33 @@ export const deleteWorkspace = async (req: Request, res: Response) => {
   });
 
   res.status(204).json({ workspace, success: true });
+};
+
+export const updateWorkspace = async (req: Request, res: Response) => {
+  const { body, user, file, params } = req;
+
+  if (!user) {
+    throw new UnauthorizedError("User can't update workspace");
+  }
+
+  let publicUrl: string | null = null;
+
+  if (file) {
+    publicUrl = await uploadFile({
+      bucket: "workspace-logo",
+      file: file,
+      workspaceId: params.workspaceId,
+    });
+  }
+  const updatedWorkspace = await prisma.workspace.update({
+    where: {
+      id: params.workspaceId,
+    },
+    data: {
+      name: body.name,
+      logo: publicUrl,
+    },
+  });
+
+  res.status(200).json({ workspace: updatedWorkspace, success: true });
 };

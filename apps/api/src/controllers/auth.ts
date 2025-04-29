@@ -1,8 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
-import { clearCookie } from "@/utils/clear-cookie";
-import { createJwtToken } from "@/utils/create-jwt-token";
-import { refreshToken } from "@/utils/refresh-token";
-import { setCookie } from "@/utils/set-cookie";
+import {
+  clearCookie,
+  createJwtToken,
+  refreshToken,
+  setCookie,
+} from "@/utils/auth";
 import { prisma } from "@workspace/db";
 import { NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { LoginUserSchema, RegisterUserSchema } from "@workspace/schemas";
