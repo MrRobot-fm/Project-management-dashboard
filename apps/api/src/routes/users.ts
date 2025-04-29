@@ -13,7 +13,7 @@ import { upload } from "@/middlewares/upload-file";
 
 export const usersRouter: Router = Router();
 
-usersRouter.post("/", [authMiddleware], createUser);
+usersRouter.post("/", createUser);
 usersRouter.get("/", [authMiddleware], getAllUsers);
 usersRouter.get("/me", [authMiddleware], getCurrentUser);
 usersRouter.get("/:id", [authMiddleware], getUserById);
