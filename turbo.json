@@ -55,6 +55,10 @@
       "cache": false,
       "persistent": true
     },
+    "db:migrate:test": {
+      "cache": false,
+      "persistent": true
+    },
     "db:deploy": {
       "cache": false
     }
