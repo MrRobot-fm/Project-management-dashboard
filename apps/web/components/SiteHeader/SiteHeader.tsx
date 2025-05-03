@@ -7,13 +7,10 @@ import {
   IconNotification,
   IconUserCircle,
 } from "@tabler/icons-react";
+import type { User } from "@workspace/db";
 
 interface SiteHeaderProps {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
+  user: Pick<User, "name" | "email" | "logo">;
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {
