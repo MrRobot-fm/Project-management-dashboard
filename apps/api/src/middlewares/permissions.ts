@@ -85,3 +85,44 @@ export const verifyUserPermissions = async (
 
   next();
 };
+
+export const verifyProjectPermissions = async (
+  req: Request,
+  _: Response,
+  next: NextFunction,
+) => {
+  const { user, params } = req;
+  const { projectId } = params;
+
+  if (!user || !user.id) {
+    throw new UnauthorizedError("Authentication required");
+  }
+
+  if (!projectId) {
+    throw new BadRequestError("Project ID is required");
+  }
+
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    include: {
+      members: {
+        where: { userId: user.id },
+        select: { userId: true },
+      },
+    },
+  });
+
+  if (!project) {
+    throw new NotFoundError("Project not found");
+  }
+
+  const isMember = project.members.length > 0;
+
+  if (!isMember) {
+    throw new UnauthorizedError(
+      "User is not authorized to update this project",
+    );
+  }
+
+  next();
+};
