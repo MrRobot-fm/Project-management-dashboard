@@ -7,7 +7,10 @@ import {
   updateProject,
 } from "@/controllers/projects";
 import { authMiddleware } from "@/middlewares/auth";
-import { verifyProjectPermissions } from "@/middlewares/permissions";
+import {
+  verifyProjectPermissions,
+  verifyWorkspacePermissions,
+} from "@/middlewares/permissions";
 import { upload } from "@/middlewares/upload-file";
 import { validateBody } from "@/middlewares/validate-body";
 import { CreateProjectsSchema, UpdateProjectSchema } from "@workspace/schemas";
@@ -18,7 +21,12 @@ projectsRouter.get("/", [authMiddleware], getProjects);
 
 projectsRouter.post(
   "/:workspaceId",
-  [authMiddleware, upload.single("logo"), validateBody(CreateProjectsSchema)],
+  [
+    authMiddleware,
+    verifyWorkspacePermissions,
+    upload.single("logo"),
+    validateBody(CreateProjectsSchema),
+  ],
   createProject,
 );
 

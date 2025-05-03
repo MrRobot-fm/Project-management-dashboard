@@ -43,9 +43,7 @@ export const verifyWorkspacePermissions = async (
   const isMember = workspace.members.length > 0;
 
   if (!isOwner && !isMember) {
-    throw new UnauthorizedError(
-      "User is not authorized to update this workspace",
-    );
+    throw new UnauthorizedError("User is not authorized to do this operations");
   }
 
   next();
