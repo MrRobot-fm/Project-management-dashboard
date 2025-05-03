@@ -57,7 +57,7 @@ export default async function RootLayout({
               <SiteHeader
                 user={{
                   name: data.user.name,
-                  avatar: "https://github.com/shadcn.png",
+                  logo: data.user.logo,
                   email: data.user.email,
                 }}
               />

@@ -18,18 +18,23 @@ interface AvatarProps extends ComponentProps<typeof AvatarRoot>, AvatarSize {
 export const Avatar = ({
   image,
   fallback = "John Do",
-  size = "md",
+  size,
+  shape,
   className,
   ...props
 }: AvatarProps) => {
   const initials = getAvatarFallback(fallback);
 
   return (
-    <AvatarRoot className={cn(className, avatarSize({ size }))} {...props}>
+    <AvatarRoot className={avatarSize({ size, shape, className })} {...props}>
       {image && (
         <AvatarImage src={image} alt={initials} className="object-cover" />
       )}
-      <AvatarFallback>{initials}</AvatarFallback>
+      <AvatarFallback
+        className={cn("bg-gray-200", shape === "square" && "rounded")}
+      >
+        {initials}
+      </AvatarFallback>
     </AvatarRoot>
   );
 };
@@ -44,8 +49,13 @@ const avatarSize = cva(null, {
       "2xl": "size-12",
       "3xl": "size-14",
     },
+    shape: {
+      rounded: "rounded-full",
+      square: "rounded",
+    },
   },
   defaultVariants: {
     size: "md",
+    shape: "rounded",
   },
 });

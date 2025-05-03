@@ -49,11 +49,11 @@ const WorkspaceInfo = ({
       image={workspace?.logo}
       fallback={workspace.name}
       size="lg"
-      className="rounded"
+      shape="square"
     />
     <div className="flex flex-col items-start">
       <span className="font-medium text-foreground">{workspace.name}</span>
-      <span className="text-sm text-muted-foreground">Workspace</span>
+      <span className="text-xs text-muted-foreground">Workspace</span>
     </div>
   </div>
 );

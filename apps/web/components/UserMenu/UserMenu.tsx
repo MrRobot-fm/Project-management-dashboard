@@ -17,14 +17,11 @@ import {
   IconLogout,
   type TablerIcon,
 } from "@tabler/icons-react";
+import type { User } from "@workspace/db";
 import type { LucideIcon } from "lucide-react";
 
 interface UserMenuProps {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
+  user: Pick<User, "name" | "email" | "logo">;
   menuItems: {
     title: string;
     href?: string;
@@ -61,7 +58,7 @@ export const UserMenu = ({
           )}
           dataTestId="nav-user"
         >
-          <Avatar image={user.avatar} fallback={user.name} size="lg" />
+          <Avatar image={user.logo} fallback={user.name} size="lg" />
           {variant === "default" && (
             <>
               <UserInfoBox user={user} />
@@ -77,7 +74,7 @@ export const UserMenu = ({
       >
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <Avatar image={user.avatar} fallback={user.name} size="lg" />
+            <Avatar image={user.logo} fallback={user.name} size="lg" />
             <UserInfoBox user={user} />
           </div>
         </DropdownMenuLabel>
