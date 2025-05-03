@@ -58,7 +58,7 @@ export default function DesignSystemPage() {
           <UserMenu
             user={{
               name: "Federico Migliore",
-              avatar: "https://github.com/shadcn.png",
+              logo: "https://github.com/shadcn.png",
               email: "federico@gmail.com",
             }}
             menuItems={[]}
@@ -66,7 +66,7 @@ export default function DesignSystemPage() {
           <UserMenu
             user={{
               name: "Federico Migliore",
-              avatar: "https://github.com/shadcn.png",
+              logo: "https://github.com/shadcn.png",
               email: "federico@gmail.com",
             }}
             variant="avatar"
