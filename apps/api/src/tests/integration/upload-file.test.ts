@@ -29,7 +29,7 @@ describe("API File Upload", () => {
     const user = await prisma.user.findUnique({
       where: { email: adminUser.email },
     });
-    const basePath = getBasePath(undefined, user?.id);
+    const basePath = getBasePath({ userId: user?.id });
 
     await removeExistingFiles("user-logo", basePath);
   });
