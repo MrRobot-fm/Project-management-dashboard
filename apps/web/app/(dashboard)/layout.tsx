@@ -6,6 +6,7 @@ import {
   SidebarProvider,
 } from "@workspace/ui/components/Sidebar";
 import "@workspace/ui/globals.css";
+import { QueryProviders } from "../providers";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
@@ -39,32 +40,34 @@ export default async function RootLayout({
       <body
         className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}
       >
-        <ThemeProvider>
-          <SidebarProvider
-            style={
-              {
-                "--sidebar-width": "calc(var(--spacing) * 72)",
-                "--header-height": "calc(var(--spacing) * 12)",
-              } as CSSProperties
-            }
-          >
-            <AppSidebar
-              userId={data.user.id}
-              workspaces={workspaces}
-              variant="floating"
-            />
-            <SidebarInset>
-              <SiteHeader
-                user={{
-                  name: data.user.name,
-                  logo: data.user.logo,
-                  email: data.user.email,
-                }}
+        <QueryProviders>
+          <ThemeProvider>
+            <SidebarProvider
+              style={
+                {
+                  "--sidebar-width": "calc(var(--spacing) * 72)",
+                  "--header-height": "calc(var(--spacing) * 12)",
+                } as CSSProperties
+              }
+            >
+              <AppSidebar
+                userId={data.user.id}
+                workspaces={workspaces}
+                variant="floating"
               />
-              {children}
-            </SidebarInset>
-          </SidebarProvider>
-        </ThemeProvider>
+              <SidebarInset>
+                <SiteHeader
+                  user={{
+                    name: data.user.name,
+                    logo: data.user.logo,
+                    email: data.user.email,
+                  }}
+                />
+                {children}
+              </SidebarInset>
+            </SidebarProvider>
+          </ThemeProvider>
+        </QueryProviders>
       </body>
     </html>
   );

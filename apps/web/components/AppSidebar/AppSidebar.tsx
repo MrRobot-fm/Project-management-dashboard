@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentProps } from "react";
+import { type ComponentProps } from "react";
 import Link from "next/link";
 import {
   Sidebar,
@@ -15,6 +15,9 @@ import { NavDocuments } from "@/components/NavDocuments";
 import { NavMain } from "@/components/NavMain";
 import { NavSecondary } from "@/components/NavSecondary";
 import { WorkspaceSelector } from "@/components/WorkspaceSelector";
+import { SELECTED_WS_ID_COOKIE_KEY } from "@/constants/workspaces";
+import { useCookieChange } from "@/hooks/use-cookie-change";
+import { getWsProjectsClient } from "@/services/get-ws-projects";
 import {
   IconCamera,
   IconChartBar,
@@ -33,6 +36,7 @@ import {
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
+import { useQuery } from "@tanstack/react-query";
 import type { Workspace } from "@workspace/db";
 
 const data = {
@@ -163,6 +167,18 @@ interface AppSidebarProps extends ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ userId, workspaces, ...props }: AppSidebarProps) {
+  const selectedWsId = useCookieChange(
+    `${SELECTED_WS_ID_COOKIE_KEY}_${userId}`,
+    "workspace:changed",
+  );
+
+  const { data: projects, isLoading } = useQuery({
+    queryKey: ["ws-projects", selectedWsId, userId],
+    queryFn: async () => await getWsProjectsClient(userId),
+  });
+
+  console.log({ projects, isLoading });
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -182,7 +198,7 @@ export function AppSidebar({ userId, workspaces, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent className="bg-background">
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        <NavDocuments items={projects?.projects ?? []} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter className="bg-background">

@@ -70,7 +70,10 @@ export const WorkspaceSelector = ({
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
+
     Cookies.set(`${SELECTED_WS_ID_COOKIE_KEY}_${userId}`, id, { expires: 365 });
+
+    window.dispatchEvent(new Event("workspace:changed"));
   };
 
   const selectedWorkspace = workspaces.find((w) => w.id === selectedId);
