@@ -4,6 +4,7 @@ import {
   deleteProject,
   getProjectById,
   getProjects,
+  getWorkspaceProjects,
   updateProject,
 } from "@/controllers/projects";
 import { authMiddleware } from "@/middlewares/auth";
@@ -18,17 +19,6 @@ import { CreateProjectsSchema, UpdateProjectSchema } from "@workspace/schemas";
 export const projectsRouter = Router();
 
 projectsRouter.get("/", [authMiddleware], getProjects);
-
-projectsRouter.post(
-  "/:workspaceId",
-  [
-    authMiddleware,
-    verifyWorkspacePermissions,
-    upload.single("logo"),
-    validateBody(CreateProjectsSchema),
-  ],
-  createProject,
-);
 
 projectsRouter.get("/:projectId", getProjectById);
 
@@ -47,4 +37,19 @@ projectsRouter.delete(
   "/:projectId",
   [authMiddleware, verifyProjectPermissions],
   deleteProject,
+);
+
+export const workspaceProjectsRouter = Router({ mergeParams: true });
+
+workspaceProjectsRouter.get("/", [authMiddleware], getWorkspaceProjects);
+
+workspaceProjectsRouter.post(
+  "/",
+  [
+    authMiddleware,
+    verifyWorkspacePermissions,
+    upload.single("logo"),
+    validateBody(CreateProjectsSchema),
+  ],
+  createProject,
 );

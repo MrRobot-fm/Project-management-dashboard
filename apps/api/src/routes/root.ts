@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { apiStatusRouter } from "@/routes/api-status";
 import { authRouter } from "@/routes/auth";
-import { projectsRouter } from "@/routes/projects";
+import { projectsRouter, workspaceProjectsRouter } from "@/routes/projects";
 import { usersRouter } from "@/routes/users";
 import { workspacesRouter } from "@/routes/workspaces";
 
@@ -12,3 +12,4 @@ rootRouter.use("/users", usersRouter);
 rootRouter.use("/", apiStatusRouter);
 rootRouter.use("/workspaces", workspacesRouter);
 rootRouter.use("/projects", projectsRouter);
+rootRouter.use("/workspaces/:workspaceId/project", workspaceProjectsRouter);

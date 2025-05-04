@@ -65,7 +65,48 @@ export const getProjects = async (_: Request, res: Response) => {
     },
   });
 
-  res.status(200).json({ projects });
+  const formattedProjects = projects.map((project) => ({
+    ...project,
+    members: project.members.map((member) => ({
+      ...member.user,
+      role: member.role,
+    })),
+  }));
+
+  res.status(200).json({ projects: formattedProjects });
+};
+export const getWorkspaceProjects = async (req: Request, res: Response) => {
+  const { workspaceId } = req.params;
+
+  const projects = await prisma.project.findMany({
+    where: {
+      workspaceId,
+    },
+    include: {
+      members: {
+        include: {
+          user: {
+            omit: {
+              password: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+        },
+      },
+      tasks: true,
+    },
+  });
+
+  const formattedProjects = projects.map((project) => ({
+    ...project,
+    members: project.members.map((member) => ({
+      ...member.user,
+      role: member.role,
+    })),
+  }));
+
+  res.status(200).json({ projects: formattedProjects });
 };
 
 export const getProjectById = async (req: Request, res: Response) => {
@@ -95,7 +136,15 @@ export const getProjectById = async (req: Request, res: Response) => {
     },
   });
 
-  res.status(200).json({ project });
+  const formattedProject = {
+    ...project,
+    members: project?.members.map((member) => ({
+      ...member.user,
+      role: member.role,
+    })),
+  };
+
+  res.status(200).json({ project: formattedProject });
 };
 
 export const updateProject = async (req: Request, res: Response) => {
