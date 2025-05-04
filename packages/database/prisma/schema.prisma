@@ -19,42 +19,137 @@ enum UserRole {
 }
 
 model User {
-  id              String            @id @default(uuid())
-  name            String
-  email           String            @unique
-  password        String
-  logo            String?
-  createdAt       DateTime          @default(now()) @map("created_at")
-  updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  logo      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
   ownedWorkspaces Workspace[]       @relation("ownedWorkspaces")
   workspaceMember WorkspaceMember[]
+  ProjectMember   ProjectMember[]
+  Task            Task[]
 
   @@map("users")
 }
 
 model Workspace {
-  id        String            @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
   logo      String?
-  ownerId   String            @map("owner_id")
-  createdAt DateTime          @default(now()) @map("created_at")
-  updatedAt DateTime          @default(now()) @updatedAt @map("updated_at")
-  owner     User              @relation("ownedWorkspaces", fields: [ownerId], references: [id])
-  members   WorkspaceMember[]
+  ownerId   String   @map("owner_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  owner          User              @relation("ownedWorkspaces", fields: [ownerId], references: [id])
+  members        WorkspaceMember[]
+  projects       Project[]
+  labels         Label[]
+  projectMembers ProjectMember[]
 
   @@map("workspaces")
 }
 
 model WorkspaceMember {
-  id          String    @id @default(uuid())
-  userId      String    @map("user_id")
-  workspaceId String    @map("workspace_id")
-  role        UserRole  @default(COLLABORATOR)
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
-  user        User      @relation(fields: [userId], references: [id])
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  id          String   @id @default(uuid())
+  userId      String   @map("user_id")
+  workspaceId String   @map("workspace_id")
+  role        UserRole @default(COLLABORATOR)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workspaceId])
   @@map("workspace_members")
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  logo        String?
+  workspaceId String   @map("workspace_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+
+  workspace Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  members   ProjectMember[]
+  tasks     Task[]
+
+  @@map("projects")
+}
+
+model ProjectMember {
+  id          String    @id @default(uuid())
+  userId      String    @map("user_id")
+  projectId   String    @map("project_id")
+  workspaceId String    @map("workspace_id")
+  role        UserRole  @default(COLLABORATOR)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+  @@map("project_members")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  BLOCKED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(LOW)
+  position    Int?
+  assigneeId  String?      @map("assignee_id")
+  projectId   String       @map("project_id")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at")
+
+  assignee User?       @relation(fields: [assigneeId], references: [id])
+  project  Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  labels   TaskLabel[]
+
+  @@map("tasks")
+}
+
+model Label {
+  id          String @id @default(uuid())
+  name        String @unique
+  color       String
+  workspaceId String @map("workspace_id")
+
+  workspace Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  tasks     TaskLabel[]
+
+  @@unique([name, workspaceId])
+  @@map("labels")
+}
+
+model TaskLabel {
+  taskId  String
+  labelId String
+
+  task  Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  label Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, labelId])
+  @@map("task_labels")
 }

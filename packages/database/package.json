@@ -5,6 +5,7 @@
   "scripts": {
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev --skip-generate",
+    "db:migrate:test": "dotenv -e .env.test -- pnpm db:migrate",
     "db:deploy": "prisma migrate deploy"
   },
   "dependencies": {
