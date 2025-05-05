@@ -10,8 +10,8 @@ import { QueryProviders } from "../providers";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { getCurrentUser } from "@/services/get-current-user";
-import { getWorkspaces } from "@/services/get-workspaces";
+import { getCurrentUser } from "@/services/users/get-current-user";
+import { getWorkspaces } from "@/services/workspaces/get-workspaces";
 
 const fontSans = Geist({
   subsets: ["latin"],

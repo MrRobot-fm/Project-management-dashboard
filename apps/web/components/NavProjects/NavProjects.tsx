@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { Button } from "@workspace/ui/components/Button";
 import {
   DropdownMenu,
@@ -19,31 +20,43 @@ import {
   useSidebar,
 } from "@workspace/ui/components/Sidebar";
 import { Avatar } from "../Avatar";
+import { URL_PROJECTS } from "@/constants/urls";
+import { deleteProject } from "@/services/projects/delete-project";
 import {
   IconDots,
   IconFolder,
   IconShare3,
   IconTrash,
 } from "@tabler/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
 import type { Project } from "@workspace/db";
 import { ChevronDown, ChevronUp, PlusCircle } from "lucide-react";
 
-export function NavDocuments({ items }: { items: Project[] }) {
+export const NavProjects = ({ projects }: { projects: Project[] }) => {
+  const queryClient = useQueryClient();
   const { isMobile } = useSidebar();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const projects = useMemo(() => {
-    if (isExpanded) return items;
+  const projectsData = useMemo(() => {
+    if (isExpanded) return projects;
 
-    return items.slice(0, 3);
-  }, [isExpanded, items]);
+    return projects.slice(0, 3);
+  }, [isExpanded, projects]);
+
+  const handleDeleteProject = async (projectId: string) => {
+    await deleteProject(projectId);
+
+    await queryClient.invalidateQueries({
+      queryKey: ["ws-projects"],
+    });
+  };
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel asChild>
         <Button
           variant="link"
-          className="hover:no-underline justify-between cursor-pointer !pl-2"
+          className="hover:no-underline justify-between cursor-pointer !pl-2 uppercase font-semibold"
         >
           Projects
           <PlusCircle className="size-4" />
@@ -51,17 +64,17 @@ export function NavDocuments({ items }: { items: Project[] }) {
       </SidebarGroupLabel>
       <SidebarMenu>
         {projects.length > 0 ? (
-          projects.map((item) => (
-            <SidebarMenuItem key={item.id}>
+          projectsData.map((project) => (
+            <SidebarMenuItem key={project.id}>
               <SidebarMenuButton asChild>
-                <a href={item.id}>
+                <a href={`${URL_PROJECTS}/${project.id}`}>
                   <Avatar
-                    size="sm"
                     shape="square"
-                    image={item.logo}
-                    fallback={item.name}
+                    image={project.logo}
+                    fallback={project.name}
+                    className="size-5"
                   />
-                  <span>{item.name}</span>
+                  <span className="text-sm">{project.name}</span>
                 </a>
               </SidebarMenuButton>
               <DropdownMenu>
@@ -70,7 +83,7 @@ export function NavDocuments({ items }: { items: Project[] }) {
                     showOnHover
                     className="data-[state=open]:bg-accent rounded-sm"
                   >
-                    <IconDots />
+                    <IconDots className="!size-3" />
                     <span className="sr-only">More</span>
                   </SidebarMenuAction>
                 </DropdownMenuTrigger>
@@ -79,18 +92,29 @@ export function NavDocuments({ items }: { items: Project[] }) {
                   side={isMobile ? "bottom" : "right"}
                   align={isMobile ? "end" : "start"}
                 >
-                  <DropdownMenuItem>
-                    <IconFolder />
-                    <span>Open</span>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`${URL_PROJECTS}/${project.id}`}
+                      className="cursor-pointer"
+                    >
+                      <IconFolder />
+                      <span>Open</span>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <IconShare3 />
                     <span>Share</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem variant="destructive">
-                    <IconTrash />
-                    <span>Delete</span>
+                  <DropdownMenuItem asChild variant="destructive">
+                    <Button
+                      variant="transparent"
+                      className="w-full justify-start font-normal cursor-pointer"
+                      onClick={() => handleDeleteProject(project.id)}
+                    >
+                      <IconTrash />
+                      <span>Delete</span>
+                    </Button>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -101,10 +125,10 @@ export function NavDocuments({ items }: { items: Project[] }) {
             No projects. Create one, now!
           </SidebarMenuItem>
         )}
-        {projects.length > 0 && (
-          <SidebarMenuItem>
+        {projects.length > 3 && (
+          <SidebarMenuItem className="mt-2">
             <SidebarMenuButton
-              className="text-sidebar-foreground/70 justify-center bg-stone-100 cursor-pointer"
+              className="text-sidebar-foreground/70 bg-stone-100 dark:bg-transparent justify-center cursor-pointer dark:border dark:border-muted-foreground"
               onClick={() => setIsExpanded((prev) => !prev)}
             >
               <span>{isExpanded ? "Show less" : "Show all"}</span>
@@ -119,4 +143,4 @@ export function NavDocuments({ items }: { items: Project[] }) {
       </SidebarMenu>
     </SidebarGroup>
   );
-}
+};

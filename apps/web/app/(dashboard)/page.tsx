@@ -1,6 +1,6 @@
 import { Button } from "@workspace/ui/components/Button";
 import { Avatar } from "@/components/Avatar";
-import { getCurrentUser } from "@/services/get-current-user";
+import { getCurrentUser } from "@/services/users/get-current-user";
 
 export const dynamic = "force-dynamic";
 
