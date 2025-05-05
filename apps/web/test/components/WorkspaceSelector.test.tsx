@@ -88,6 +88,6 @@ describe("WorkspaceSelector", () => {
 
     const { selectTrigger } = renderComponent();
 
-    expect(selectTrigger).toHaveTextContent(/all workspaces/i);
+    expect(selectTrigger).toHaveTextContent(/wolf pixel/i);
   });
 });
