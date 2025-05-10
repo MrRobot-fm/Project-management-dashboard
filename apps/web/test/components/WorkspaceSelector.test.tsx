@@ -14,6 +14,14 @@ vi.mock("js-cookie", () => {
   };
 });
 
+vi.mock("next/navigation", () => {
+  return {
+    useRouter: () => ({
+      refresh: vi.fn(),
+    }),
+  };
+});
+
 const userId = "2";
 
 const workspaces = [

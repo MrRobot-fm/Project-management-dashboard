@@ -66,10 +66,9 @@ export const WorkspaceSelector = ({
   sidebarMenuButtonWrapper,
   userId,
 }: WorkspaceSelectorProps) => {
-  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
-
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const savedId = Cookies.get(`${SELECTED_WS_ID_COOKIE_KEY}_${userId}`);
