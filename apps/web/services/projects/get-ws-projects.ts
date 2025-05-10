@@ -1,15 +1,16 @@
-import { SELECTED_WS_ID_COOKIE_KEY } from "@/constants/workspaces";
+import { getCookie } from "@/utils/get-cookie";
 import type { Project } from "@workspace/db";
 import {
   InternalServerError,
   NotFoundError,
   UnauthorizedError,
 } from "@workspace/exceptions";
-import Cookies from "js-cookie";
 
-export const getWsProjectsClient = async (
-  userId: string,
+export const getWsProjects = async (
+  workspaceId: string | undefined,
 ): Promise<{ projects: Project[] }> => {
+  const jwtToken = await getCookie("jwt_token");
+
   try {
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -17,17 +18,14 @@ export const getWsProjectsClient = async (
       throw new Error("Missing API_BASE_URL env variable");
     }
 
-    const selectedWsId = Cookies.get(`${SELECTED_WS_ID_COOKIE_KEY}_${userId}`);
-    console.log({ selectedWsId });
-
-    if (!selectedWsId) {
-      throw new UnauthorizedError("Missing token or workspace ID");
-    }
-
-    const res = await fetch(`${baseUrl}/workspaces/${selectedWsId}/project`, {
+    const res = await fetch(`${baseUrl}/workspaces/${workspaceId}/project`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Cookie: `jwt_token=${jwtToken}`,
+      },
+      next: {
+        tags: ["get-projects"],
       },
       credentials: "include",
     });

@@ -11,13 +11,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/Sidebar/Sidebar";
-import { NavProjects } from "../NavProjects/NavProjects";
 import { NavMain } from "@/components/NavMain";
+import { NavProjects } from "@/components/NavProjects";
 import { NavSecondary } from "@/components/NavSecondary";
 import { WorkspaceSelector } from "@/components/WorkspaceSelector";
-import { SELECTED_WS_ID_COOKIE_KEY } from "@/constants/workspaces";
-import { useCookieChange } from "@/hooks/use-cookie-change";
-import { getWsProjectsClient } from "@/services/projects/get-ws-projects";
 import {
   IconCamera,
   IconChartBar,
@@ -36,8 +33,7 @@ import {
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
-import { useQuery } from "@tanstack/react-query";
-import type { Workspace } from "@workspace/db";
+import type { Project, Workspace } from "@workspace/db";
 
 const data = {
   user: {
@@ -164,19 +160,15 @@ const data = {
 interface AppSidebarProps extends ComponentProps<typeof Sidebar> {
   userId: string;
   workspaces: Workspace[];
+  projects: Project[];
 }
 
-export function AppSidebar({ userId, workspaces, ...props }: AppSidebarProps) {
-  const selectedWsId = useCookieChange(
-    `${SELECTED_WS_ID_COOKIE_KEY}_${userId}`,
-    "workspace:changed",
-  );
-
-  const { data: projects } = useQuery({
-    queryKey: ["ws-projects", selectedWsId, userId],
-    queryFn: async () => await getWsProjectsClient(userId),
-  });
-
+export function AppSidebar({
+  userId,
+  workspaces,
+  projects,
+  ...props
+}: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -196,7 +188,7 @@ export function AppSidebar({ userId, workspaces, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent className="bg-background">
         <NavMain items={data.navMain} />
-        <NavProjects projects={projects?.projects ?? []} />
+        <NavProjects projects={projects ?? []} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter className="bg-background">

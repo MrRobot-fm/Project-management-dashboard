@@ -58,7 +58,7 @@ export const UserMenu = ({
           )}
           dataTestId="nav-user"
         >
-          <Avatar image={user.logo} fallback={user.name} size="lg" />
+          <Avatar image={user.logo} fallback={user.name} size="xl" />
           {variant === "default" && (
             <>
               <UserInfoBox user={user} />
@@ -74,7 +74,7 @@ export const UserMenu = ({
       >
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <Avatar image={user.logo} fallback={user.name} size="lg" />
+            <Avatar image={user.logo} fallback={user.name} size="xl" />
             <UserInfoBox user={user} />
           </div>
         </DropdownMenuLabel>

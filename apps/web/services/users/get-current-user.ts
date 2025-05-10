@@ -1,5 +1,5 @@
-import { cookies } from "next/headers";
 import type { ApiGetCurrentUserResponseModel } from "@/types/models/api-get-current-user";
+import { getCookie } from "@/utils/get-cookie";
 import {
   InternalServerError,
   NotFoundError,
@@ -9,8 +9,9 @@ import {
 export const getCurrentUser =
   async (): Promise<ApiGetCurrentUserResponseModel> => {
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-    const cookieStore = await cookies();
-    const jwtToken = cookieStore.get("jwt_token")?.value;
+
+    const jwtToken = await getCookie("jwt_token");
+
     try {
       if (!baseUrl) {
         throw new Error("Missing API_BASE_URL env variable");

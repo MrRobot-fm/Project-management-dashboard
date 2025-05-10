@@ -7,7 +7,9 @@ import {
   type ReactNode,
   useEffect,
   useState,
+  useTransition,
 } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@workspace/ui/components/Button";
 import {
   Select,
@@ -34,12 +36,22 @@ interface WorkspaceSelectorProps {
   userId: string;
 }
 
+const SkeletonWorkspace = () => (
+  <div className="flex items-center gap-3 animate-pulse">
+    <div className="size-8 rounded-lg bg-neutral-300 dark:bg-neutral-400" />
+    <div className="flex flex-col items-start">
+      <div className="h-3 w-32 bg-neutral-200 dark:bg-neutral-700 rounded" />
+      <div className="h-2 w-24 bg-neutral-200 dark:bg-neutral-700 rounded mt-1" />
+    </div>
+  </div>
+);
+
 const WorkspaceInfo = ({ workspace }: { workspace: Workspace }) => (
   <div className="flex items-center gap-3">
     <Avatar
       image={workspace.logo}
       fallback={workspace.name}
-      size="lg"
+      size="xl"
       shape="square"
     />
     <div className="flex flex-col items-start">
@@ -55,6 +67,9 @@ export const WorkspaceSelector = ({
   userId,
 }: WorkspaceSelectorProps) => {
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
+
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   useEffect(() => {
     const savedId = Cookies.get(`${SELECTED_WS_ID_COOKIE_KEY}_${userId}`);
@@ -73,7 +88,9 @@ export const WorkspaceSelector = ({
 
     Cookies.set(`${SELECTED_WS_ID_COOKIE_KEY}_${userId}`, id, { expires: 365 });
 
-    window.dispatchEvent(new Event("workspace:changed"));
+    startTransition(() => {
+      router.refresh();
+    });
   };
 
   const selectedWorkspace = workspaces.find((w) => w.id === selectedId);
@@ -94,8 +111,12 @@ export const WorkspaceSelector = ({
             className="w-full bg-stone-50 border-gray-200 dark:border-stone-700 !h-11.5 px-2 py-1 *:data-[slot=select-icon]:hidden cursor-pointer focus-visible:ring-0 focus-visible:border-gray-200 data-[placeholder]:text-stone-700 dark:data-[placeholder]:text-foreground"
           >
             <SelectValue placeholder="No workspaces. Create one!">
-              {selectedWorkspace && (
-                <WorkspaceInfo workspace={selectedWorkspace} />
+              {isPending ? (
+                <SkeletonWorkspace />
+              ) : (
+                selectedWorkspace && (
+                  <WorkspaceInfo workspace={selectedWorkspace} />
+                )
               )}
             </SelectValue>
             <ChevronsUpDownIcon className="group-data-[collapsible=icon]:hidden" />

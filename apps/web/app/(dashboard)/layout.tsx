@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import {
@@ -10,8 +10,7 @@ import { QueryProviders } from "../providers";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { getCurrentUser } from "@/services/users/get-current-user";
-import { getWorkspaces } from "@/services/workspaces/get-workspaces";
+import { getAppLayout } from "@/services/get-app-layout";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -32,8 +31,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const data = await getCurrentUser();
-  const { workspaces } = await getWorkspaces();
+  const { user, workspaces, projects } = await getAppLayout();
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -51,16 +49,17 @@ export default async function RootLayout({
               }
             >
               <AppSidebar
-                userId={data.user.id}
+                userId={user.id}
                 workspaces={workspaces}
+                projects={projects}
                 variant="floating"
               />
               <SidebarInset>
                 <SiteHeader
                   user={{
-                    name: data.user.name,
-                    logo: data.user.logo,
-                    email: data.user.email,
+                    name: user.name,
+                    logo: user.logo,
+                    email: user.email,
                   }}
                 />
                 {children}

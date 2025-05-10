@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { cookies } from "next/headers";
 import {
   InternalServerError,
@@ -7,7 +8,7 @@ import {
   UnauthorizedError,
 } from "@workspace/exceptions";
 
-export const deleteProject = async (projectId: string) => {
+export const deleteProjectAction = async (projectId: string) => {
   try {
     const cookieStore = await cookies();
     const jwtToken = cookieStore.get("jwt_token")?.value;
@@ -37,6 +38,8 @@ export const deleteProject = async (projectId: string) => {
 
       throw new Error("Fetch failed with status " + res.status);
     }
+
+    revalidateTag("get-projects");
 
     return res.json();
   } catch (error) {

@@ -1,15 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useOptimistic, useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { Button } from "@workspace/ui/components/Button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@workspace/ui/components/DropdownMenu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -19,37 +13,77 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/Sidebar";
-import { Avatar } from "../Avatar";
+import { CustomDropdown } from "../CustomDropdown";
+import { NavProjectsItems } from "./NavProjectsItems";
+import { ShowProjectsButton } from "./ShowProjectsButton";
+import { Avatar } from "@/components/Avatar";
+import { LinkLoadingIndicator } from "@/components/LinkLoadingIndicator";
 import { URL_PROJECTS } from "@/constants/urls";
-import { deleteProject } from "@/services/projects/delete-project";
+import { deleteProjectAction } from "@/services/projects/delete-project";
 import {
   IconDots,
   IconFolder,
   IconShare3,
   IconTrash,
 } from "@tabler/icons-react";
-import { useQueryClient } from "@tanstack/react-query";
 import type { Project } from "@workspace/db";
-import { ChevronDown, ChevronUp, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 
 export const NavProjects = ({ projects }: { projects: Project[] }) => {
-  const queryClient = useQueryClient();
+  const { id } = useParams();
   const { isMobile } = useSidebar();
+
+  const deleteProject = (projects: Project[], projectId: string) => {
+    return projects.filter((project) => project.id !== projectId);
+  };
+
+  const [optimisticProjects, removeOptimisticProjects] = useOptimistic<
+    Project[],
+    string
+  >(projects, deleteProject);
+
   const [isExpanded, setIsExpanded] = useState(false);
 
   const projectsData = useMemo(() => {
-    if (isExpanded) return projects;
+    if (isExpanded) return optimisticProjects;
 
-    return projects.slice(0, 3);
-  }, [isExpanded, projects]);
+    return optimisticProjects.slice(0, 3);
+  }, [isExpanded, optimisticProjects]);
 
-  const handleDeleteProject = async (projectId: string) => {
-    await deleteProject(projectId);
+  const handleDeleteProject = useCallback(
+    async (projectId: string) => {
+      removeOptimisticProjects(projectId);
 
-    await queryClient.invalidateQueries({
-      queryKey: ["ws-projects"],
-    });
-  };
+      await deleteProjectAction(projectId);
+    },
+    [removeOptimisticProjects],
+  );
+
+  const getDropdownItems = useCallback(
+    (projectId: string) => [
+      {
+        icon: <IconFolder />,
+        label: "Open",
+        action: () => {},
+        href: `${URL_PROJECTS}/${projectId}`,
+        isLink: true,
+      },
+      {
+        icon: <IconShare3 />,
+        label: "Share",
+        action: () => {},
+        isLink: false,
+      },
+      {
+        icon: <IconTrash />,
+        label: "Delete",
+        action: () => handleDeleteProject(projectId),
+        isDestructive: true,
+        isLink: false,
+      },
+    ],
+    [handleDeleteProject],
+  );
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -63,81 +97,57 @@ export const NavProjects = ({ projects }: { projects: Project[] }) => {
         </Button>
       </SidebarGroupLabel>
       <SidebarMenu>
-        {projects.length > 0 ? (
-          projectsData.map((project) => (
-            <SidebarMenuItem key={project.id}>
-              <SidebarMenuButton asChild>
-                <a href={`${URL_PROJECTS}/${project.id}`}>
-                  <Avatar
-                    shape="square"
-                    image={project.logo}
-                    fallback={project.name}
-                    className="size-5"
-                  />
-                  <span className="text-sm">{project.name}</span>
-                </a>
-              </SidebarMenuButton>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuAction
-                    showOnHover
-                    className="data-[state=open]:bg-accent rounded-sm"
-                  >
-                    <IconDots className="!size-3" />
-                    <span className="sr-only">More</span>
-                  </SidebarMenuAction>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className="w-24 rounded-lg"
-                  side={isMobile ? "bottom" : "right"}
+        {projectsData.length > 0 ? (
+          projectsData.map((project) => {
+            const isActive = project.id === id;
+            const dropdownData = getDropdownItems(project.id);
+
+            return (
+              <SidebarMenuItem key={project.id}>
+                <SidebarMenuButton asChild isActive={isActive}>
+                  <Link href={`${URL_PROJECTS}/${project.id}`}>
+                    <Avatar
+                      size="md"
+                      shape="square"
+                      image={project.logo}
+                      fallback={project.name}
+                    />
+                    <span className="text-sm">{project.name}</span>
+                    <LinkLoadingIndicator />
+                  </Link>
+                </SidebarMenuButton>
+                <CustomDropdown
+                  data={dropdownData}
+                  side={isMobile ? "bottom" : "bottom"}
                   align={isMobile ? "end" : "start"}
-                >
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`${URL_PROJECTS}/${project.id}`}
-                      className="cursor-pointer"
+                  trigger={
+                    <SidebarMenuAction
+                      showOnHover
+                      className="data-[state=open]:bg-accent rounded-sm"
                     >
-                      <IconFolder />
-                      <span>Open</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <IconShare3 />
-                    <span>Share</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild variant="destructive">
-                    <Button
-                      variant="transparent"
-                      className="w-full justify-start font-normal cursor-pointer"
-                      onClick={() => handleDeleteProject(project.id)}
-                    >
-                      <IconTrash />
-                      <span>Delete</span>
-                    </Button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          ))
+                      <IconDots className="!size-3" />
+                      <span className="sr-only">More</span>
+                    </SidebarMenuAction>
+                  }
+                  items={(item) => (
+                    <NavProjectsItems key={item.label} item={item} />
+                  )}
+                  className="rounded-lg"
+                />
+              </SidebarMenuItem>
+            );
+          })
         ) : (
           <SidebarMenuItem className="text-xs p-2">
             No projects. Create one, now!
           </SidebarMenuItem>
         )}
-        {projects.length > 3 && (
+        {optimisticProjects.length > 3 && (
           <SidebarMenuItem className="mt-2">
-            <SidebarMenuButton
-              className="text-sidebar-foreground/70 bg-stone-100 dark:bg-transparent justify-center cursor-pointer dark:border dark:border-muted-foreground"
-              onClick={() => setIsExpanded((prev) => !prev)}
-            >
-              <span>{isExpanded ? "Show less" : "Show all"}</span>
-              {isExpanded ? (
-                <ChevronUp className="text-sidebar-foreground/70" />
-              ) : (
-                <ChevronDown className="text-sidebar-foreground/70" />
-              )}
-            </SidebarMenuButton>
+            <ShowProjectsButton
+              isExpanded={isExpanded}
+              setIsExpanded={setIsExpanded}
+            />
           </SidebarMenuItem>
         )}
       </SidebarMenu>

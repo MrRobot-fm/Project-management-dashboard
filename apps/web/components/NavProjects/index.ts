@@ -1,1 +1,1 @@
-export { NavDocuments } from "./NavProjects";
+export { NavProjects } from "./NavProjects";
