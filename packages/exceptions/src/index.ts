@@ -6,3 +6,4 @@ export * from "./internal";
 export * from "./not-found";
 export * from "./unauthorized";
 export * from "./validation";
+export * from "./api-error";

@@ -8,24 +8,25 @@ import { getCookie } from "@/utils/get-cookie";
 import type { Project, User, Workspace } from "@workspace/db";
 
 type AppLayoutData = {
-  user: Omit<User, "createdAt" | "updatedAt">;
+  user: Omit<User, "createdAt" | "updatedAt"> | undefined;
   workspaces: Workspace[];
   projects: Project[];
   currentWorkspaceId: string | undefined;
 };
 
 export const getAppLayout = async (): Promise<AppLayoutData> => {
-  const { user } = await getCurrentUser();
-  const { workspaces } = await getWorkspaces();
+  const { data: userData } = await getCurrentUser();
+  const { data: workspacesData } = await getWorkspaces();
+  const selectedWsCookie = await getCookie(`${SELECTED_WS_ID_COOKIE_KEY}_${userData?.user.id}`);
 
-  const selectedWsCookie = await getCookie(`${SELECTED_WS_ID_COOKIE_KEY}_${user.id}`);
-
-  const { projects } = await getWsProjects(selectedWsCookie ?? workspaces[0]?.id);
+  const { data: projectsData } = await getWsProjects(
+    selectedWsCookie ?? workspacesData?.workspaces[0]?.id,
+  );
 
   return {
-    user,
-    workspaces,
-    projects,
+    user: userData && userData?.user,
+    workspaces: workspacesData?.workspaces ?? [],
+    projects: projectsData?.projects ?? [],
     currentWorkspaceId: selectedWsCookie,
   };
 };

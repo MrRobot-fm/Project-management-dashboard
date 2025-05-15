@@ -2,6 +2,7 @@ import { useActionState, useOptimistic } from "react";
 import { createProjectAction } from "@/services/projects/create-project";
 import { deleteProjectAction } from "@/services/projects/delete-project";
 import { updateProjectAction } from "@/services/projects/update-prject";
+import type { FetchResult } from "@/utils/fetch-instance";
 import type { Project } from "@workspace/db";
 
 interface OptimisticUpdate {
@@ -9,14 +10,13 @@ interface OptimisticUpdate {
   project: Project;
 }
 
-interface CreateActionState {
-  success: boolean;
-}
+type CreateActionState = Promise<FetchResult<Project>>;
 
 export interface CreateActionPayload {
   formData: FormData;
   currentWsId?: string;
   projectLogo?: string | null;
+  projectId?: string;
 }
 
 export const useUpdateProject = ({ projects }: { projects: Project[] }) => {
@@ -24,19 +24,15 @@ export const useUpdateProject = ({ projects }: { projects: Project[] }) => {
     CreateActionState,
     CreateActionPayload
   >(
-    async (_state, { formData, currentWsId, projectLogo }) => {
-      const projectId = formData.get("projectId") as string;
-
+    async (_state, { formData, currentWsId, projectLogo, projectId }) => {
       if (projectId) {
-        return await handleUpdateProject({ formData, projectLogo });
+        return await handleUpdateProject({ formData, projectLogo, projectId });
       } else {
         return await handleCreateProject({ formData, workspaceId: currentWsId });
       }
     },
     { success: false },
   );
-
-  console.log({ createProjectState });
 
   const applyOptimisticUpdate = (
     currentProjects: Project[],
@@ -86,15 +82,17 @@ export const useUpdateProject = ({ projects }: { projects: Project[] }) => {
 
     updateOptimisticProjects({ actionType: "add", project: newProject });
 
-    return await createProjectAction(formData, workspaceId);
+    return await createProjectAction({ formData, workspaceId });
   };
 
   const handleUpdateProject = async ({
     formData,
     projectLogo,
+    projectId,
   }: {
     formData: FormData;
     projectLogo: string | undefined | null;
+    projectId: string | undefined;
   }) => {
     const logo = formData.get("logo") as File;
 
@@ -107,7 +105,7 @@ export const useUpdateProject = ({ projects }: { projects: Project[] }) => {
 
     updateOptimisticProjects({ actionType: "update", project: updatedProject });
 
-    return await updateProjectAction(formData);
+    return await updateProjectAction({ formData, projectId });
   };
 
   return {

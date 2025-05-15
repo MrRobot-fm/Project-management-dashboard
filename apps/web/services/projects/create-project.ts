@@ -1,66 +1,50 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { cookies } from "next/headers";
-import { NotFoundError, UnauthorizedError } from "@workspace/exceptions";
+import { fetchInstance } from "@/utils/fetch-instance";
+import { getCookie } from "@/utils/get-cookie";
+import { validateFormData } from "@/utils/validate-form-data";
+import type { Project } from "@workspace/db";
 import { CreateProjectsSchema } from "@workspace/schemas";
 
-export const createProjectAction = async (formData: FormData, workspaceId: string | undefined) => {
-  try {
-    const cookieStore = await cookies();
-    const jwtToken = cookieStore.get("jwt_token")?.value;
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const createProjectAction = async ({
+  formData,
+  workspaceId,
+}: {
+  formData: FormData;
+  workspaceId: string | undefined;
+}) => {
+  const jwtToken = await getCookie("jwt_token");
 
-    if (!baseUrl) {
-      throw new Error("Missing API_BASE_URL env variable");
-    }
+  const logo = formData.get("logo");
+  const description = formData.get("description");
 
-    const logo = formData.get("logo");
-    const description = formData.get("description");
+  if (!description) {
+    formData.delete("description");
+  }
 
-    console.log({ actionDes: description });
+  if (!logo || (logo instanceof File && logo.size === 0)) {
+    formData.delete("logo");
+  }
 
-    if (!description) {
-      formData.delete("description");
-    }
+  const validation = validateFormData({ schema: CreateProjectsSchema, formData });
 
-    const validationResult = CreateProjectsSchema.safeParse(Object.fromEntries(formData.entries()));
+  if (!validation.success) {
+    return { success: false, errors: validation.errors };
+  }
 
-    if (!validationResult.success) {
-      return { success: false, errors: validationResult.error.flatten().fieldErrors };
-    }
-
-    if (!logo || (logo instanceof File && logo.size === 0)) {
-      formData.delete("logo");
-    }
-
-    const res = await fetch(`${baseUrl}/workspaces/${workspaceId}/project`, {
+  const response = await fetchInstance<Project>({
+    path: `workspaces/${workspaceId}/project`,
+    options: {
       method: "POST",
+      body: formData,
       headers: {
         Cookie: `jwt_token=${jwtToken}`,
       },
-      body: formData,
-    });
+    },
+  });
 
-    if (!res.ok) {
-      if (res.status === 404) {
-        const errorData = await res.json();
-        throw new NotFoundError(errorData.message);
-      }
+  revalidateTag("get-projects");
 
-      if (res.status === 401) {
-        throw new UnauthorizedError("Unauthorized");
-      }
-
-      throw new Error("Fetch failed with status " + res.status);
-    }
-
-    revalidateTag("get-projects");
-
-    console.log({ response: res.json });
-
-    return res.json();
-  } catch (error) {
-    console.log({ error });
-  }
+  return response;
 };

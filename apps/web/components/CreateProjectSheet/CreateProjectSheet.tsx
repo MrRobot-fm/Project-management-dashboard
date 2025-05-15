@@ -40,10 +40,9 @@ export const CreateProjectSheet = ({
   const isEditMode = mode === "edit";
   const isCreateMode = mode === "create";
 
-  const { id, name, description, logo } = project || {};
   const [formFields, setFormFields] = useState({
-    name: isEditMode ? name : "",
-    description: isEditMode ? description : "",
+    name: isEditMode ? project?.name : "",
+    description: isEditMode ? project?.description : "",
   });
 
   const resetForm = () => {
@@ -58,9 +57,9 @@ export const CreateProjectSheet = ({
       resetForm();
     }
     if (isOpen && isEditMode) {
-      setFormFields({ name, description });
+      setFormFields({ name: project?.name, description: project?.description });
     }
-  }, [description, isEditMode, isOpen, name]);
+  }, [isEditMode, isOpen, project?.description, project?.name]);
 
   const title = isCreateMode ? "Create Project" : "Edit Project";
   const descriptions = isCreateMode
@@ -80,12 +79,12 @@ export const CreateProjectSheet = ({
             action={(formData: FormData) => {
               action({
                 formData,
-                projectLogo: logo,
+                projectLogo: project?.logo,
                 currentWsId: workspaceId,
+                projectId: project?.id,
               });
             }}
           >
-            {!isCreateMode && <input type="hidden" name="projectId" value={id} />}
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-4">
                 <Label htmlFor="name" className="text-right">
@@ -120,14 +119,14 @@ export const CreateProjectSheet = ({
                 <Label htmlFor="logo" className="text-right">
                   Logo
                 </Label>
-                <Dropzone image={logo ? logo : null} disabled={isLoading} />
+                <Dropzone image={project?.logo ? project.logo : null} disabled={isLoading} />
               </div>
             </div>
             <SheetFooter className="px-0">
               <Button
                 type="submit"
                 size="lg"
-                disabled={(formFields.name ?? "").length < 3 || isLoading}
+                // disabled={(formFields.name ?? "").length < 3 || isLoading}
                 className="cursor-pointer"
               >
                 {isCreateMode ? "Create project" : " Save changes"}

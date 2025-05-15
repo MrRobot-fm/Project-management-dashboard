@@ -1,56 +1,20 @@
 import type { ApiGetCurrentUserResponseModel } from "@/types/models/api-get-current-user";
+import { fetchInstance } from "@/utils/fetch-instance";
 import { getCookie } from "@/utils/get-cookie";
-import {
-  InternalServerError,
-  NotFoundError,
-  UnauthorizedError,
-} from "@workspace/exceptions";
 
-export const getCurrentUser =
-  async (): Promise<ApiGetCurrentUserResponseModel> => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const getCurrentUser = async () => {
+  const jwtToken = await getCookie("jwt_token");
 
-    const jwtToken = await getCookie("jwt_token");
-
-    try {
-      if (!baseUrl) {
-        throw new Error("Missing API_BASE_URL env variable");
-      }
-
-      const headers: HeadersInit = {
+  const response = await fetchInstance<ApiGetCurrentUserResponseModel>({
+    path: "users/me",
+    options: {
+      method: "GET",
+      headers: {
         "Content-Type": "application/json",
-      };
+        Cookie: `jwt_token=${jwtToken}`,
+      },
+    },
+  });
 
-      if (jwtToken) {
-        headers["Cookie"] = `jwt_token=${jwtToken}`;
-      }
-
-      const res = await fetch(`${baseUrl}/users/me`, {
-        method: "GET",
-        headers,
-        credentials: "include",
-      });
-
-      if (!res.ok) {
-        if (res.status === 404) {
-          const errorData = await res.json();
-
-          throw new NotFoundError(errorData.message);
-        }
-
-        if (res.status === 401) {
-          throw new UnauthorizedError("Unauthorized");
-        }
-      }
-
-      return res.json();
-    } catch (error) {
-      if (error instanceof NotFoundError) {
-        throw error;
-      }
-      if (error instanceof Error) {
-        throw new InternalServerError(error.message, error);
-      }
-      throw error;
-    }
-  };
+  return response;
+};
