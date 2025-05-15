@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
-export const useCookieChange = (
-  cookieKey: string,
-  eventName: string = "cookie:changed",
-) => {
+export const useCookieChange = (cookieKey: string, eventName: string = "cookie:changed") => {
   const [cookieValue, setCookieValue] = useState(() => Cookies.get(cookieKey));
 
   useEffect(() => {

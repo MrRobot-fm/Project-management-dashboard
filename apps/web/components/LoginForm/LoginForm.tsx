@@ -48,8 +48,6 @@ export const LoginForm = ({ className, ...props }: LoginFormProps) => {
     },
   });
 
-  console.log({ error });
-
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -65,9 +63,7 @@ export const LoginForm = ({ className, ...props }: LoginFormProps) => {
             <div className="flex flex-col gap-5">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
-                <p className="text-muted-foreground text-balance">
-                  Login to your Fede Inc account
-                </p>
+                <p className="text-muted-foreground text-balance">Login to your Fede Inc account</p>
               </div>
               <div className="flex flex-col gap-2">
                 <form.Field name="email">
@@ -120,15 +116,9 @@ export const LoginForm = ({ className, ...props }: LoginFormProps) => {
                   )}
                 </form.Field>
                 <div className="flex flex-col gap-1">
-                  <form.Subscribe
-                    selector={(state) => [state.canSubmit, state.isSubmitting]}
-                  >
+                  <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                     {([canSubmit, isSubmitting]) => (
-                      <Button
-                        type="submit"
-                        disabled={!canSubmit}
-                        className="w-full"
-                      >
+                      <Button type="submit" disabled={!canSubmit} className="w-full">
                         {isSubmitting ? "Logging in..." : "Login"}
                       </Button>
                     )}
@@ -138,10 +128,7 @@ export const LoginForm = ({ className, ...props }: LoginFormProps) => {
                   </div>
                   <div className="text-center text-sm">
                     Don&apos;t have an account?{" "}
-                    <Link
-                      href="/signup"
-                      className="underline underline-offset-4"
-                    >
+                    <Link href="/signup" className="underline underline-offset-4">
                       Signup
                     </Link>
                   </div>

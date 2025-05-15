@@ -11,23 +11,21 @@ type AppLayoutData = {
   user: Omit<User, "createdAt" | "updatedAt">;
   workspaces: Workspace[];
   projects: Project[];
+  currentWorkspaceId: string | undefined;
 };
 
 export const getAppLayout = async (): Promise<AppLayoutData> => {
   const { user } = await getCurrentUser();
   const { workspaces } = await getWorkspaces();
 
-  const selectedWsCookie = await getCookie(
-    `${SELECTED_WS_ID_COOKIE_KEY}_${user.id}`,
-  );
+  const selectedWsCookie = await getCookie(`${SELECTED_WS_ID_COOKIE_KEY}_${user.id}`);
 
-  const { projects } = await getWsProjects(selectedWsCookie);
-
-  console.log({ projects });
+  const { projects } = await getWsProjects(selectedWsCookie ?? workspaces[0]?.id);
 
   return {
     user,
     workspaces,
     projects,
+    currentWorkspaceId: selectedWsCookie,
   };
 };

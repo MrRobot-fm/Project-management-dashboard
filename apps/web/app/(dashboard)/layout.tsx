@@ -1,10 +1,7 @@
 import { type CSSProperties, type ReactNode } from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@workspace/ui/components/Sidebar";
+import { SidebarInset, SidebarProvider } from "@workspace/ui/components/Sidebar";
 import "@workspace/ui/globals.css";
 import { QueryProviders } from "../providers";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -31,13 +28,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const { user, workspaces, projects } = await getAppLayout();
+  const { user, workspaces, projects, currentWorkspaceId } = await getAppLayout();
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}
-      >
+      <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
         <QueryProviders>
           <ThemeProvider>
             <SidebarProvider
@@ -52,6 +47,7 @@ export default async function RootLayout({
                 userId={user.id}
                 workspaces={workspaces}
                 projects={projects}
+                currentWorkspaceId={currentWorkspaceId}
                 variant="floating"
               />
               <SidebarInset>

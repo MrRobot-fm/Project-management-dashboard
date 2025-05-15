@@ -75,6 +75,7 @@ export const getProjects = async (_: Request, res: Response) => {
 
   res.status(200).json({ projects: formattedProjects });
 };
+
 export const getWorkspaceProjects = async (req: Request, res: Response) => {
   const { workspaceId } = req.params;
 
@@ -94,7 +95,11 @@ export const getWorkspaceProjects = async (req: Request, res: Response) => {
           },
         },
       },
+
       tasks: true,
+    },
+    orderBy: {
+      createdAt: "asc",
     },
   });
 
@@ -174,11 +179,13 @@ export const updateProject = async (req: Request, res: Response) => {
     },
     data: {
       ...body,
-      logo: publicUrl,
+      ...(file && {
+        logo: publicUrl,
+      }),
     },
   });
 
-  res.status(200).json({ project });
+  res.status(200).json({ project, success: true });
 };
 
 export const deleteProject = async (req: Request, res: Response) => {

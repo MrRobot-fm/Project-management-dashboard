@@ -70,7 +70,7 @@ model WorkspaceMember {
 model Project {
   id          String   @id @default(uuid())
   name        String
-  description String
+  description String?
   logo        String?
   workspaceId String   @map("workspace_id")
   createdAt   DateTime @default(now()) @map("created_at")

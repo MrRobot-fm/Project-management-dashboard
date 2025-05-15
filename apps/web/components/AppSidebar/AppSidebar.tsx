@@ -161,12 +161,14 @@ interface AppSidebarProps extends ComponentProps<typeof Sidebar> {
   userId: string;
   workspaces: Workspace[];
   projects: Project[];
+  currentWorkspaceId: string | undefined;
 }
 
 export function AppSidebar({
   userId,
   workspaces,
   projects,
+  currentWorkspaceId,
   ...props
 }: AppSidebarProps) {
   return (
@@ -174,10 +176,7 @@ export function AppSidebar({
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
+            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
               <Link href="/">
                 <IconInnerShadowTop className="!size-5" />
                 <span className="text-base font-semibold">Fede Inc.</span>
@@ -188,7 +187,7 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent className="bg-background">
         <NavMain items={data.navMain} />
-        <NavProjects projects={projects ?? []} />
+        <NavProjects projects={projects ?? []} currentWorkspaceId={currentWorkspaceId} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter className="bg-background">
