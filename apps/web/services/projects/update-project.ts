@@ -9,15 +9,15 @@ import { getCookie } from "@/utils/get-cookie";
 import { validateFormData } from "@/utils/validate-form-data";
 import { validationErrorData } from "@/utils/validation-error-data";
 import type { Project } from "@workspace/db";
-import { CreateProjectsSchema, type CreateProjectType } from "@workspace/schemas";
+import { UpdateProjectSchema, type UpdateProjectType } from "@workspace/schemas";
 
-export const createProjectAction = async ({
+export const updateProjectAction = async ({
   formData,
-  workspaceId,
+  projectId,
 }: {
   formData: FormData;
-  workspaceId: string | undefined;
-}): Promise<ActionResponse<Project, "project", CreateProjectType>> => {
+  projectId: string | undefined;
+}): Promise<ActionResponse<Project, "project", UpdateProjectType>> => {
   try {
     const jwtToken = await getCookie("jwt_token");
 
@@ -32,18 +32,18 @@ export const createProjectAction = async ({
       formData.delete("logo");
     }
 
-    const validation = validateFormData({ schema: CreateProjectsSchema, formData });
+    const validation = validateFormData({ schema: UpdateProjectSchema, formData });
 
     if (!validation.success) {
-      return validationErrorData<CreateProjectType>(validation.errors);
+      return validationErrorData<UpdateProjectType>(validation.errors);
     }
 
-    if (!workspaceId) throw new Error("Workspace ID is required");
+    if (!projectId) throw new Error("Project ID is required");
 
     const response = await fetchInstance<ApiCreateProjectResponseModel>({
-      path: `workspaces/${workspaceId}/project`,
+      path: `projects/${projectId}`,
       options: {
-        method: "POST",
+        method: "PUT",
         body: formData,
         headers: {
           Cookie: `jwt_token=${jwtToken}`,

@@ -2,7 +2,9 @@ import type { ApiGetCurrentUserResponseModel } from "@/types/models/api-get-curr
 import { fetchInstance } from "@/utils/fetch-instance";
 import { getCookie } from "@/utils/get-cookie";
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (): Promise<{
+  user: ApiGetCurrentUserResponseModel["user"] | undefined;
+}> => {
   const jwtToken = await getCookie("jwt_token");
 
   const response = await fetchInstance<ApiGetCurrentUserResponseModel>({
@@ -16,5 +18,5 @@ export const getCurrentUser = async () => {
     },
   });
 
-  return response;
+  return { user: response.data?.user };
 };

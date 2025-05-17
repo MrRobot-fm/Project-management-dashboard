@@ -15,18 +15,16 @@ type AppLayoutData = {
 };
 
 export const getAppLayout = async (): Promise<AppLayoutData> => {
-  const { data: userData } = await getCurrentUser();
-  const { data: workspacesData } = await getWorkspaces();
-  const selectedWsCookie = await getCookie(`${SELECTED_WS_ID_COOKIE_KEY}_${userData?.user.id}`);
+  const { user } = await getCurrentUser();
+  const { workspaces } = await getWorkspaces();
+  const selectedWsCookie = await getCookie(`${SELECTED_WS_ID_COOKIE_KEY}_${user?.id}`);
 
-  const { data: projectsData } = await getWsProjects(
-    selectedWsCookie ?? workspacesData?.workspaces[0]?.id,
-  );
+  const { projects } = await getWsProjects(selectedWsCookie ?? workspaces?.[0]?.id);
 
   return {
-    user: userData && userData?.user,
-    workspaces: workspacesData?.workspaces ?? [],
-    projects: projectsData?.projects ?? [],
+    user: user,
+    workspaces: workspaces ?? [],
+    projects: projects ?? [],
     currentWorkspaceId: selectedWsCookie,
   };
 };

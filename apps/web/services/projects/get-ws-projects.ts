@@ -9,14 +9,14 @@ export const getWsProjects = async (workspaceId: string | undefined) => {
     path: `workspaces/${workspaceId}/project`,
     options: {
       method: "GET",
-      next: {
-        tags: ["get-projects"],
-      },
       headers: {
         Cookie: `jwt_token=${jwtToken}`,
+      },
+      next: {
+        tags: ["get-projects"],
       },
     },
   });
 
-  return response;
+  return { projects: response.data?.projects };
 };

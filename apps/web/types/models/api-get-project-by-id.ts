@@ -49,5 +49,5 @@ interface Project {
 }
 
 export interface ApiGetProjectByIdResponseModel {
-  project: Project;
+  project: Project | undefined;
 }

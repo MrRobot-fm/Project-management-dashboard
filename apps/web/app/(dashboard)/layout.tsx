@@ -44,7 +44,7 @@ export default async function RootLayout({
               }
             >
               <AppSidebar
-                userId={user.id}
+                userId={user?.id}
                 workspaces={workspaces}
                 projects={projects}
                 currentWorkspaceId={currentWorkspaceId}
@@ -53,9 +53,9 @@ export default async function RootLayout({
               <SidebarInset>
                 <SiteHeader
                   user={{
-                    name: user.name,
-                    logo: user.logo,
-                    email: user.email,
+                    name: user?.name ?? "",
+                    logo: user?.logo ?? "",
+                    email: user?.email ?? "",
                   }}
                 />
                 {children}

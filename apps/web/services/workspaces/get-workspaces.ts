@@ -16,5 +16,5 @@ export const getWorkspaces = async () => {
     },
   });
 
-  return response;
+  return { workspaces: response.data?.workspaces };
 };

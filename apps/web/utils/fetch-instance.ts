@@ -1,22 +1,7 @@
-import { errorData } from "./error-data";
-import { type ErrorCode, type StatusCode } from "@workspace/exceptions";
-
-export interface ErrorResponse {
-  message: string;
-  status: StatusCode;
-  code: ErrorCode;
-  errors: Record<string, unknown>;
-}
+import { ApiError } from "@workspace/exceptions";
 
 export interface FetchResult<T> {
-  success: boolean;
   data?: T;
-  error?: {
-    message: string;
-    status: StatusCode;
-    code: ErrorCode;
-    errors: Record<string, unknown>;
-  };
 }
 
 export const fetchInstance = async <T>({
@@ -40,12 +25,14 @@ export const fetchInstance = async <T>({
   });
 
   if (!response.ok) {
-    const errorRes: ErrorResponse = await response.json();
+    const errorRes: ApiError = await response.json();
 
-    return errorData(errorRes);
+    console.log({ errorRes });
+
+    throw new ApiError(errorRes.message, errorRes.status, errorRes.code, errorRes.errors);
   }
 
   const data = await response.json();
 
-  return { success: true, data: data };
+  return { data };
 };

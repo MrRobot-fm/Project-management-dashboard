@@ -76,7 +76,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
   ];
 
   useEffect(() => {
-    if (createProjectState.success) {
+    if (createProjectState?.success) {
       setIsProjectSheetOpen(false);
     }
   }, [createProjectState]);

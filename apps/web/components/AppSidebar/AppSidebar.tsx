@@ -158,7 +158,7 @@ const data = {
 };
 
 interface AppSidebarProps extends ComponentProps<typeof Sidebar> {
-  userId: string;
+  userId: string | undefined;
   workspaces: Workspace[];
   projects: Project[];
   currentWorkspaceId: string | undefined;

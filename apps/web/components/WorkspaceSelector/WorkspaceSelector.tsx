@@ -33,7 +33,7 @@ type SidebarWrapper = {
 interface WorkspaceSelectorProps {
   workspaces: Workspace[];
   sidebarMenuButtonWrapper?: SidebarWrapper;
-  userId: string;
+  userId: string | undefined;
 }
 
 const SkeletonWorkspace = () => (
@@ -48,12 +48,7 @@ const SkeletonWorkspace = () => (
 
 const WorkspaceInfo = ({ workspace }: { workspace: Workspace }) => (
   <div className="flex items-center gap-3">
-    <Avatar
-      image={workspace.logo}
-      fallback={workspace.name}
-      size="xl"
-      shape="square"
-    />
+    <Avatar image={workspace.logo} fallback={workspace.name} size="xl" shape="square" />
     <div className="flex flex-col items-start">
       <span className="font-medium text-foreground">{workspace.name}</span>
       <span className="text-xs text-muted-foreground">Workspace</span>
@@ -113,9 +108,7 @@ export const WorkspaceSelector = ({
               {isPending ? (
                 <SkeletonWorkspace />
               ) : (
-                selectedWorkspace && (
-                  <WorkspaceInfo workspace={selectedWorkspace} />
-                )
+                selectedWorkspace && <WorkspaceInfo workspace={selectedWorkspace} />
               )}
             </SelectValue>
             <ChevronsUpDownIcon className="group-data-[collapsible=icon]:hidden" />
@@ -129,9 +122,7 @@ export const WorkspaceSelector = ({
               </SelectItem>
             </Fragment>
           ))}
-          {workspaces.length > 0 && (
-            <div className="my-1 h-px bg-gray-200 dark:bg-stone-700" />
-          )}
+          {workspaces.length > 0 && <div className="my-1 h-px bg-gray-200 dark:bg-stone-700" />}
           <Button
             variant="ghost"
             className="flex gap-2 items-center cursor-pointer w-full justify-start"

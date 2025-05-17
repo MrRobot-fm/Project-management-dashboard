@@ -12,7 +12,7 @@ export const validateFormData = ({
   if (!parsed.success) {
     return {
       success: false,
-      errors: parsed.error.flatten().fieldErrors,
+      errors: parsed.error.flatten(),
     };
   }
 

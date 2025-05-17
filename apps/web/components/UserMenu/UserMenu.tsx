@@ -12,16 +12,12 @@ import {
 import { cn } from "@workspace/ui/lib/utils";
 import { Avatar } from "@/components/Avatar";
 import { logoutAction } from "@/services/auth/logout";
-import {
-  IconDotsVertical,
-  IconLogout,
-  type TablerIcon,
-} from "@tabler/icons-react";
+import { IconDotsVertical, IconLogout, type TablerIcon } from "@tabler/icons-react";
 import type { User } from "@workspace/db";
 import type { LucideIcon } from "lucide-react";
 
 interface UserMenuProps {
-  user: Pick<User, "name" | "email" | "logo">;
+  user: Pick<User, "name" | "email" | "logo"> | undefined;
   menuItems: {
     title: string;
     href?: string;
@@ -31,34 +27,25 @@ interface UserMenuProps {
   variant?: "default" | "avatar";
 }
 
-const UserInfoBox = ({ user }: { user: { name: string; email: string } }) => {
+const UserInfoBox = ({ user }: { user: { name: string; email: string } | undefined }) => {
   return (
     <div className="grid flex-1 text-left text-sm leading-tight">
-      <span className="truncate font-medium">{user.name}</span>
-      <span className="text-muted-foreground truncate text-xs">
-        {user.email}
-      </span>
+      <span className="truncate font-medium">{user?.name}</span>
+      <span className="text-muted-foreground truncate text-xs">{user?.email}</span>
     </div>
   );
 };
 
-export const UserMenu = ({
-  user,
-  menuItems,
-  variant = "default",
-}: UserMenuProps) => {
+export const UserMenu = ({ user, menuItems, variant = "default" }: UserMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="link"
-          className={cn(
-            "focus-visible:ring-0 h-fit cursor-pointer",
-            variant === "avatar" && "p-0",
-          )}
+          className={cn("focus-visible:ring-0 h-fit cursor-pointer", variant === "avatar" && "p-0")}
           dataTestId="nav-user"
         >
-          <Avatar image={user.logo} fallback={user.name} size="xl" />
+          <Avatar image={user?.logo} fallback={user?.name} size="xl" />
           {variant === "default" && (
             <>
               <UserInfoBox user={user} />
@@ -74,7 +61,7 @@ export const UserMenu = ({
       >
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <Avatar image={user.logo} fallback={user.name} size="xl" />
+            <Avatar image={user?.logo} fallback={user?.name} size="xl" />
             <UserInfoBox user={user} />
           </div>
         </DropdownMenuLabel>
@@ -83,11 +70,7 @@ export const UserMenu = ({
           {menuItems.map((item) => {
             if (item.href) {
               return (
-                <DropdownMenuItem
-                  asChild
-                  key={item.title}
-                  className="cursor-pointer"
-                >
+                <DropdownMenuItem asChild key={item.title} className="cursor-pointer">
                   <Link href={item.href ?? ""}>
                     <item.icon className="mr-2 size-4" />
                     {item.title}

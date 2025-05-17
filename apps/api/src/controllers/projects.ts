@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { uploadFile } from "@/utils/storage";
 import { prisma } from "@workspace/db";
-import { BadRequestError, UnauthorizedError } from "@workspace/exceptions";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { randomUUID } from "crypto";
 
 export const createProject = async (req: Request, res: Response) => {
@@ -140,6 +140,8 @@ export const getProjectById = async (req: Request, res: Response) => {
       tasks: true,
     },
   });
+
+  if (!project) throw new NotFoundError("No projects found");
 
   const formattedProject = {
     ...project,

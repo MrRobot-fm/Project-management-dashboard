@@ -10,16 +10,16 @@ interface SingleProjectProps {
 export default async function SingleProject({ params }: SingleProjectProps) {
   const { id } = await params;
 
-  const { data } = await getProjectById(id);
+  const { project } = await getProjectById(id);
 
-  if (!data?.project) return;
+  if (!project) return;
 
   return (
     <div className="p-6">
-      <h1>{data.project.name}</h1>
-      <p>{data.project.description}</p>
+      <h1>{project.name}</h1>
+      <p>{project.description}</p>
       <p>Project ID: {id}</p>
-      <Avatar image={data.project.logo} fallback={data.project.name} className="size-20" />
+      <Avatar image={project.logo} fallback={project.name} className="size-20" />
     </div>
   );
 }

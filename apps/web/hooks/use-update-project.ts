@@ -1,8 +1,7 @@
 import { useActionState, useOptimistic } from "react";
 import { createProjectAction } from "@/services/projects/create-project";
 import { deleteProjectAction } from "@/services/projects/delete-project";
-import { updateProjectAction } from "@/services/projects/update-prject";
-import type { FetchResult } from "@/utils/fetch-instance";
+import { updateProjectAction } from "@/services/projects/update-project";
 import type { Project } from "@workspace/db";
 
 interface OptimisticUpdate {
@@ -10,7 +9,7 @@ interface OptimisticUpdate {
   project: Project;
 }
 
-type CreateActionState = Promise<FetchResult<Project>>;
+type CreateActionState = Awaited<ReturnType<typeof createProjectAction>>;
 
 export interface CreateActionPayload {
   formData: FormData;
@@ -31,8 +30,10 @@ export const useUpdateProject = ({ projects }: { projects: Project[] }) => {
         return await handleCreateProject({ formData, workspaceId: currentWsId });
       }
     },
-    { success: false },
+    { success: false, error: {} },
   );
+
+  console.log({ createProjectState: createProjectState.zodErrors });
 
   const applyOptimisticUpdate = (
     currentProjects: Project[],
