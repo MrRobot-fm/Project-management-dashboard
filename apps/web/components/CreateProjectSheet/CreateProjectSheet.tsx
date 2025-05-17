@@ -15,6 +15,8 @@ import { Dropzone } from "@/components/Dropzone";
 import { Spinner } from "@/components/Spinner";
 import type { CreateActionPayload } from "@/hooks/use-update-project";
 import type { Project } from "@workspace/db";
+import type { CreateProjectTypeFlatten } from "@workspace/schemas";
+import type { typeToFlattenedError } from "zod";
 
 interface CreateProjectSheetProps {
   project?: Project;
@@ -25,6 +27,7 @@ interface CreateProjectSheetProps {
   isLoading?: boolean;
   mode?: "create" | "edit";
   workspaceId?: string;
+  zodErrors?: typeToFlattenedError<CreateProjectTypeFlatten | undefined>;
 }
 
 export const CreateProjectSheet = ({
@@ -36,6 +39,7 @@ export const CreateProjectSheet = ({
   isLoading,
   mode = "create",
   workspaceId,
+  zodErrors,
 }: CreateProjectSheetProps) => {
   const isEditMode = mode === "edit";
   const isCreateMode = mode === "create";
@@ -44,12 +48,14 @@ export const CreateProjectSheet = ({
     name: isEditMode ? project?.name : "",
     description: isEditMode ? project?.description : "",
   });
+  const [errors, setErrors] = useState(zodErrors);
 
   const resetForm = () => {
     setFormFields({
       name: "",
       description: "",
     });
+    setErrors(undefined);
   };
 
   useEffect(() => {
@@ -60,6 +66,10 @@ export const CreateProjectSheet = ({
       setFormFields({ name: project?.name, description: project?.description });
     }
   }, [isEditMode, isOpen, project?.description, project?.name]);
+
+  useEffect(() => {
+    setErrors(zodErrors);
+  }, [zodErrors]);
 
   const title = isCreateMode ? "Create Project" : "Edit Project";
   const descriptions = isCreateMode
@@ -85,41 +95,50 @@ export const CreateProjectSheet = ({
               });
             }}
           >
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-4">
                 <Label htmlFor="name" className="text-right">
                   Name
                 </Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={formFields.name}
-                  onChange={(e) => setFormFields({ ...formFields, name: e.target.value })}
-                  disabled={isLoading}
-                />
+                <div className="flex flex-col gap-1">
+                  <Input
+                    id="name"
+                    name="name"
+                    value={formFields.name}
+                    onChange={(e) => setFormFields({ ...formFields, name: e.target.value })}
+                    disabled={isLoading}
+                  />
+                  <p className="text-xs text-red-600">{errors?.fieldErrors.name?.[0]}</p>
+                </div>
               </div>
               <div className="flex flex-col gap-4">
                 <Label htmlFor="description" className="text-right">
                   Description
                 </Label>
-                <Input
-                  id="description"
-                  name="description"
-                  value={formFields.description ?? ""}
-                  onChange={(e) =>
-                    setFormFields({
-                      ...formFields,
-                      description: e.target.value,
-                    })
-                  }
-                  disabled={isLoading}
-                />
+                <div className="flex flex-col gap-1">
+                  <Input
+                    id="description"
+                    name="description"
+                    value={formFields.description ?? ""}
+                    onChange={(e) =>
+                      setFormFields({
+                        ...formFields,
+                        description: e.target.value,
+                      })
+                    }
+                    disabled={isLoading}
+                  />
+                  <p className="text-xs text-red-600">{errors?.fieldErrors.description?.[0]}</p>
+                </div>
               </div>
               <div className="flex flex-col gap-4">
                 <Label htmlFor="logo" className="text-right">
                   Logo
                 </Label>
-                <Dropzone image={project?.logo ? project.logo : null} disabled={isLoading} />
+                <div className="flex flex-col gap-1">
+                  <Dropzone image={project?.logo ? project.logo : null} disabled={isLoading} />
+                  <p className="text-xs text-red-600">{errors?.fieldErrors.logo?.[0]}</p>
+                </div>
               </div>
             </div>
             <SheetFooter className="px-0">

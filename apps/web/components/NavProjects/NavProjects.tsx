@@ -91,6 +91,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
         mode={sheetMode}
         project={selectedProject && sheetMode === "edit" ? selectedProject : undefined}
         workspaceId={currentWorkspaceId}
+        zodErrors={createProjectState.zodErrors}
       />
       <SidebarGroupLabel asChild>
         <Button
