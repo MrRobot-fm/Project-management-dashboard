@@ -5,22 +5,21 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/DropdownMenu";
 
-interface CustomDropdownProps<T>
-  extends ComponentProps<typeof DropdownMenuContent> {
+interface CustomDropdownProps<T> extends ComponentProps<typeof DropdownMenuContent> {
   data: T[];
   items: (item: T, index?: number) => ReactNode;
-  trigger: ReactNode;
+  triggerSlot: ReactNode;
 }
 
 export const CustomDropdown = <T,>({
   data,
   items,
-  trigger,
+  triggerSlot,
   ...props
 }: CustomDropdownProps<T>) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>{triggerSlot}</DropdownMenuTrigger>
       <DropdownMenuContent {...props}>
         {data.map((item, index) => items(item, index))}
       </DropdownMenuContent>

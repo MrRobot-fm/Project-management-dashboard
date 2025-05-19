@@ -8,7 +8,7 @@ import { Card, CardContent } from "@workspace/ui/components/Card";
 import { Input } from "@workspace/ui/components/Input";
 import { Label } from "@workspace/ui/components/Label";
 import { cn } from "@workspace/ui/lib/utils";
-import { FieldInfo } from "../Form/FieldInfo";
+import { FieldInfo } from "@/components/forms/FieldInfo";
 import { useForm } from "@tanstack/react-form";
 import { LoginUserSchema } from "@workspace/schemas";
 import { Eye, EyeOff } from "lucide-react";

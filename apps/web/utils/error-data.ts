@@ -14,6 +14,18 @@ export const errorData = (error: unknown): { success: false; error: ErrorRespons
     };
   }
 
+  if (error instanceof Error) {
+    return {
+      success: false,
+      error: {
+        message: error.message,
+        code: error.name,
+        status: 500,
+        errors: {},
+      },
+    };
+  }
+
   return {
     success: false,
     error: {

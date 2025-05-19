@@ -6,30 +6,39 @@ import { Card, CardContent } from "@workspace/ui/components/Card";
 import { Input } from "@workspace/ui/components/Input";
 import { cn } from "@workspace/ui/lib/utils";
 import { Avatar } from "@/components/Avatar";
+import type { AnyFieldApi } from "@tanstack/react-form";
 import { FileImage, Trash2 } from "lucide-react";
 
 interface DropzoneProps {
   disabled?: boolean;
   image: string | null;
+  field?: AnyFieldApi;
 }
 
-export const Dropzone = ({ image, disabled = false }: DropzoneProps) => {
+export const Dropzone = ({ image, disabled = false, field }: DropzoneProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(image ?? null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
+  const handleDrop = useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    setIsDragging(false);
+      setIsDragging(false);
 
-    const droppedFile = event.dataTransfer.files[0];
+      const droppedFile = event.dataTransfer.files[0];
 
-    if (droppedFile && droppedFile.type.startsWith("image/")) {
-      setPreviewUrl(URL.createObjectURL(droppedFile));
-    }
-  }, []);
+      if (field) {
+        field.handleChange(droppedFile);
+      }
+
+      if (droppedFile && droppedFile.type.startsWith("image/")) {
+        setPreviewUrl(URL.createObjectURL(droppedFile));
+      }
+    },
+    [field],
+  );
 
   const handleDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -45,13 +54,20 @@ export const Dropzone = ({ image, disabled = false }: DropzoneProps) => {
     setIsDragging(false);
   }, []);
 
-  const handleFileSelect = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFileSelect = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
 
-    if (file && file.type.startsWith("image/")) {
-      setPreviewUrl(URL.createObjectURL(file));
-    }
-  }, []);
+      if (field) {
+        field.handleChange(file);
+      }
+
+      if (file && file.type.startsWith("image/")) {
+        setPreviewUrl(URL.createObjectURL(file));
+      }
+    },
+    [field],
+  );
 
   const handleRemoveFile = useCallback(() => {
     setPreviewUrl(null);
@@ -106,9 +122,9 @@ export const Dropzone = ({ image, disabled = false }: DropzoneProps) => {
           </div>
         )}
         <Input
-          id="logo"
+          id={field?.name}
           type="file"
-          name="logo"
+          name={field?.name}
           accept="image/*"
           ref={fileInputRef}
           onChange={handleFileSelect}

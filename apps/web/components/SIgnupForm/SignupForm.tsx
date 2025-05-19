@@ -8,7 +8,7 @@ import { Card, CardContent } from "@workspace/ui/components/Card";
 import { Input } from "@workspace/ui/components/Input";
 import { Label } from "@workspace/ui/components/Label";
 import { cn } from "@workspace/ui/lib/utils";
-import { FieldInfo } from "../Form/FieldInfo";
+import { FieldInfo } from "@/components/forms/FieldInfo";
 import { useForm } from "@tanstack/react-form";
 import { RegisterUserSchemaWithRepeatPassword } from "@workspace/schemas";
 import { Eye, EyeOff } from "lucide-react";
@@ -66,9 +66,7 @@ export const SignupForm = ({ className, ...props }: SignupFormProps) => {
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome to Fede inc.</h1>
-                <p className="text-muted-foreground text-balance">
-                  Signup and create your account
-                </p>
+                <p className="text-muted-foreground text-balance">Signup and create your account</p>
               </div>
               <div className="flex flex-col gap-2">
                 <form.Field name="name">
@@ -171,15 +169,9 @@ export const SignupForm = ({ className, ...props }: SignupFormProps) => {
                   )}
                 </form.Field>
                 <div className="flex flex-col gap-1">
-                  <form.Subscribe
-                    selector={(state) => [state.canSubmit, state.isSubmitting]}
-                  >
+                  <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
                     {([canSubmit, isSubmitting]) => (
-                      <Button
-                        type="submit"
-                        disabled={!canSubmit}
-                        className="w-full"
-                      >
+                      <Button type="submit" disabled={!canSubmit} className="w-full">
                         {isSubmitting ? "Signing up..." : "Create your account"}
                       </Button>
                     )}
@@ -189,10 +181,7 @@ export const SignupForm = ({ className, ...props }: SignupFormProps) => {
                   </div>
                   <div className="text-center text-sm">
                     Did you already have an account?{" "}
-                    <Link
-                      href="/login"
-                      className="underline underline-offset-4"
-                    >
+                    <Link href="/login" className="underline underline-offset-4">
                       Login
                     </Link>
                   </div>

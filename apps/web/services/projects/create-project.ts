@@ -19,6 +19,8 @@ export const createProjectAction = async ({
   workspaceId: string | undefined;
 }): Promise<ActionResponse<Project, "project", CreateProjectType>> => {
   try {
+    if (!workspaceId) throw new Error("Workspace ID is required");
+
     const jwtToken = await getCookie("jwt_token");
 
     const logo = formData.get("logo");
@@ -37,8 +39,6 @@ export const createProjectAction = async ({
     if (!validation.success) {
       return validationErrorData<CreateProjectType>(validation.errors);
     }
-
-    if (!workspaceId) throw new Error("Workspace ID is required");
 
     const response = await fetchInstance<ApiCreateProjectResponseModel>({
       path: `workspaces/${workspaceId}/project`,

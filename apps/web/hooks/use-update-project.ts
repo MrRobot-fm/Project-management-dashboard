@@ -33,8 +33,6 @@ export const useUpdateProject = ({ projects }: { projects: Project[] }) => {
     { success: false, error: {} },
   );
 
-  console.log({ createProjectState: createProjectState.zodErrors });
-
   const applyOptimisticUpdate = (
     currentProjects: Project[],
     update: OptimisticUpdate,
@@ -74,11 +72,13 @@ export const useUpdateProject = ({ projects }: { projects: Project[] }) => {
     formData: FormData;
     workspaceId: string | undefined;
   }) => {
+    const logo = formData.get("logo");
+
     const newProject = {
       id: Date.now().toString(),
       name: formData.get("name"),
       description: formData.get("description"),
-      logo: URL.createObjectURL(formData.get("logo") as File),
+      logo: logo instanceof File && logo.size > 0 ? URL.createObjectURL(logo) : null,
     } as Project;
 
     updateOptimisticProjects({ actionType: "add", project: newProject });
@@ -98,10 +98,10 @@ export const useUpdateProject = ({ projects }: { projects: Project[] }) => {
     const logo = formData.get("logo") as File;
 
     const updatedProject = {
-      id: formData.get("projectId"),
+      id: projectId,
       name: formData.get("name"),
       description: formData.get("description"),
-      logo: logo.size === 0 ? projectLogo : URL.createObjectURL(logo as File),
+      logo: logo instanceof File && logo.size > 0 ? URL.createObjectURL(logo) : projectLogo,
     } as Project;
 
     updateOptimisticProjects({ actionType: "update", project: updatedProject });

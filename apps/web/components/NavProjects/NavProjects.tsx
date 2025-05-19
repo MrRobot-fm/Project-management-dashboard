@@ -16,9 +16,10 @@ import {
 import { NavProjectsItems } from "./NavProjectsItems";
 import { ShowProjectsButton } from "./ShowProjectsButton";
 import { Avatar } from "@/components/Avatar";
-import { CreateProjectSheet } from "@/components/CreateProjectSheet";
 import { CustomDropdown } from "@/components/CustomDropdown";
+import { CustomSheet } from "@/components/CustomSheet";
 import { LinkLoadingIndicator } from "@/components/LinkLoadingIndicator";
+import { WorkspaceProjectForm } from "@/components/forms/WorkspaceProjectForm";
 import { URL_PROJECTS } from "@/constants/urls";
 import { useUpdateProject } from "@/hooks/use-update-project";
 import { IconDots, IconFolder, IconTrash } from "@tabler/icons-react";
@@ -39,7 +40,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
   const [sheetMode, setSheetMode] = useState<"create" | "edit">("create");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  const { optimisticProjects, handleDeleteProject, isPending, createProjectState, createAction } =
+  const { optimisticProjects, handleDeleteProject, createProjectState, createAction } =
     useUpdateProject({
       projects,
     });
@@ -81,18 +82,30 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
     }
   }, [createProjectState]);
 
+  const isCreateMode = sheetMode === "create";
+
+  const title = isCreateMode ? "Create Project" : "Edit Project";
+  const descriptions = isCreateMode
+    ? "Create a new project and start to collaborate with other people."
+    : `Edit ${selectedProject?.name} project and save the changes!`;
+
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <CreateProjectSheet
+      <CustomSheet
+        title={title}
+        description={descriptions}
         isOpen={isProjectSheetOpen}
         setIsOpen={setIsProjectSheetOpen}
-        action={createAction}
-        isLoading={isPending}
-        mode={sheetMode}
-        project={selectedProject && sheetMode === "edit" ? selectedProject : undefined}
-        workspaceId={currentWorkspaceId}
-        zodErrors={createProjectState.zodErrors}
+        contentSlot={
+          <WorkspaceProjectForm
+            action={createAction}
+            mode={sheetMode}
+            data={selectedProject && sheetMode === "edit" ? selectedProject : undefined}
+            workspaceId={currentWorkspaceId}
+          />
+        }
       />
+
       <SidebarGroupLabel asChild>
         <Button
           variant="link"
@@ -124,7 +137,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
                   data={dropdownItems(project)}
                   side="bottom"
                   align={isMobile ? "end" : "start"}
-                  trigger={
+                  triggerSlot={
                     <SidebarMenuAction
                       showOnHover
                       className="data-[state=open]:bg-accent rounded-sm cursor-pointer focus-within:ring-0"

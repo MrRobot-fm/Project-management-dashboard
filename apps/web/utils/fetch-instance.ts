@@ -27,7 +27,7 @@ export const fetchInstance = async <T>({
   if (!response.ok) {
     const errorRes: ApiError = await response.json();
 
-    console.log({ errorRes });
+    console.error(errorRes);
 
     throw new ApiError(errorRes.message, errorRes.status, errorRes.code, errorRes.errors);
   }
