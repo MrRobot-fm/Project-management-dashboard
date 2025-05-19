@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { uploadFile } from "@/utils/storage";
 import { prisma } from "@workspace/db";
-import { BadRequestError, UnauthorizedError } from "@workspace/exceptions";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { randomUUID } from "crypto";
 
 export const createProject = async (req: Request, res: Response) => {
@@ -75,6 +75,7 @@ export const getProjects = async (_: Request, res: Response) => {
 
   res.status(200).json({ projects: formattedProjects });
 };
+
 export const getWorkspaceProjects = async (req: Request, res: Response) => {
   const { workspaceId } = req.params;
 
@@ -94,7 +95,11 @@ export const getWorkspaceProjects = async (req: Request, res: Response) => {
           },
         },
       },
+
       tasks: true,
+    },
+    orderBy: {
+      createdAt: "asc",
     },
   });
 
@@ -136,6 +141,8 @@ export const getProjectById = async (req: Request, res: Response) => {
     },
   });
 
+  if (!project) throw new NotFoundError("No projects found");
+
   const formattedProject = {
     ...project,
     members: project?.members.map((member) => ({
@@ -174,11 +181,13 @@ export const updateProject = async (req: Request, res: Response) => {
     },
     data: {
       ...body,
-      logo: publicUrl,
+      ...(file && {
+        logo: publicUrl,
+      }),
     },
   });
 
-  res.status(200).json({ project });
+  res.status(200).json({ project, success: true });
 };
 
 export const deleteProject = async (req: Request, res: Response) => {

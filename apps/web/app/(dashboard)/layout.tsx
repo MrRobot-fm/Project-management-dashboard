@@ -1,16 +1,13 @@
-import type { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, type ReactNode } from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@workspace/ui/components/Sidebar";
+import { SidebarInset, SidebarProvider } from "@workspace/ui/components/Sidebar";
 import "@workspace/ui/globals.css";
+import { QueryProviders } from "../providers";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import { getCurrentUser } from "@/services/get-current-user";
-import { getWorkspaces } from "@/services/get-workspaces";
+import { getAppLayout } from "@/services/get-app-layout";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -31,40 +28,41 @@ export default async function RootLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const data = await getCurrentUser();
-  const { workspaces } = await getWorkspaces();
+  const { user, workspaces, projects, currentWorkspaceId } = await getAppLayout();
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}
-      >
-        <ThemeProvider>
-          <SidebarProvider
-            style={
-              {
-                "--sidebar-width": "calc(var(--spacing) * 72)",
-                "--header-height": "calc(var(--spacing) * 12)",
-              } as CSSProperties
-            }
-          >
-            <AppSidebar
-              userId={data.user.id}
-              workspaces={workspaces}
-              variant="floating"
-            />
-            <SidebarInset>
-              <SiteHeader
-                user={{
-                  name: data.user.name,
-                  logo: data.user.logo,
-                  email: data.user.email,
-                }}
+      <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
+        <QueryProviders>
+          <ThemeProvider>
+            <SidebarProvider
+              style={
+                {
+                  "--sidebar-width": "calc(var(--spacing) * 72)",
+                  "--header-height": "calc(var(--spacing) * 12)",
+                } as CSSProperties
+              }
+            >
+              <AppSidebar
+                userId={user?.id}
+                workspaces={workspaces}
+                projects={projects}
+                currentWorkspaceId={currentWorkspaceId}
+                variant="floating"
               />
-              {children}
-            </SidebarInset>
-          </SidebarProvider>
-        </ThemeProvider>
+              <SidebarInset>
+                <SiteHeader
+                  user={{
+                    name: user?.name ?? "",
+                    logo: user?.logo ?? "",
+                    email: user?.email ?? "",
+                  }}
+                />
+                {children}
+              </SidebarInset>
+            </SidebarProvider>
+          </ThemeProvider>
+        </QueryProviders>
       </body>
     </html>
   );

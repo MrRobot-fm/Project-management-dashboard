@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentProps } from "react";
+import { type ComponentProps } from "react";
 import Link from "next/link";
 import {
   Sidebar,
@@ -11,8 +11,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/Sidebar/Sidebar";
-import { NavDocuments } from "@/components/NavDocuments";
 import { NavMain } from "@/components/NavMain";
+import { NavProjects } from "@/components/NavProjects";
 import { NavSecondary } from "@/components/NavSecondary";
 import { WorkspaceSelector } from "@/components/WorkspaceSelector";
 import {
@@ -33,7 +33,7 @@ import {
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
-import type { Workspace } from "@workspace/db";
+import type { Project, Workspace } from "@workspace/db";
 
 const data = {
   user: {
@@ -158,20 +158,25 @@ const data = {
 };
 
 interface AppSidebarProps extends ComponentProps<typeof Sidebar> {
-  userId: string;
+  userId: string | undefined;
   workspaces: Workspace[];
+  projects: Project[];
+  currentWorkspaceId: string | undefined;
 }
 
-export function AppSidebar({ userId, workspaces, ...props }: AppSidebarProps) {
+export function AppSidebar({
+  userId,
+  workspaces,
+  projects,
+  currentWorkspaceId,
+  ...props
+}: AppSidebarProps) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
+            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
               <Link href="/">
                 <IconInnerShadowTop className="!size-5" />
                 <span className="text-base font-semibold">Fede Inc.</span>
@@ -182,7 +187,7 @@ export function AppSidebar({ userId, workspaces, ...props }: AppSidebarProps) {
       </SidebarHeader>
       <SidebarContent className="bg-background">
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        <NavProjects projects={projects ?? []} currentWorkspaceId={currentWorkspaceId} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter className="bg-background">

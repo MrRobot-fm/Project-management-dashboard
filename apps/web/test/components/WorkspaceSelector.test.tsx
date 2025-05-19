@@ -14,6 +14,14 @@ vi.mock("js-cookie", () => {
   };
 });
 
+vi.mock("next/navigation", () => {
+  return {
+    useRouter: () => ({
+      refresh: vi.fn(),
+    }),
+  };
+});
+
 const userId = "2";
 
 const workspaces = [
@@ -88,6 +96,6 @@ describe("WorkspaceSelector", () => {
 
     const { selectTrigger } = renderComponent();
 
-    expect(selectTrigger).toHaveTextContent(/all workspaces/i);
+    expect(selectTrigger).toHaveTextContent(/wolf pixel/i);
   });
 });

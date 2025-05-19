@@ -9,6 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/Sidebar";
+import { LinkLoadingIndicator } from "../LinkLoadingIndicator";
 import { type Icon } from "@tabler/icons-react";
 
 export function NavMain({
@@ -42,7 +43,8 @@ export function NavMain({
                 >
                   <Link href={item.url}>
                     {item.icon && <item.icon />}
-                    <span>{item.title}</span>
+                    <span className="mr-auto">{item.title}</span>
+                    <LinkLoadingIndicator className="stroke-primary-foreground" />
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

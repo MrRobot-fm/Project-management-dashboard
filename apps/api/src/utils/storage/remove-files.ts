@@ -15,6 +15,7 @@ export const removeExistingFiles = async (
 
   if (existingFiles?.length) {
     const filesToRemove = existingFiles.map((f) => `${basePath}${f.name}`);
+
     const { error: removeError } = await supabase.storage
       .from(bucket)
       .remove(filesToRemove);

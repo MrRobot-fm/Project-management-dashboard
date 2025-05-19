@@ -6,9 +6,11 @@ import {
   Fragment,
   type ReactNode,
   useEffect,
-  useMemo,
   useState,
+  useTransition,
 } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@workspace/ui/components/Button";
 import {
   Select,
   SelectContent,
@@ -18,15 +20,10 @@ import {
 } from "@workspace/ui/components/Select";
 import type { SidebarMenuButton } from "@workspace/ui/components/Sidebar";
 import { Avatar } from "@/components/Avatar";
-import {
-  ALL_WORKSPACES_ID,
-  allWorkspacesOption,
-  SELECTED_WS_ID_COOKIE_KEY,
-} from "@/constants/workspaces";
-import type { AllWorkspaces } from "@/types/models/api-get-workspaces";
+import { SELECTED_WS_ID_COOKIE_KEY } from "@/constants/workspaces";
 import type { Workspace } from "@workspace/db";
 import Cookies from "js-cookie";
-import { ChevronsUpDownIcon } from "lucide-react";
+import { ChevronsUpDownIcon, PlusCircle } from "lucide-react";
 
 type SidebarWrapper = {
   component: ComponentType<ComponentProps<typeof SidebarMenuButton>>;
@@ -36,21 +33,22 @@ type SidebarWrapper = {
 interface WorkspaceSelectorProps {
   workspaces: Workspace[];
   sidebarMenuButtonWrapper?: SidebarWrapper;
-  userId: string;
+  userId: string | undefined;
 }
 
-const WorkspaceInfo = ({
-  workspace,
-}: {
-  workspace: Workspace | AllWorkspaces;
-}) => (
+const SkeletonWorkspace = () => (
+  <div className="flex items-center gap-3 animate-pulse">
+    <div className="size-8 rounded-lg bg-neutral-300 dark:bg-neutral-400" />
+    <div className="flex flex-col items-start">
+      <div className="h-3 w-32 bg-neutral-200 dark:bg-neutral-700 rounded" />
+      <div className="h-2 w-24 bg-neutral-200 dark:bg-neutral-700 rounded mt-1" />
+    </div>
+  </div>
+);
+
+const WorkspaceInfo = ({ workspace }: { workspace: Workspace }) => (
   <div className="flex items-center gap-3">
-    <Avatar
-      image={workspace?.logo}
-      fallback={workspace.name}
-      size="lg"
-      shape="square"
-    />
+    <Avatar image={workspace.logo} fallback={workspace.name} size="xl" shape="square" />
     <div className="flex flex-col items-start">
       <span className="font-medium text-foreground">{workspace.name}</span>
       <span className="text-xs text-muted-foreground">Workspace</span>
@@ -63,39 +61,39 @@ export const WorkspaceSelector = ({
   sidebarMenuButtonWrapper,
   userId,
 }: WorkspaceSelectorProps) => {
-  const [selectedId, setSelectedId] = useState<string>(ALL_WORKSPACES_ID);
-
-  const options = useMemo(
-    () => [allWorkspacesOption, ...workspaces],
-    [workspaces],
-  );
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    const savedWorkspace = Cookies.get(
-      `${SELECTED_WS_ID_COOKIE_KEY}_${userId}`,
-    );
+    const savedId = Cookies.get(`${SELECTED_WS_ID_COOKIE_KEY}_${userId}`);
 
-    if (savedWorkspace && options.some((w) => w.id === savedWorkspace)) {
-      setSelectedId(savedWorkspace);
+    if (savedId && workspaces.some((w) => w.id === savedId)) {
+      setSelectedId(savedId);
+    } else if (workspaces.length > 0) {
+      setSelectedId(workspaces[0]?.id);
+    } else {
+      setSelectedId(undefined);
     }
-  }, [options, userId]);
+  }, [workspaces, userId]);
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
+
     Cookies.set(`${SELECTED_WS_ID_COOKIE_KEY}_${userId}`, id, { expires: 365 });
+
+    startTransition(() => {
+      router.refresh();
+    });
   };
 
-  const selectedWorkspace = useMemo(() => {
-    return options.find((w) => w.id === selectedId) ?? allWorkspacesOption;
-  }, [selectedId, options]);
+  const selectedWorkspace = workspaces.find((w) => w.id === selectedId);
 
   const TriggerWithWrapper = ({ children }: { children: ReactNode }) => {
     if (!sidebarMenuButtonWrapper) return <>{children}</>;
 
-    const { component: WrapperComponent, props = {} } =
-      sidebarMenuButtonWrapper;
-
-    return <WrapperComponent {...props}>{children}</WrapperComponent>;
+    const { component: Wrapper, props = {} } = sidebarMenuButtonWrapper;
+    return <Wrapper {...props}>{children}</Wrapper>;
   };
 
   return (
@@ -104,25 +102,34 @@ export const WorkspaceSelector = ({
         <TriggerWithWrapper>
           <SelectTrigger
             data-test-id="workspaces-select"
-            className="w-full bg-stone-50 border-gray-200 dark:border-stone-700 !h-fit px-2 py-1 *:data-[slot=select-icon]:hidden cursor-pointer focus-visible:ring-0 ring-0 focus-visible:border-gray-200"
+            className="w-full bg-stone-50 border-gray-200 dark:border-stone-700 !h-11.5 px-2 py-1 *:data-[slot=select-icon]:hidden cursor-pointer focus-visible:ring-0 focus-visible:border-gray-200 data-[placeholder]:text-stone-700 dark:data-[placeholder]:text-foreground"
           >
-            <SelectValue>
-              <WorkspaceInfo workspace={selectedWorkspace} />
+            <SelectValue placeholder="No workspaces. Create one!">
+              {isPending ? (
+                <SkeletonWorkspace />
+              ) : (
+                selectedWorkspace && <WorkspaceInfo workspace={selectedWorkspace} />
+              )}
             </SelectValue>
             <ChevronsUpDownIcon className="group-data-[collapsible=icon]:hidden" />
           </SelectTrigger>
         </TriggerWithWrapper>
         <SelectContent className="min-w-64">
-          {options.map((workspace, index) => (
+          {workspaces.map((workspace) => (
             <Fragment key={workspace.id}>
-              {index === 1 && (
-                <div className="my-1 h-px bg-gray-200 dark:bg-stone-700" />
-              )}
               <SelectItem value={workspace.id} className="h-fit px-2 py-1">
                 <WorkspaceInfo workspace={workspace} />
               </SelectItem>
             </Fragment>
           ))}
+          {workspaces.length > 0 && <div className="my-1 h-px bg-gray-200 dark:bg-stone-700" />}
+          <Button
+            variant="ghost"
+            className="flex gap-2 items-center cursor-pointer w-full justify-start"
+          >
+            <PlusCircle className="size-4 text-gray-600" />
+            <span className="text-xs text-stone-600">Create workspace</span>
+          </Button>
         </SelectContent>
       </Select>
     </div>

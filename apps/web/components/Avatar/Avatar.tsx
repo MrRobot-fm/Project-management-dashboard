@@ -4,7 +4,6 @@ import {
   AvatarImage,
   Avatar as AvatarRoot,
 } from "@workspace/ui/components/Avatar";
-import { cn } from "@workspace/ui/lib/utils";
 import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { cva, type VariantProps } from "class-variance-authority";
 
@@ -17,37 +16,36 @@ interface AvatarProps extends ComponentProps<typeof AvatarRoot>, AvatarSize {
 
 export const Avatar = ({
   image,
-  fallback = "John Do",
+  fallback,
   size,
   shape,
   className,
   ...props
 }: AvatarProps) => {
-  const initials = getAvatarFallback(fallback);
+  const initials = getAvatarFallback(fallback ?? "");
 
   return (
     <AvatarRoot className={avatarSize({ size, shape, className })} {...props}>
       {image && (
         <AvatarImage src={image} alt={initials} className="object-cover" />
       )}
-      <AvatarFallback
-        className={cn("bg-gray-200", shape === "square" && "rounded")}
-      >
+      <AvatarFallback className={avatarFallback({ size, shape })}>
         {initials}
       </AvatarFallback>
     </AvatarRoot>
   );
 };
 
-const avatarSize = cva(null, {
+const avatarSize = cva("border border-neutral-300 dark:border-neutral-900", {
   variants: {
     size: {
       sm: "size-4",
-      md: "size-6",
-      lg: "size-8",
-      xl: "size-10",
-      "2xl": "size-12",
-      "3xl": "size-14",
+      md: "size-5",
+      lg: "size-6",
+      xl: "size-8",
+      "2xl": "size-10",
+      "3xl": "size-12",
+      "4xl": "size-14",
     },
     shape: {
       rounded: "rounded-full",
@@ -55,7 +53,25 @@ const avatarSize = cva(null, {
     },
   },
   defaultVariants: {
-    size: "md",
+    size: "sm",
     shape: "rounded",
+  },
+});
+
+const avatarFallback = cva("bg-neutral-200 dark:bg-neutral-400", {
+  variants: {
+    size: {
+      sm: "text-[9px]",
+      md: "text-[10px]",
+      lg: "",
+      xl: "",
+      "2xl": "",
+      "3xl": "",
+      "4xl": "",
+    },
+    shape: {
+      square: "rounded",
+      rounded: "",
+    },
   },
 });
