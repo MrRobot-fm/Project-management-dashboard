@@ -3,6 +3,7 @@ import { generateUser } from "../support/utils";
 describe("Workspaces", () => {
   let user: ReturnType<typeof generateUser>;
   const workspaceName = `Test Workspace ${Date.now()}`;
+  const newWorkspaceName = `Test Workspace ${Date.now()}`;
 
   beforeEach(() => {
     user = generateUser();
@@ -33,8 +34,8 @@ describe("Workspaces", () => {
         workspaceName,
       );
 
-      cy.editWorkspace(workspaceName).then(() => {
-        cy.get("[data-slot='select-value']").should("contain.text", workspaceName);
+      cy.editWorkspace(newWorkspaceName).then(() => {
+        cy.get("[data-slot='select-value']").should("contain.text", newWorkspaceName);
       });
     });
   });
