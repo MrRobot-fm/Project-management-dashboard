@@ -140,6 +140,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
                   align={isMobile ? "end" : "start"}
                   triggerSlot={
                     <SidebarMenuAction
+                      aria-label="More"
                       showOnHover
                       className="data-[state=open]:bg-accent rounded-sm cursor-pointer focus-within:ring-0"
                     >
