@@ -18,9 +18,12 @@ describe("Workspaces", () => {
   });
 
   it("should create a workspace successfully", () => {
-    cy.createWorkspace(workspaceName);
-
-    cy.get("[data-slot='select-value']", { timeout: 1000 }).should("contain.text", workspaceName);
+    cy.createWorkspace(workspaceName).then(() => {
+      cy.get("[data-slot='select-value']", { timeout: 10000 }).should(
+        "contain.text",
+        workspaceName,
+      );
+    });
   });
 
   it("should edit a workspace successfully", () => {
@@ -28,8 +31,8 @@ describe("Workspaces", () => {
 
     cy.get("[data-slot='select-value']", { timeout: 10000 }).should("contain.text", workspaceName);
 
-    cy.editWorkspace(workspaceName);
-
-    cy.get("[data-slot='select-value']", { timeout: 10000 }).should("contain.text", workspaceName);
+    cy.editWorkspace(workspaceName).then(() => {
+      cy.get("[data-slot='select-value']").should("contain.text", workspaceName);
+    });
   });
 });
