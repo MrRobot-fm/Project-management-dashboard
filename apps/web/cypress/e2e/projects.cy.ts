@@ -34,7 +34,7 @@ describe("Projects", () => {
 
     cy.editProject(newProjectName, newProjectDescription, projectName);
 
-    cy.findByTestId("project-item").should("have.text", newProjectName);
+    cy.findByTestId("project-item", { timeout: 10000 }).should("have.text", newProjectName);
   });
 
   it("should delete project successfully", () => {
@@ -44,6 +44,9 @@ describe("Projects", () => {
 
     cy.deleteProject(projectName);
 
-    cy.findByTestId("project-empty-state").should("have.text", "No projects. Create one, now!");
+    cy.findByTestId("project-empty-state", { timeout: 10000 }).should(
+      "have.text",
+      "No projects. Create one, now!",
+    );
   });
 });

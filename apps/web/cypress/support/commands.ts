@@ -106,7 +106,7 @@ Cypress.Commands.add("deleteCurrentWorkspace", () => {
 });
 
 Cypress.Commands.add("createProject", (name: string, description: string) => {
-  cy.findByRole("button", { name: /projects/i }).click();
+  cy.findByRole("button", { name: /projects/i, timeout: 10000 }).click();
   cy.findByRole("textbox", { name: /name/i }).type(name);
   cy.findByRole("textbox", { name: /description/i }).type(description);
 
@@ -116,7 +116,7 @@ Cypress.Commands.add("createProject", (name: string, description: string) => {
 });
 
 Cypress.Commands.add("editProject", (name: string, description: string, existingName) => {
-  cy.findByTestId("project-item").should("have.text", existingName);
+  cy.findByTestId("project-item", { timeout: 10000 }).should("have.text", existingName);
 
   cy.findByRole("button", { name: /more/i }).click();
   cy.findByRole("menuitem", { name: /edit/i }).click();

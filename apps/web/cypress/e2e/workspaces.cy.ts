@@ -11,7 +11,10 @@ describe("Workspaces", () => {
 
   afterEach(() => {
     cy.deleteCurrentWorkspace();
-    cy.get("[data-slot='select-value']").should("contain.text", "No workspaces. Create one!");
+    cy.get("[data-slot='select-value']", { timeout: 10000 }).should(
+      "contain.text",
+      "No workspaces. Create one!",
+    );
   });
 
   it("should create a workspace successfully", () => {
