@@ -1,18 +1,21 @@
 import { Button } from "@workspace/ui/components/Button";
 import { Input } from "@workspace/ui/components/Input";
 import { Label } from "@workspace/ui/components/Label";
-import { useWorkspaceProjectFormValidation } from "./WorkspaceProjectForm.utils";
+import {
+  type FormActionPayload,
+  useWorkspaceProjectFormValidation,
+} from "./WorkspaceProjectForm.utils";
 import { Dropzone } from "@/components/Dropzone";
 import { Spinner } from "@/components/Spinner";
 import { FieldInfo } from "@/components/forms/FieldInfo";
-import type { CreateActionPayload } from "@/hooks/use-update-project";
 import type { Project, Workspace } from "@workspace/db";
 
 interface WorkspaceProjectFormProps {
   data?: Partial<Project & Workspace>;
-  action: (payload: CreateActionPayload) => void;
+  action: (payload: FormActionPayload) => void;
   workspaceId?: string;
   mode?: "create" | "edit";
+  type: "workspace" | "project";
 }
 
 export const WorkspaceProjectForm = ({
@@ -20,6 +23,7 @@ export const WorkspaceProjectForm = ({
   action,
   workspaceId,
   mode,
+  type,
 }: WorkspaceProjectFormProps) => {
   const isEditMode = mode === "edit";
   const isCreateMode = mode === "create";
@@ -29,6 +33,7 @@ export const WorkspaceProjectForm = ({
     workspaceId,
     action,
     isEditMode,
+    type,
   });
 
   return (
@@ -38,6 +43,7 @@ export const WorkspaceProjectForm = ({
         e.stopPropagation();
         await form.handleSubmit();
       }}
+      className="pb-8"
     >
       <div className="flex flex-col gap-4">
         <form.Field name="name">
@@ -59,25 +65,27 @@ export const WorkspaceProjectForm = ({
             </div>
           )}
         </form.Field>
-        <form.Field name="description">
-          {(field) => (
-            <div className="flex flex-col gap-4">
-              <Label htmlFor={field.name} className="text-right">
-                Description
-              </Label>
-              <div className="flex flex-col gap-1">
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  disabled={isPending}
-                />
-                <FieldInfo field={field} />
+        {type === "project" && (
+          <form.Field name="description">
+            {(field) => (
+              <div className="flex flex-col gap-4">
+                <Label htmlFor={field.name} className="text-right">
+                  Description
+                </Label>
+                <div className="flex flex-col gap-1">
+                  <Input
+                    id={field.name}
+                    name={field.name}
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    disabled={isPending}
+                  />
+                  <FieldInfo field={field} />
+                </div>
               </div>
-            </div>
-          )}
-        </form.Field>
+            )}
+          </form.Field>
+        )}
         <form.Field name="logo">
           {(field) => (
             <div className="flex flex-col gap-4">
@@ -106,7 +114,9 @@ export const WorkspaceProjectForm = ({
                 }
                 className="cursor-pointer w-full"
               >
-                {isCreateMode ? "Create project" : " Save changes"}
+                {isCreateMode
+                  ? `Create ${type === "project" ? "project" : "workspace"}`
+                  : " Save changes"}
                 {isPending && <Spinner />}
               </Button>
             )}

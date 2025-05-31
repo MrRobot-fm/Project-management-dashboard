@@ -1,6 +1,6 @@
 "use client";
 
-import { type ComponentProps } from "react";
+import { useActionState, useEffect, useState, type ComponentProps } from "react";
 import Link from "next/link";
 import {
   Sidebar,
@@ -11,10 +11,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/Sidebar/Sidebar";
+import { CustomSheet } from "@/components/CustomSheet";
 import { NavMain } from "@/components/NavMain";
 import { NavProjects } from "@/components/NavProjects";
 import { NavSecondary } from "@/components/NavSecondary";
 import { WorkspaceSelector } from "@/components/WorkspaceSelector";
+import { WorkspaceSelectorActions } from "@/components/WorkspaceSelector/WorkspaceSelectorActions";
+import { WorkspaceProjectForm } from "@/components/forms/WorkspaceProjectForm";
+import type { CreateActionPayload } from "@/hooks/use-update-project";
+import { createWorkspaceAction } from "@/services/workspaces/create-workspace";
+import { updateWorkspaceAction } from "@/services/workspaces/update-workspace";
 import {
   IconCamera,
   IconChartBar,
@@ -164,6 +170,8 @@ interface AppSidebarProps extends ComponentProps<typeof Sidebar> {
   currentWorkspaceId: string | undefined;
 }
 
+type WorkspaceAction = Awaited<ReturnType<typeof createWorkspaceAction>>;
+
 export function AppSidebar({
   userId,
   workspaces,
@@ -171,6 +179,32 @@ export function AppSidebar({
   currentWorkspaceId,
   ...props
 }: AppSidebarProps) {
+  const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const [sheetMode, setSheetMode] = useState<"create" | "edit">("create");
+  const [workspaceActionState, workspaceAction] = useActionState<
+    WorkspaceAction,
+    CreateActionPayload
+  >(
+    async (_state, { formData, currentWsId }) => {
+      if (sheetMode === "edit") {
+        return await updateWorkspaceAction({
+          formData,
+          workspaceId: currentWsId ?? "",
+        });
+      }
+      return await createWorkspaceAction(formData);
+    },
+    { success: false, error: {} },
+  );
+  const isCreateMode = sheetMode === "create";
+  const selectedWorkspace = workspaces.find((w) => w.id === currentWorkspaceId);
+
+  useEffect(() => {
+    if (workspaceActionState.success) setIsCreateWorkspaceOpen(false);
+  }, [workspaceActionState]);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -192,12 +226,47 @@ export function AppSidebar({
       </SidebarContent>
       <SidebarFooter className="bg-background">
         <WorkspaceSelector
+          key={isCreateWorkspaceOpen || isDeleteDialogOpen ? "open" : "closed"}
           userId={userId}
           workspaces={workspaces}
           sidebarMenuButtonWrapper={{
             component: SidebarMenuButton,
             props: { asChild: true, size: "lg" },
           }}
+          actionSlot={
+            <WorkspaceSelectorActions
+              workspaces={workspaces}
+              currentWorkspaceName={selectedWorkspace?.name}
+              setIsCreateWorkspaceOpen={setIsCreateWorkspaceOpen}
+              setSheetMode={setSheetMode}
+              currentWorkspaceId={currentWorkspaceId}
+              isDeleteDialogOpen={isDeleteDialogOpen}
+              setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+            />
+          }
+        />
+        <CustomSheet
+          title={
+            isCreateMode
+              ? "Create your workspace"
+              : `Edit your ${selectedWorkspace?.name} workspace`
+          }
+          description={
+            isCreateMode
+              ? "Create a new workspace and start to collaborate with other people."
+              : "Edit and save the changes"
+          }
+          isOpen={isCreateWorkspaceOpen}
+          setIsOpen={setIsCreateWorkspaceOpen}
+          contentSlot={
+            <WorkspaceProjectForm
+              data={selectedWorkspace && sheetMode === "edit" ? selectedWorkspace : undefined}
+              action={workspaceAction}
+              mode={sheetMode}
+              type="workspace"
+              workspaceId={currentWorkspaceId}
+            />
+          }
         />
       </SidebarFooter>
     </Sidebar>

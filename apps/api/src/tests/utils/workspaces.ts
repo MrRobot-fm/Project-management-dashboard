@@ -27,15 +27,11 @@ export const getWorkspaces = async (cookie: string, statusCode?: number) => {
   return response.body;
 };
 
-export const deleteWorkspace = async (
-  cookie: string,
-  workspaceId: string,
-  statusCode?: number,
-) => {
+export const deleteWorkspace = async (cookie: string, workspaceId: string, statusCode?: number) => {
   const response = await request(app)
     .delete(`/api/workspaces/${workspaceId}`)
     .set("Cookie", cookie)
-    .expect(statusCode ?? 204);
+    .expect(statusCode ?? 200);
 
   return response.body;
 };

@@ -23,11 +23,15 @@ declare namespace Cypress {
       password: string;
     }): Chainable<CreateUserResponse>;
 
-    deleteCurrentUser(user: {
-      email: string;
-      password: string;
-    }): Chainable<Cypress.Response<void>>;
+    deleteCurrentUser(user: { email: string; password: string }): Chainable<Cypress.Response<void>>;
 
     logout(): Chainable<void>;
+    createWorkspace(name: string): Chainable<void>;
+    editWorkspace(name: string): Chainable<void>;
+    deleteCurrentWorkspace(): Chainable<void>;
+
+    createProject(name: string, description: string): Chainable<void>;
+    editProject(name: string, description: string, existingName): Chainable<void>;
+    deleteProject(name: string): Chainable<void>;
   }
 }

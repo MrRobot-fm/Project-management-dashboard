@@ -10,7 +10,6 @@ import {
   useTransition,
 } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@workspace/ui/components/Button";
 import {
   Select,
   SelectContent,
@@ -23,7 +22,7 @@ import { Avatar } from "@/components/Avatar";
 import { SELECTED_WS_ID_COOKIE_KEY } from "@/constants/workspaces";
 import type { Workspace } from "@workspace/db";
 import Cookies from "js-cookie";
-import { ChevronsUpDownIcon, PlusCircle } from "lucide-react";
+import { ChevronsUpDownIcon } from "lucide-react";
 
 type SidebarWrapper = {
   component: ComponentType<ComponentProps<typeof SidebarMenuButton>>;
@@ -34,6 +33,7 @@ interface WorkspaceSelectorProps {
   workspaces: Workspace[];
   sidebarMenuButtonWrapper?: SidebarWrapper;
   userId: string | undefined;
+  actionSlot?: ReactNode;
 }
 
 const SkeletonWorkspace = () => (
@@ -46,7 +46,7 @@ const SkeletonWorkspace = () => (
   </div>
 );
 
-const WorkspaceInfo = ({ workspace }: { workspace: Workspace }) => (
+const WorkspaceInfo = ({ workspace }: { workspace: Workspace; haAction?: boolean }) => (
   <div className="flex items-center gap-3">
     <Avatar image={workspace.logo} fallback={workspace.name} size="xl" shape="square" />
     <div className="flex flex-col items-start">
@@ -60,6 +60,7 @@ export const WorkspaceSelector = ({
   workspaces,
   sidebarMenuButtonWrapper,
   userId,
+  actionSlot,
 }: WorkspaceSelectorProps) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -87,6 +88,14 @@ export const WorkspaceSelector = ({
     });
   };
 
+  useEffect(() => {
+    if (workspaces.length === 1) {
+      Cookies.set(`${SELECTED_WS_ID_COOKIE_KEY}_${userId}`, workspaces?.[0]?.id || "", {
+        expires: 365,
+      });
+    }
+  }, [userId, workspaces]);
+
   const selectedWorkspace = workspaces.find((w) => w.id === selectedId);
 
   const TriggerWithWrapper = ({ children }: { children: ReactNode }) => {
@@ -102,7 +111,7 @@ export const WorkspaceSelector = ({
         <TriggerWithWrapper>
           <SelectTrigger
             data-test-id="workspaces-select"
-            className="w-full bg-stone-50 border-gray-200 dark:border-stone-700 !h-11.5 px-2 py-1 *:data-[slot=select-icon]:hidden cursor-pointer focus-visible:ring-0 focus-visible:border-gray-200 data-[placeholder]:text-stone-700 dark:data-[placeholder]:text-foreground"
+            className="w-full bg-stone-50 border-gray-200 dark:border-stone-700 !h-11.5 px-2 py-1 *:data-[slot=select-icon]:hidden cursor-pointer focus-visible:ring-0 focus-visible:border-gray-200 data-[placeholder]:text-stone-700 dark:data-[placeholder]:text-foreground "
           >
             <SelectValue placeholder="No workspaces. Create one!">
               {isPending ? (
@@ -122,14 +131,10 @@ export const WorkspaceSelector = ({
               </SelectItem>
             </Fragment>
           ))}
-          {workspaces.length > 0 && <div className="my-1 h-px bg-gray-200 dark:bg-stone-700" />}
-          <Button
-            variant="ghost"
-            className="flex gap-2 items-center cursor-pointer w-full justify-start"
-          >
-            <PlusCircle className="size-4 text-gray-600" />
-            <span className="text-xs text-stone-600">Create workspace</span>
-          </Button>
+          {workspaces.length > 0 && actionSlot && (
+            <div className="my-1 h-px bg-gray-200 dark:bg-stone-700" />
+          )}
+          {actionSlot}
         </SelectContent>
       </Select>
     </div>

@@ -102,6 +102,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
             mode={sheetMode}
             data={selectedProject && sheetMode === "edit" ? selectedProject : undefined}
             workspaceId={currentWorkspaceId}
+            type="project"
           />
         }
       />
@@ -126,7 +127,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
 
             return (
               <SidebarMenuItem key={project.id}>
-                <SidebarMenuButton asChild isActive={isActive}>
+                <SidebarMenuButton asChild isActive={isActive} data-test-id="project-item">
                   <Link href={`${URL_PROJECTS}/${project.id}`}>
                     <Avatar size="md" shape="square" image={project.logo} fallback={project.name} />
                     <span className="text-sm">{project.name}</span>
@@ -139,6 +140,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
                   align={isMobile ? "end" : "start"}
                   triggerSlot={
                     <SidebarMenuAction
+                      aria-label="More"
                       showOnHover
                       className="data-[state=open]:bg-accent rounded-sm cursor-pointer focus-within:ring-0"
                     >
@@ -153,7 +155,9 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
             );
           })
         ) : (
-          <SidebarMenuItem className="text-xs p-2">No projects. Create one, now!</SidebarMenuItem>
+          <SidebarMenuItem data-test-id="project-empty-state" className="text-xs p-2">
+            No projects. Create one, now!
+          </SidebarMenuItem>
         )}
         {optimisticProjects.length > 3 && (
           <SidebarMenuItem className="mt-2">
