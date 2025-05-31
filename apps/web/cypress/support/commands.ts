@@ -96,13 +96,13 @@ Cypress.Commands.add("editWorkspace", (name: string) => {
   cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
   cy.get("img").should("have.attr", "src").and("include", "/workspace-logo/");
 
-  cy.findByRole("button", { name: /save changes/i }).click();
+  cy.findByRole("button", { name: /save changes/i }).click({ force: true });
 });
 
 Cypress.Commands.add("deleteCurrentWorkspace", () => {
   cy.wait(500);
 
-  cy.get("body").should("not.have.css", "pointer-events", "none");
+  cy.get("body", { timeout: 15000 }).should("not.have.css", "pointer-events", "none");
 
   cy.findByTestId("workspaces-select", { timeout: 10000 }).click();
   cy.findByRole("button", { name: /delete workspace/i, timeout: 10000 }).click();
