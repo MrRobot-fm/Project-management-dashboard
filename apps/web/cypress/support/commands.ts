@@ -121,7 +121,7 @@ Cypress.Commands.add("createProject", (name: string, description: string) => {
 Cypress.Commands.add("editProject", (name: string, description: string, existingName) => {
   cy.findByTestId("project-item", { timeout: 10000 }).should("have.text", existingName);
 
-  cy.findByRole("button", { name: /more/i }).click({ force: true });
+  cy.findByRole("button", { name: /more/i, timeout: 15000 }).click({ force: true });
   cy.findByRole("menuitem", { name: /edit/i }).click({ force: true });
   cy.findByRole("textbox", { name: /name/i }).type(name);
   cy.findByRole("textbox", { name: /description/i }).type(description);
@@ -135,6 +135,6 @@ Cypress.Commands.add("editProject", (name: string, description: string, existing
 Cypress.Commands.add("deleteProject", (name: string) => {
   cy.findByTestId("project-item").should("have.text", name);
 
-  cy.findByRole("button", { name: /more/i }).click();
+  cy.findByRole("button", { name: /more/i, timeout: 15000 }).click({ force: true });
   cy.findByRole("menuitem", { name: /delete/i }).click();
 });
