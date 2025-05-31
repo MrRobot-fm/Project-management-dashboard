@@ -15,6 +15,7 @@ describe("Projects", () => {
   });
 
   afterEach(() => {
+    cy.get('[data-slot="sheet-overlay"]', { timeout: 15000 }).should("not.exist");
     cy.deleteCurrentWorkspace();
     cy.get("[data-slot='select-value']", { timeout: 15000 }).should(
       "contain.text",
