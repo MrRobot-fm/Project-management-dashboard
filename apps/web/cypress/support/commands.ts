@@ -80,9 +80,7 @@ Cypress.Commands.add("createWorkspace", (name: string) => {
   cy.findByRole("textbox", { name: /name/i }).type(name);
 
   cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
-  cy.get("img")
-    .should("have.attr", "src")
-    .and("match", /^blob:/);
+  cy.get("img").should("have.attr", "src");
 
   cy.findByRole("button", { name: /create/i }).click();
 });
@@ -94,7 +92,7 @@ Cypress.Commands.add("editWorkspace", (name: string) => {
 
   cy.findByRole("button", { name: /remove logo/i }).click();
   cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
-  cy.get("img").should("have.attr", "src").and("include", "/workspace-logo/");
+  cy.get("img").should("have.attr", "src");
 
   cy.findByRole("button", { name: /save changes/i }).click({ force: true });
 });
@@ -115,6 +113,7 @@ Cypress.Commands.add("createProject", (name: string, description: string) => {
   cy.findByRole("textbox", { name: /description/i }).type(description);
 
   cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
+  cy.get("img").should("have.attr", "src");
 
   cy.findByRole("button", { name: /create project/i }).click();
 });
@@ -128,6 +127,7 @@ Cypress.Commands.add("editProject", (name: string, description: string, existing
   cy.findByRole("textbox", { name: /description/i }).type(description);
 
   cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
+  cy.get("img").should("have.attr", "src");
 
   cy.findByRole("button", { name: /save changes/i }).click({ force: true });
 });

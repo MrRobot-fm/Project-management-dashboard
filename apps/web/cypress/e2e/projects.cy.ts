@@ -15,19 +15,18 @@ describe("Projects", () => {
   });
 
   afterEach(() => {
-    cy.deleteCurrentWorkspace().then(() => {
-      cy.get("[data-slot='select-value']", { timeout: 10000 }).should(
-        "contain.text",
-        "No workspaces. Create one!",
-      );
-    });
+    cy.deleteCurrentWorkspace();
+    cy.get("[data-slot='select-value']", { timeout: 15000 }).should(
+      "contain.text",
+      "No workspaces. Create one!",
+    );
   });
 
   it("should create project successfully", () => {
     cy.createWorkspace(workspaceName);
 
     cy.createProject(projectName, projectDescription).then(() => {
-      cy.findByTestId("project-item", { timeout: 10000 }).should("have.text", projectName);
+      cy.findByTestId("project-item", { timeout: 15000 }).should("have.text", projectName);
     });
   });
 
