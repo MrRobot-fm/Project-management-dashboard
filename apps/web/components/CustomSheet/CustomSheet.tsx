@@ -30,7 +30,7 @@ export const CustomSheet = ({
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       {triggerSlot && <SheetTrigger asChild>{triggerSlot}</SheetTrigger>}
-      <SheetContent className="w-full sm:max-w-full md:max-w-2/3 lg:max-w-3/7 xl:max-w-2/6 px-8 py-6">
+      <SheetContent className="w-full sm:max-w-full md:max-w-2/3 lg:max-w-3/7 xl:max-w-2/6 px-8 py-6 overflow-y-auto">
         <div className="w-full mx-auto">
           <SheetHeader className="px-0">
             <SheetTitle>{title} </SheetTitle>

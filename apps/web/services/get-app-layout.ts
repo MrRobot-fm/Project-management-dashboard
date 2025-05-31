@@ -19,12 +19,17 @@ export const getAppLayout = async (): Promise<AppLayoutData> => {
   const { workspaces } = await getWorkspaces();
   const selectedWsCookie = await getCookie(`${SELECTED_WS_ID_COOKIE_KEY}_${user?.id}`);
 
-  const { projects } = await getWsProjects(selectedWsCookie ?? workspaces?.[0]?.id);
+  const validWorkspaceIds = workspaces?.map((workspace) => workspace.id);
+  const currentWorkspaceId = validWorkspaceIds?.includes(selectedWsCookie || "")
+    ? selectedWsCookie
+    : workspaces?.[0]?.id;
+
+  const { projects } = await getWsProjects(selectedWsCookie || workspaces?.[0]?.id);
 
   return {
     user: user,
     workspaces: workspaces ?? [],
     projects: projects ?? [],
-    currentWorkspaceId: selectedWsCookie,
+    currentWorkspaceId: currentWorkspaceId,
   };
 };

@@ -2,18 +2,33 @@ import type { Request, Response } from "express";
 import { uploadFile } from "@/utils/storage";
 import { prisma } from "@workspace/db";
 import { BadRequestError, UnauthorizedError } from "@workspace/exceptions";
+import { randomUUID } from "crypto";
 
 export const createWorkspace = async (req: Request, res: Response) => {
-  const { user, body } = req;
+  const { user, body, file } = req;
 
   if (!user) {
     throw new UnauthorizedError("User can't create workspace");
   }
 
+  const workspaceId = randomUUID();
+
+  let publicUrl: string | null = null;
+
+  if (file) {
+    publicUrl = await uploadFile({
+      bucket: "workspace-logo",
+      file: file,
+      workspaceId,
+    });
+  }
+
   const workspace = await prisma.$transaction(async (tx) => {
     const createdWorkspace = await tx.workspace.create({
       data: {
+        id: workspaceId,
         name: body.name,
+        logo: publicUrl,
         ownerId: user.id,
       },
     });
@@ -60,6 +75,9 @@ export const getWorkspaces = async (req: Request, res: Response) => {
           },
         },
       },
+    },
+    orderBy: {
+      createdAt: "asc",
     },
   });
 
@@ -110,7 +128,7 @@ export const deleteWorkspace = async (req: Request, res: Response) => {
     },
   });
 
-  res.status(204).json({ workspace, success: true });
+  res.status(200).json({ workspace, success: true });
 };
 
 export const updateWorkspace = async (req: Request, res: Response) => {
@@ -118,6 +136,10 @@ export const updateWorkspace = async (req: Request, res: Response) => {
 
   if (!user) {
     throw new UnauthorizedError("User can't update workspace");
+  }
+
+  if (!params?.workspaceId) {
+    throw new BadRequestError("Workspace ID is required");
   }
 
   let publicUrl: string | null = null;
@@ -135,7 +157,9 @@ export const updateWorkspace = async (req: Request, res: Response) => {
     },
     data: {
       name: body.name,
-      logo: publicUrl,
+      ...(file && {
+        logo: publicUrl,
+      }),
     },
   });
 

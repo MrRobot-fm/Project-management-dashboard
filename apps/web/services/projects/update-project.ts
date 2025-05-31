@@ -19,10 +19,14 @@ export const updateProjectAction = async ({
   projectId: string | undefined;
 }): Promise<ActionResponse<Project, "project", UpdateProjectType>> => {
   try {
+    if (!projectId) throw new Error("Project ID is required");
+
     const jwtToken = await getCookie("jwt_token");
 
     const logo = formData.get("logo");
     const description = formData.get("description");
+
+    console.log("logo:", logo);
 
     if (!description) {
       formData.delete("description");
@@ -38,8 +42,6 @@ export const updateProjectAction = async ({
       return validationErrorData<UpdateProjectType>(validation.errors);
     }
 
-    if (!projectId) throw new Error("Project ID is required");
-
     const response = await fetchInstance<ApiCreateProjectResponseModel>({
       path: `projects/${projectId}`,
       options: {
@@ -51,7 +53,9 @@ export const updateProjectAction = async ({
       },
     });
 
-    revalidateTag("get-projects");
+    if (response.data?.success) {
+      revalidateTag("get-projects");
+    }
 
     return { success: true, project: response.data?.project };
   } catch (error) {

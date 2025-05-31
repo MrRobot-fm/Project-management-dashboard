@@ -17,17 +17,18 @@ export const workspacesRouter = Router();
 workspacesRouter.get("/", [authMiddleware], getWorkspaces);
 workspacesRouter.post(
   "/",
-  [authMiddleware, validateBody(CreateWorkspaceSchema)],
+  [authMiddleware, upload.single("logo"), validateBody(CreateWorkspaceSchema)],
   createWorkspace,
 );
 workspacesRouter.delete("/:workspaceId", [authMiddleware], deleteWorkspace);
 workspacesRouter.put(
   "/:workspaceId",
-  [authMiddleware, verifyWorkspacePermissions, upload.single("logo")],
+  [
+    authMiddleware,
+    verifyWorkspacePermissions,
+    upload.single("logo"),
+    validateBody(CreateWorkspaceSchema),
+  ],
   updateWorkspace,
 );
-workspacesRouter.post(
-  "/:workspaceId/members",
-  [authMiddleware],
-  insertUserIntoWorkspace,
-);
+workspacesRouter.post("/:workspaceId/members", [authMiddleware], insertUserIntoWorkspace);

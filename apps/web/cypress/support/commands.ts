@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 import "@testing-library/cypress/add-commands";
+import "cypress-file-upload";
 
 const API_URL = Cypress.env("API_URL");
 const jsonHeaders = { "Content-Type": "application/json" };
@@ -14,15 +15,11 @@ const loginAndGetCookie = (email: string, password: string) => {
     })
     .then((res) => {
       const cookies = res.headers["set-cookie"] as string[] | undefined;
-      const jwtCookie = cookies?.find((cookie) =>
-        cookie.startsWith("jwt_token="),
-      );
+      const jwtCookie = cookies?.find((cookie) => cookie.startsWith("jwt_token="));
 
       const email = res.body.user.email;
       const password = res.body.user.password;
       const id = res.body.user.id;
-
-      console.log({ res });
 
       return {
         user: {
@@ -75,4 +72,65 @@ Cypress.Commands.add("deleteCurrentUser", (user) => {
       },
     });
   });
+});
+
+Cypress.Commands.add("createWorkspace", (name: string) => {
+  cy.findByTestId("workspaces-select").click();
+  cy.findByRole("button", { name: /create workspace/i }).click();
+  cy.findByRole("textbox", { name: /name/i }).type(name);
+
+  cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
+  cy.get("img")
+    .should("have.attr", "src")
+    .and("match", /^blob:/);
+
+  cy.findByRole("button", { name: /create/i }).click();
+});
+
+Cypress.Commands.add("editWorkspace", (name: string) => {
+  cy.findByTestId("workspaces-select").click();
+  cy.findByRole("button", { name: /edit workspace/i }).click();
+  cy.findByRole("textbox", { name: /name/i }).type(name);
+
+  cy.findByRole("button", { name: /remove logo/i }).click();
+  cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
+  cy.get("img").should("have.attr", "src").and("include", "/workspace-logo/");
+
+  cy.findByRole("button", { name: /save changes/i }).click();
+});
+
+Cypress.Commands.add("deleteCurrentWorkspace", () => {
+  cy.findByTestId("workspaces-select").click();
+  cy.findByRole("button", { name: /delete workspace/i }).click();
+  cy.findByRole("button", { name: /delete/i }).click();
+});
+
+Cypress.Commands.add("createProject", (name: string, description: string) => {
+  cy.findByRole("button", { name: /projects/i }).click();
+  cy.findByRole("textbox", { name: /name/i }).type(name);
+  cy.findByRole("textbox", { name: /description/i }).type(description);
+
+  cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
+
+  cy.findByRole("button", { name: /create project/i }).click();
+});
+
+Cypress.Commands.add("editProject", (name: string, description: string, existingName) => {
+  cy.findByTestId("project-item").should("have.text", existingName);
+
+  cy.findByRole("button", { name: /more/i }).click();
+  cy.findByRole("menuitem", { name: /edit/i }).click();
+  cy.findByRole("textbox", { name: /name/i }).type(name);
+  cy.findByRole("textbox", { name: /description/i }).type(description);
+
+  cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
+
+  cy.findByRole("button", { name: /save changes/i }).click();
+});
+
+Cypress.Commands.add("deleteProject", (name: string) => {
+  cy.findByTestId("project-item").should("have.text", name);
+
+  cy.findByRole("button", { name: /more/i }).click();
+  cy.findByRole("menuitem", { name: /delete/i }).click();
 });

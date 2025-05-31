@@ -13,6 +13,9 @@ export const getWorkspaces = async () => {
         "Content-Type": "application/json",
         Cookie: `jwt_token=${jwtToken}`,
       },
+      next: {
+        tags: ["get-workspaces"],
+      },
     },
   });
 

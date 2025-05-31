@@ -58,6 +58,7 @@
     "@workspace/typescript-config": "workspace:*",
     "@workspace/vitest-config": "workspace:*",
     "cypress": "^14.2.1",
+    "cypress-file-upload": "^5.0.8",
     "dotenv": "^16.4.7",
     "typescript": "^5.8.2",
     "vitest": "^3.0.9"
