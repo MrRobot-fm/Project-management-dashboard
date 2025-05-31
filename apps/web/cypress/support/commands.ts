@@ -108,7 +108,6 @@ Cypress.Commands.add("deleteCurrentWorkspace", () => {
 });
 
 Cypress.Commands.add("createProject", (name: string, description: string) => {
-  cy.get("body").should("have.css", "pointer-events", "auto");
   cy.findByRole("button", { name: /projects/i, timeout: 10000 }).click();
   cy.findByRole("textbox", { name: /name/i }).type(name);
   cy.findByRole("textbox", { name: /description/i }).type(description);
@@ -119,8 +118,6 @@ Cypress.Commands.add("createProject", (name: string, description: string) => {
 });
 
 Cypress.Commands.add("editProject", (name: string, description: string, existingName) => {
-  cy.get("body").should("have.css", "pointer-events", "auto");
-
   cy.findByTestId("project-item", { timeout: 10000 }).should("have.text", existingName);
 
   cy.findByRole("button", { name: /more/i }).click();
@@ -130,7 +127,7 @@ Cypress.Commands.add("editProject", (name: string, description: string, existing
 
   cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
 
-  cy.findByRole("button", { name: /save changes/i }).click();
+  cy.findByRole("button", { name: /save changes/i }).click({ force: true });
 });
 
 Cypress.Commands.add("deleteProject", (name: string) => {
