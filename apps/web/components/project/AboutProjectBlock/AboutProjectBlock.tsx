@@ -30,7 +30,7 @@ export const AboutProjectBlock = ({ project }: AboutProjectBlockProps) => {
         return <StatusBadge status={project.status} />;
 
       case "priority":
-        return <PriorityBadge />;
+        return <PriorityBadge priority={project.priority} />;
 
       case "creator":
         return (

@@ -1,14 +1,14 @@
-import { useMemo } from "react";
+import { type ComponentProps, useMemo } from "react";
 import { Badge } from "@workspace/ui/components/Badge";
 import { cn } from "@workspace/ui/lib/utils";
 import type { ProjectStatus } from "@workspace/db";
 import { cva } from "class-variance-authority";
 
-interface StatusBadgeProps {
+interface StatusBadgeProps extends Pick<ComponentProps<"span">, "className"> {
   status: ProjectStatus;
 }
 
-export const StatusBadge = ({ status }: StatusBadgeProps) => {
+export const StatusBadge = ({ status, className }: StatusBadgeProps) => {
   const projectLabel = useMemo(() => {
     switch (status) {
       case "INIT":
@@ -28,7 +28,7 @@ export const StatusBadge = ({ status }: StatusBadgeProps) => {
     }
   }, [status]);
 
-  return <Badge className={cn(statusBadgeVariants({ status }))}>{projectLabel}</Badge>;
+  return <Badge className={cn(statusBadgeVariants({ status, className }))}>{projectLabel}</Badge>;
 };
 
 const statusBadgeVariants = cva(
