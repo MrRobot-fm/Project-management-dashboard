@@ -67,14 +67,32 @@ model WorkspaceMember {
   @@map("workspace_members")
 }
 
+enum ProjectStatus {
+  INIT
+  PLANNING
+  IN_PROGRESS
+  BLOCKED
+  COMPLETED
+  CANCELLED
+}
+
+enum ProjectPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
 model Project {
-  id          String   @id @default(uuid())
+  id          String          @id @default(uuid())
   name        String
   description String?
   logo        String?
-  workspaceId String   @map("workspace_id")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  status      ProjectStatus   @default(INIT)
+  priority    ProjectPriority @default(LOW)
+  workspaceId String          @map("workspace_id")
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @default(now()) @updatedAt @map("updated_at")
 
   workspace Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   members   ProjectMember[]

@@ -1,4 +1,10 @@
-import type { TaskPriority, TaskStatus, UserRole } from "@workspace/db";
+import type {
+  ProjectPriority,
+  ProjectStatus,
+  TaskPriority,
+  TaskStatus,
+  UserRole,
+} from "@workspace/db";
 
 interface Member {
   id: string;
@@ -36,11 +42,13 @@ interface Assignee {
   logo: string | null;
 }
 
-interface Project {
+export interface Project {
   id: string;
   name: string;
   description: string | null;
   logo: string | null;
+  status: ProjectStatus;
+  priority: ProjectPriority;
   workspaceId: string;
   createdAt: string;
   updatedAt: string;

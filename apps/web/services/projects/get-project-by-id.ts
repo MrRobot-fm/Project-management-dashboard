@@ -1,11 +1,13 @@
+import type { ApiGetProjectByIdResponseModel } from "@/types/models/api-get-project-by-id";
 import { fetchInstance } from "@/utils/fetch-instance";
 import { getCookie } from "@/utils/get-cookie";
-import type { Project } from "@workspace/db";
 
-export const getProjectById = async (projectId: string) => {
+export const getProjectById = async (
+  projectId: string,
+): Promise<ApiGetProjectByIdResponseModel> => {
   const jwtToken = await getCookie("jwt_token");
 
-  const response = await fetchInstance<{ project: Project }>({
+  const response = await fetchInstance<ApiGetProjectByIdResponseModel>({
     path: `projects/${projectId}`,
     options: {
       method: "GET",
