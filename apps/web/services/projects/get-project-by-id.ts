@@ -3,10 +3,14 @@ import { fetchInstance } from "@/utils/fetch-instance";
 import { getCookie } from "@/utils/get-cookie";
 import type { Project } from "@workspace/db";
 
-export const getProjectById = async (projectId: string) => {
+type GetProjectByIdResponse = {
+  project: (Project & { members: ProjectMember[] }) | undefined;
+};
+
+export const getProjectById = async (projectId: string): Promise<GetProjectByIdResponse> => {
   const jwtToken = await getCookie("jwt_token");
 
-  const response = await fetchInstance<{ project: Project & { members: ProjectMember[] } }>({
+  const response = await fetchInstance<GetProjectByIdResponse>({
     path: `projects/${projectId}`,
     options: {
       method: "GET",
