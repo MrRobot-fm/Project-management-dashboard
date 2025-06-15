@@ -123,7 +123,7 @@ Cypress.Commands.add("editProject", (name: string, description: string, existing
 
   cy.findByRole("button", { name: /more/i, timeout: 15000 }).click({ force: true });
   cy.findByRole("menuitem", { name: /edit/i }).click({ force: true });
-  cy.findByRole("textbox", { name: /name/i }).type(name);
+  cy.findByRole("textbox", { name: /name/i }).clear().wait(100).type(name);
   cy.findByRole("textbox", { name: /description/i }).type(description);
 
   cy.get('input[type="file"]').attachFile("super_mario.jpeg", { force: true });
