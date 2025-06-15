@@ -2,10 +2,16 @@ import { fetchInstance } from "@/utils/fetch-instance";
 import { getCookie } from "@/utils/get-cookie";
 import type { Project } from "@workspace/db";
 
-export const getWsProjects = async (workspaceId: string | undefined) => {
+interface GetWsProjectResponse {
+  projects: Project[] | undefined;
+}
+
+export const getWsProjects = async (
+  workspaceId: string | undefined,
+): Promise<GetWsProjectResponse> => {
   const jwtToken = await getCookie("jwt_token");
 
-  const response = await fetchInstance<{ projects: Project[] }>({
+  const response = await fetchInstance<GetWsProjectResponse>({
     path: `workspaces/${workspaceId}/project`,
     options: {
       method: "GET",
