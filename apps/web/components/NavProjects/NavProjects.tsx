@@ -16,8 +16,8 @@ import {
 import { NavProjectsItems } from "./NavProjectsItems";
 import { ShowProjectsButton } from "./ShowProjectsButton";
 import { Avatar } from "@/components/Avatar";
+import { CustomDialog } from "@/components/CustomDialog";
 import { CustomDropdown } from "@/components/CustomDropdown";
-import { CustomSheet } from "@/components/CustomSheet";
 import { LinkLoadingIndicator } from "@/components/LinkLoadingIndicator";
 import { WorkspaceProjectForm } from "@/components/forms/WorkspaceProjectForm";
 import { URL_PROJECTS } from "@/constants/urls";
@@ -36,7 +36,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
   const { isMobile } = useSidebar();
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isProjectSheetOpen, setIsProjectSheetOpen] = useState(false);
+  const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
   const [sheetMode, setSheetMode] = useState<"create" | "edit">("create");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
@@ -63,7 +63,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
       action: () => {
         setSheetMode("edit");
         setSelectedProject(project);
-        setIsProjectSheetOpen(true);
+        setIsProjectDialogOpen(true);
       },
       isLink: false,
     },
@@ -78,7 +78,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
 
   useEffect(() => {
     if (createProjectState?.success) {
-      setIsProjectSheetOpen(false);
+      setIsProjectDialogOpen(false);
     }
   }, [createProjectState]);
 
@@ -91,11 +91,11 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <CustomSheet
+      <CustomDialog
         title={title}
         description={descriptions}
-        isOpen={isProjectSheetOpen}
-        setIsOpen={setIsProjectSheetOpen}
+        isOpen={isProjectDialogOpen}
+        setIsOpen={setIsProjectDialogOpen}
         contentSlot={
           <WorkspaceProjectForm
             action={createAction}
@@ -113,7 +113,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
           className="hover:no-underline justify-between cursor-pointer !pl-2 uppercase font-semibold"
           onClick={() => {
             setSheetMode("create");
-            setIsProjectSheetOpen(true);
+            setIsProjectDialogOpen(true);
           }}
         >
           Projects
@@ -128,7 +128,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
             return (
               <SidebarMenuItem key={project.id}>
                 <SidebarMenuButton asChild isActive={isActive} data-test-id="project-item">
-                  <Link href={`${URL_PROJECTS}/${project.id}`}>
+                  <Link href={`${URL_PROJECTS}/${project.id}`} prefetch>
                     <Avatar size="md" shape="square" image={project.logo} fallback={project.name} />
                     <span className="text-sm">{project.name}</span>
                     <LinkLoadingIndicator />

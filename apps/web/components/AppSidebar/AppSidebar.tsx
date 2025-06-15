@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/Sidebar/Sidebar";
-import { CustomSheet } from "@/components/CustomSheet";
+import { CustomDialog } from "@/components/CustomDialog";
 import { NavMain } from "@/components/NavMain";
 import { NavProjects } from "@/components/NavProjects";
 import { NavSecondary } from "@/components/NavSecondary";
@@ -245,7 +245,7 @@ export function AppSidebar({
             />
           }
         />
-        <CustomSheet
+        <CustomDialog
           title={
             isCreateMode
               ? "Create your workspace"

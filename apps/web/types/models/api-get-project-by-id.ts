@@ -6,7 +6,7 @@ import type {
   UserRole,
 } from "@workspace/db";
 
-interface Member {
+export interface ProjectMember {
   id: string;
   name: string;
   email: string;
@@ -52,7 +52,7 @@ export interface Project {
   workspaceId: string;
   createdAt: string;
   updatedAt: string;
-  members: Member[];
+  members: ProjectMember[];
   tasks: Task[];
 }
 

@@ -1,14 +1,11 @@
 import { type ComponentProps, useMemo } from "react";
 import { Badge } from "@workspace/ui/components/Badge";
 import { cn } from "@workspace/ui/lib/utils";
-import type { ProjectStatus } from "@workspace/db";
-import { cva } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 
-interface StatusBadgeProps extends Pick<ComponentProps<"span">, "className"> {
-  status: ProjectStatus;
-}
+type StatusBadgeProps = StatusBadgeVariants & Pick<ComponentProps<"span">, "className">;
 
-export const StatusBadge = ({ status, className }: StatusBadgeProps) => {
+export const StatusBadge = ({ status, size, className }: StatusBadgeProps) => {
   const projectLabel = useMemo(() => {
     switch (status) {
       case "INIT":
@@ -28,24 +25,30 @@ export const StatusBadge = ({ status, className }: StatusBadgeProps) => {
     }
   }, [status]);
 
-  return <Badge className={cn(statusBadgeVariants({ status, className }))}>{projectLabel}</Badge>;
+  return (
+    <Badge className={cn(statusBadgeVariants({ status, size, className }))}>{projectLabel}</Badge>
+  );
 };
 
-const statusBadgeVariants = cva(
-  "flex items-center justify-center text-xs px-2 rounded-full border",
-  {
-    variants: {
-      status: {
-        INIT: "text-blue-600 bg-blue-100 border-blue-600",
-        PLANNING: "text-amber-600 bg-amber-100 border-amber-600",
-        IN_PROGRESS: "text-emerald-600 bg-emerald-100 border-emerald-600",
-        COMPLETED: "text-purple-600 bg-purple-100 border-purple-600",
-        CANCELLED: "text-red-600 bg-red-100 border-red-600",
-        BLOCKED: "text-orange-700 bg-orange-100 border-orange-700",
-      },
+type StatusBadgeVariants = VariantProps<typeof statusBadgeVariants>;
+
+const statusBadgeVariants = cva("flex items-center justify-center rounded-full border px-2", {
+  variants: {
+    status: {
+      INIT: "text-blue-600 bg-blue-100 border-blue-600",
+      PLANNING: "text-amber-600 bg-amber-100 border-amber-600",
+      IN_PROGRESS: "text-emerald-600 bg-emerald-100 border-emerald-600",
+      COMPLETED: "text-purple-600 bg-purple-100 border-purple-600",
+      CANCELLED: "text-red-600 bg-red-100 border-red-600",
+      BLOCKED: "text-orange-700 bg-orange-100 border-orange-700",
     },
-    defaultVariants: {
-      status: "INIT",
+    size: {
+      sm: "text-[10px] leading-[150%]",
+      md: "text-xs ",
     },
   },
-);
+  defaultVariants: {
+    status: "INIT",
+    size: "md",
+  },
+});

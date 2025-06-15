@@ -1,21 +1,25 @@
 import { useTransition } from "react";
 import { useForm } from "@tanstack/react-form";
-import type { Project, Workspace } from "@workspace/db";
+import type { Workspace, Project } from "@workspace/db";
 import {
   CreateProjectsSchema,
   CreateWorkspaceSchema,
   type CreateProjectType,
 } from "@workspace/schemas";
 
-const getDefaultValues = (
+const getDefaultValues = <T extends Project | Workspace>(
   type: "workspace" | "project",
-  data?: Partial<Project & Workspace>,
+  data?: T,
   isEdit = false,
 ): CreateProjectType => {
   return {
     name: isEdit ? (data?.name ?? "") : "",
     ...(type === "project" && {
-      description: isEdit ? (data?.description ?? "") : "",
+      description: isEdit
+        ? "description" in (data ?? {})
+          ? ((data as Project).description ?? "")
+          : ""
+        : "",
     }),
     logo: isEdit ? (data?.logo ?? undefined) : undefined,
   };
@@ -33,21 +37,21 @@ interface ProjectPayload extends WorkspacePayload {
 
 export type FormActionPayload = WorkspacePayload | ProjectPayload;
 
-interface UseWorkspaceProjectFormValidationProps {
-  data: Partial<Project & Workspace> | undefined;
+interface UseWorkspaceProjectFormValidationProps<T extends Project | Workspace> {
+  data: T | undefined;
   isEditMode: boolean;
   workspaceId: string | undefined;
   action: (payload: FormActionPayload) => void;
   type: "workspace" | "project";
 }
 
-export const useWorkspaceProjectFormValidation = ({
+export const useWorkspaceProjectFormValidation = <T extends Project | Workspace>({
   data,
   isEditMode,
   workspaceId,
   action,
   type,
-}: UseWorkspaceProjectFormValidationProps) => {
+}: UseWorkspaceProjectFormValidationProps<T>) => {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm({

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@workspace/ui/components/Button";
 import { Input } from "@workspace/ui/components/Input";
 import { Label } from "@workspace/ui/components/Label";
@@ -8,23 +10,23 @@ import {
 import { Dropzone } from "@/components/Dropzone";
 import { Spinner } from "@/components/Spinner";
 import { FieldInfo } from "@/components/forms/FieldInfo";
-import type { Project, Workspace } from "@workspace/db";
+import type { Workspace, Project } from "@workspace/db";
 
-interface WorkspaceProjectFormProps {
-  data?: Partial<Project & Workspace>;
+interface WorkspaceProjectFormProps<T extends Project | Workspace> {
+  data?: T;
   action: (payload: FormActionPayload) => void;
   workspaceId?: string;
   mode?: "create" | "edit";
   type: "workspace" | "project";
 }
 
-export const WorkspaceProjectForm = ({
+export const WorkspaceProjectForm = <T extends Project | Workspace>({
   data,
   action,
   workspaceId,
   mode,
   type,
-}: WorkspaceProjectFormProps) => {
+}: WorkspaceProjectFormProps<T>) => {
   const isEditMode = mode === "edit";
   const isCreateMode = mode === "create";
 

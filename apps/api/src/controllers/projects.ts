@@ -39,6 +39,7 @@ export const createProject = async (req: Request, res: Response) => {
         projectId: createdProject.id,
         userId: user.id,
         workspaceId: params.workspaceId,
+        role: "OWNER",
       },
     });
     return createdProject;

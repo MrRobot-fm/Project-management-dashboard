@@ -30,6 +30,8 @@ export default async function RootLayout({
 }>) {
   const { user, workspaces, projects, currentWorkspaceId } = await getAppLayout();
 
+  console.log({ projects });
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
