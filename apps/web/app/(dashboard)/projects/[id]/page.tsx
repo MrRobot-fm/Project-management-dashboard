@@ -5,6 +5,8 @@ import { ProjectDescriptionBlock } from "@/components/project/ProjectDescription
 import { ProjectMembersBlock } from "@/components/project/ProjectMembersBlock";
 import { getProjectById } from "@/services/projects/get-project-by-id";
 
+export const dynamic = "force-dynamic";
+
 interface SingleProjectProps {
   params: Promise<{
     id: string;
@@ -15,8 +17,6 @@ export default async function SingleProject({ params }: SingleProjectProps) {
   const { id } = await params;
 
   const { project } = await getProjectById(id);
-
-  console.log({ project });
 
   if (!project) return;
 
