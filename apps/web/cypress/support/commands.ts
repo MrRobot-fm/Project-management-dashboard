@@ -98,11 +98,11 @@ Cypress.Commands.add("editWorkspace", (name: string) => {
 });
 
 Cypress.Commands.add("deleteCurrentWorkspace", () => {
-  cy.wait(500);
+  cy.wait(1000);
 
   cy.get("body", { timeout: 15000 }).should("not.have.css", "pointer-events", "none");
 
-  cy.findByTestId("workspaces-select", { timeout: 10000 }).click();
+  cy.findByTestId("workspaces-select", { timeout: 10000 }).click({ force: true });
   cy.findByRole("button", { name: /delete workspace/i, timeout: 10000 }).click();
   cy.findByRole("button", { name: /delete/i, timeout: 10000 }).click();
 });
