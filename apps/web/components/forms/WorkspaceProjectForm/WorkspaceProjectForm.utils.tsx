@@ -12,16 +12,22 @@ const getDefaultValues = <T extends Project | Workspace>(
   data?: T,
   isEdit = false,
 ): CreateProjectType => {
-  return {
+  const base = {
     name: isEdit ? (data?.name ?? "") : "",
-    ...(type === "project" && {
-      description: isEdit
-        ? "description" in (data ?? {})
-          ? ((data as Project).description ?? "")
-          : ""
-        : "",
-    }),
     logo: isEdit ? (data?.logo ?? undefined) : undefined,
+  };
+
+  if (type !== "project") {
+    return base;
+  }
+
+  const projectData = data as Project | undefined;
+
+  return {
+    ...base,
+    description: isEdit ? (projectData?.description ?? "") : "",
+    status: isEdit ? (projectData?.status ?? "INIT") : "INIT",
+    priority: isEdit ? (projectData?.priority ?? "LOW") : "LOW",
   };
 };
 
@@ -72,6 +78,9 @@ export const useWorkspaceProjectFormValidation = <T extends Project | Workspace>
           formData.append("logo", value.logo);
         }
       }
+
+      if (value.priority) formData.append("priority", value.priority);
+      if (value.status) formData.append("status", value.status);
 
       startTransition(() => {
         if (type === "project") {

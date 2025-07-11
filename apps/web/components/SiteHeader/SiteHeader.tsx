@@ -6,7 +6,7 @@ import { IconCreditCard, IconNotification, IconUserCircle } from "@tabler/icons-
 import type { User } from "@workspace/db";
 
 interface SiteHeaderProps {
-  user: Pick<User, "name" | "email" | "logo"> | undefined;
+  user: User | undefined;
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {

@@ -8,7 +8,7 @@ import { getCookie } from "@/utils/get-cookie";
 import type { Project, User, Workspace } from "@workspace/db";
 
 type AppLayoutData = {
-  user: Omit<User, "createdAt" | "updatedAt"> | undefined;
+  user: User | undefined;
   workspaces: Workspace[];
   projects: Project[];
   currentWorkspaceId: string | undefined;

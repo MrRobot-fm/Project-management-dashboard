@@ -25,7 +25,7 @@ export const EditProjectDialog = ({ project }: EditProjectDialogProps) => {
   return (
     <CustomDialog
       title="Edit project"
-      description="Edit project"
+      description="Make quick edits to keep your project on track"
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       triggerSlot={

@@ -86,8 +86,8 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
 
   const title = isCreateMode ? "Create Project" : "Edit Project";
   const descriptions = isCreateMode
-    ? "Create a new project and start to collaborate with other people."
-    : `Edit ${selectedProject?.name} project and save the changes!`;
+    ? "What’s your project about? Add a few details."
+    : `Make quick edits to keep your project on track`;
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -130,8 +130,8 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
                 <SidebarMenuButton asChild isActive={isActive} data-test-id="project-item">
                   <Link href={`${URL_PROJECTS}/${project.id}`} prefetch>
                     <Avatar size="md" shape="square" image={project.logo} fallback={project.name} />
-                    <span className="text-sm">{project.name}</span>
-                    <LinkLoadingIndicator />
+                    <span className="text-sm mr-auto">{project.name}</span>
+                    <LinkLoadingIndicator className="stroke-muted-foreground" />
                   </Link>
                 </SidebarMenuButton>
                 <CustomDropdown

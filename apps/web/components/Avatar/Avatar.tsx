@@ -15,7 +15,7 @@ export const Avatar = ({ image, fallback, size, shape, className, ...props }: Av
 
   return (
     <AvatarRoot className={avatarSize({ size, shape, className })} {...props}>
-      {image && <AvatarImage src={image} alt={initials} className="object-cover" />}
+      {image && <AvatarImage src={image} alt={initials} className="object-cover bg-center" />}
       <AvatarFallback className={avatarFallback({ size, shape, className })}>
         {initials}
       </AvatarFallback>

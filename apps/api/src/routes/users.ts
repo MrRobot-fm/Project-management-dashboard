@@ -5,6 +5,7 @@ import {
   getAllUsers,
   getCurrentUser,
   getUserById,
+  searchUsers,
   updateUser,
 } from "@/controllers/users";
 import { authMiddleware } from "@/middlewares/auth";
@@ -16,10 +17,7 @@ export const usersRouter: Router = Router();
 usersRouter.post("/", createUser);
 usersRouter.get("/", [authMiddleware], getAllUsers);
 usersRouter.get("/me", [authMiddleware], getCurrentUser);
+usersRouter.get("/search", [authMiddleware], searchUsers);
 usersRouter.get("/:id", [authMiddleware], getUserById);
-usersRouter.put(
-  "/:id",
-  [authMiddleware, verifyUserPermissions, upload.single("logo")],
-  updateUser,
-);
+usersRouter.put("/:id", [authMiddleware, verifyUserPermissions, upload.single("logo")], updateUser);
 usersRouter.delete("/:id", [authMiddleware], deleteUser);

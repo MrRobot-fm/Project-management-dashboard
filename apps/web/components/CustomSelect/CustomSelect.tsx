@@ -8,7 +8,7 @@ import {
 } from "@workspace/ui/components/Select";
 import { cn } from "@workspace/ui/lib/utils";
 
-type ItemType<V> = { id?: string; value: V; label?: string };
+type ItemType<V> = { id?: string | number; value: V; label?: string };
 
 type ExtractValue<T> = T extends ItemType<infer V> ? V : never;
 
@@ -19,7 +19,8 @@ interface CustomSelectProps<T extends ItemType<string>>
   renderItem?: (item: T) => ReactNode;
   contentProps?: ComponentProps<typeof SelectContent>;
   triggerProps?: ComponentProps<typeof SelectTrigger>;
-  itemProps?: ComponentProps<typeof SelectItem>;
+  itemProps?: Partial<ComponentProps<typeof SelectItem>>;
+  onValueChange?: (value: ExtractValue<T>) => void;
 }
 
 export const CustomSelect = <T extends ItemType<string>>({
@@ -36,16 +37,16 @@ export const CustomSelect = <T extends ItemType<string>>({
     <Select defaultValue={String(defaultValue)} onValueChange={onValueChange} {...rest}>
       <SelectTrigger
         {...triggerProps}
-        className={cn("w-[180px] focus-visible:ring-0 cursor-pointer", triggerProps?.className)}
+        className={cn("focus-visible:ring-0 cursor-pointer", triggerProps?.className)}
       >
         <SelectValue placeholder="Select" />
       </SelectTrigger>
       <SelectContent {...contentProps}>
         {data.map((item) => (
           <SelectItem
+            {...itemProps}
             key={item.id}
             value={String(item.value)}
-            {...itemProps}
             className={cn("cursor-pointer", itemProps?.className)}
           >
             {renderItem ? renderItem(item) : item.label}

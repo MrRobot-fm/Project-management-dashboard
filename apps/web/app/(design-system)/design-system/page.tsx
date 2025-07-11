@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import { MultipleSelector, type Option } from "@workspace/ui/components/MultipleSelector";
 import { avatarsList } from "../constant/avatars";
 import { Avatar } from "@/components/Avatar";
 import { AvatarStack } from "@/components/AvatarStack";
@@ -9,7 +9,8 @@ import { UserMenu } from "@/components/UserMenu";
 import { WorkspaceSelector } from "@/components/WorkspaceSelector";
 import { PriorityBadge } from "@/components/badges/PriorityBadge";
 import { StatusBadge } from "@/components/badges/StatusBadge";
-import type { ProjectPriority, ProjectStatus } from "@workspace/db";
+import { priorityBadgeData, statusBadgeData } from "@/constants/badges";
+import { searchUsers } from "@/services/users/search-users";
 
 const workspaces = [
   {
@@ -38,61 +39,18 @@ const workspaces = [
   },
 ];
 
-const selectData: { id: string; value: ProjectStatus; label: string }[] = [
-  {
-    id: "dadada",
-    value: "INIT",
-    label: "WARNING",
-  },
-  {
-    id: "dadadaaa",
-    value: "PLANNING",
-    label: "WARNING",
-  },
-  {
-    id: "dadadaaadada",
-    value: "BLOCKED",
-    label: "WARNING",
-  },
-  {
-    id: "dada2",
-    value: "IN_PROGRESS",
-    label: "DANGER",
-  },
-  {
-    id: "dada3",
-    value: "COMPLETED",
-    label: "SUCCESS",
-  },
-  {
-    id: "dada5",
-    value: "CANCELLED",
-    label: "SUCCESS",
-  },
-];
+const mockSearch = async (value: string): Promise<Option[]> => {
+  const res = await searchUsers(value);
 
-const prioritySelectData: { id: string; value: ProjectPriority; label: string }[] = [
-  {
-    id: "dadada",
-    value: "LOW",
-    label: "WARNING",
-  },
-  {
-    id: "dada2",
-    value: "MEDIUM",
-    label: "DANGER",
-  },
-  {
-    id: "dada3",
-    value: "HIGH",
-    label: "SUCCESS",
-  },
-  {
-    id: "dada4",
-    value: "CRITICAL",
-    label: "SUCCESS",
-  },
-];
+  const options: Option[] = res.map((user) => ({
+    label: user.name,
+    email: user.email,
+    logo: user.logo,
+    value: user.id,
+  }));
+
+  return options;
+};
 
 export default function DesignSystemPage() {
   return (
@@ -143,18 +101,45 @@ export default function DesignSystemPage() {
         <h2 className="text-3xl font-bold">Custom Select</h2>
         <div className="flex gap-4">
           <CustomSelect
-            data={selectData}
+            data={statusBadgeData}
             defaultValue="COMPLETED"
             triggerProps={{ className: "border-none p-0 shadow-none w-fit" }}
             renderItem={({ value }) => <StatusBadge size="md" status={value} />}
             onValueChange={(value) => console.log(value)}
           />
           <CustomSelect
-            data={prioritySelectData}
+            data={priorityBadgeData}
             defaultValue="LOW"
             triggerProps={{ className: "border-none p-0 shadow-none w-fit" }}
             renderItem={({ value }) => <PriorityBadge priority={value} />}
             onValueChange={(value) => console.log(value)}
+          />
+        </div>
+      </section>
+      <section className="space-y-2">
+        <h2 className="text-3xl font-bold">Async multiple selector</h2>
+        <div className="flex gap-4 max-w-96">
+          <MultipleSelector
+            placeholder="Search and add members..."
+            onSearch={async (value) => {
+              const res = await mockSearch(value);
+              return res;
+            }}
+            menuItem={(item) => (
+              <div className="flex items-center gap-2">
+                <Avatar
+                  image={item.logo ?? ""}
+                  fallback={item.label}
+                  className="rounded-full size-8"
+                />
+                <div className="flex flex-col">
+                  <p>{item.label}</p>
+                  <p className="text-xs text-muted-foreground">{item.email}</p>
+                </div>
+              </div>
+            )}
+            badgeClassName="bg-transparent text-neutral-600 border !border-neutral-400"
+            creatable
           />
         </div>
       </section>

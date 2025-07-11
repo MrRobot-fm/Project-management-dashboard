@@ -24,10 +24,10 @@ const loaderSize = cva("animate-spin text-primary-foreground", {
       xs: "size-4",
       sm: "size-4.5",
       md: "size-6",
-      lg: "size-8",
-    },
+      lg: "size-8"
+    }
   },
   defaultVariants: {
-    size: "sm",
-  },
+    size: "sm"
+  }
 });

@@ -111,7 +111,7 @@ export const WorkspaceSelector = ({
         <TriggerWithWrapper>
           <SelectTrigger
             data-test-id="workspaces-select"
-            className="w-full bg-stone-50 border-gray-200 dark:border-stone-700 !h-11.5 px-2 py-1 *:data-[slot=select-icon]:hidden cursor-pointer focus-visible:ring-0 focus-visible:border-gray-200 data-[placeholder]:text-stone-700 dark:data-[placeholder]:text-foreground "
+            className="w-full bg-white border-neutral-200 dark:border-stone-700 !h-11.5 px-2 py-1 *:data-[slot=select-icon]:hidden cursor-pointer focus-visible:ring-0 focus-visible:border-gray-200 data-[placeholder]:text-stone-700 dark:data-[placeholder]:text-foreground "
           >
             <SelectValue placeholder="No workspaces. Create one!">
               {isPending ? (

@@ -3,8 +3,8 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@workspace/ui/components/Button";
+import { Spinner } from "@workspace/ui/components/Spinner";
 import { AlertDialog } from "../AlertDialog/AlertDialog";
-import { Spinner } from "../Spinner";
 import { deleteWorkspaceAction } from "@/services/workspaces/delete-workspaces";
 import type { Workspace } from "@workspace/db";
 import { Pencil, PlusCircle, Trash2 } from "lucide-react";
@@ -28,8 +28,6 @@ export const WorkspaceSelectorActions = ({
   setIsDeleteDialogOpen,
   currentWorkspaceName,
 }: WorkspaceSelectorActionsProps) => {
-  console.log({ currentWorkspaceId });
-
   return (
     <div>
       <Button

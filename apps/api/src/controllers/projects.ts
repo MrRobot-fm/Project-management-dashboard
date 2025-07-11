@@ -78,11 +78,16 @@ export const getProjects = async (_: Request, res: Response) => {
 };
 
 export const getWorkspaceProjects = async (req: Request, res: Response) => {
-  const { workspaceId } = req.params;
+  const { params, user } = req;
 
   const projects = await prisma.project.findMany({
     where: {
-      workspaceId,
+      workspaceId: params.workspaceId,
+      members: {
+        some: {
+          userId: user?.id,
+        },
+      },
     },
     include: {
       members: {
@@ -137,8 +142,14 @@ export const getProjectById = async (req: Request, res: Response) => {
             },
           },
         },
+        orderBy: {
+          createdAt: "asc",
+        },
       },
       tasks: true,
+    },
+    orderBy: {
+      createdAt: "asc",
     },
   });
 
@@ -205,4 +216,90 @@ export const deleteProject = async (req: Request, res: Response) => {
   });
 
   res.status(200).json({ project, success: true });
+};
+
+export const addProjectMember = async (req: Request, res: Response) => {
+  const { projectId } = req.params;
+  const { workspaceId, userId, role } = req.body;
+
+  const addedMembers = await prisma.$transaction(async (tx) => {
+    const members = await Promise.all(
+      userId.map(async (userId: string) => {
+        const existingMembers = await tx.workspaceMember.findFirst({
+          where: { userId, workspaceId },
+        });
+
+        if (!existingMembers) {
+          await tx.workspaceMember.create({
+            data: {
+              workspaceId,
+              userId,
+              role,
+            },
+          });
+        }
+
+        const projectMember = await tx.projectMember.create({
+          data: {
+            projectId,
+            userId,
+            workspaceId,
+            role,
+          },
+        });
+
+        return projectMember;
+      }),
+    );
+
+    return members;
+  });
+
+  res.status(201).json({ members: addedMembers, success: true });
+};
+
+export const changeMemberRole = async (req: Request, res: Response) => {
+  const { projectId, userId } = req.params;
+  const { workspaceId, role } = req.body;
+
+  const updateMemberRole = await prisma.$transaction(async (tx) => {
+    await tx.workspaceMember.updateMany({
+      where: {
+        workspaceId,
+        userId,
+      },
+      data: {
+        role,
+      },
+    });
+
+    const projectMember = await tx.projectMember.updateMany({
+      where: {
+        projectId,
+        userId,
+      },
+      data: {
+        role,
+      },
+    });
+
+    return projectMember;
+  });
+
+  res.status(201).json({ members: updateMemberRole, success: true });
+};
+
+export const removeProjectMember = async (req: Request, res: Response) => {
+  const { projectId, userId } = req.params;
+
+  const projectMember = await prisma.projectMember.delete({
+    where: {
+      userId_projectId: {
+        userId,
+        projectId,
+      },
+    },
+  });
+
+  res.status(200).json({ member: projectMember, success: true });
 };

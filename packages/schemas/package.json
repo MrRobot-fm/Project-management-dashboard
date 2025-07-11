@@ -23,6 +23,7 @@
     "./*": "./dist/*"
   },
   "devDependencies": {
-    "tsup": "^8.4.0"
+    "tsup": "^8.4.0",
+    "@workspace/db": "workspace:*"
   }
 }

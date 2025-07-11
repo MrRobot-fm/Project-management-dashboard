@@ -2,13 +2,13 @@
 
 import { type ComponentProps, useState } from "react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { Button } from "@workspace/ui/components/Button";
 import { Card, CardContent } from "@workspace/ui/components/Card";
 import { Input } from "@workspace/ui/components/Input";
 import { Label } from "@workspace/ui/components/Label";
 import { cn } from "@workspace/ui/lib/utils";
 import { FieldInfo } from "@/components/forms/FieldInfo";
+import { login } from "@/services/auth/login";
 import { useForm } from "@tanstack/react-form";
 import { LoginUserSchema } from "@workspace/schemas";
 import { Eye, EyeOff } from "lucide-react";
@@ -31,20 +31,8 @@ export const LoginForm = ({ className, ...props }: LoginFormProps) => {
       onMount: LoginUserSchema,
     },
     onSubmit: async ({ value }) => {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        body: JSON.stringify(value),
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.message);
-        return;
-      }
-
-      if (response.redirected) {
-        redirect(response.url);
-      }
+      const response = await login(value);
+      setError(response);
     },
   });
 
@@ -63,7 +51,7 @@ export const LoginForm = ({ className, ...props }: LoginFormProps) => {
             <div className="flex flex-col gap-5">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
-                <p className="text-muted-foreground text-balance">Login to your Fede Inc account</p>
+                <p className="text-muted-foreground text-balance">Login to your Vionex account</p>
               </div>
               <div className="flex flex-col gap-2">
                 <form.Field name="email">
