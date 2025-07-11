@@ -25,6 +25,8 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
     steps:
       - name: Check out code
@@ -45,12 +47,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Generate Prisma Client
-        run: pnpm turbo db:generate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-
       - name: Configure API environment
         run: |
           echo "PORT=${{ secrets.API_PORT }}" > apps/api/.env
@@ -64,30 +60,26 @@ jobs:
         run: |
           echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > apps/web/.env.local
 
-      - name: Build API
-        run: pnpm build --filter api
+      - name: Generate Prisma Client
+        run: pnpm turbo db:generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
-      - name: Start API server in production mode
+      - name: Verify Prisma Client Generation
         run: |
-          cd apps/api
-          pnpm start > ../../api.log 2>&1 &
-          echo "API_PID=$!" >> $GITHUB_ENV
-          echo "Waiting for API to be ready..."
-          sleep 10
-
-      - name: Wait for API to be ready
-        run: |
-          npx wait-on http://localhost:${{ secrets.API_PORT }}/api/status -t 30000
-          if [ $? -ne 0 ]; then
-            echo "API did not start in time"
+          if [ -d "packages/database/generated" ]; then
+            echo "✅ Prisma client generated successfully"
+            ls -la packages/database/generated/
+          else
+            echo "❌ Prisma client not found"
+            find . -name "*.prisma" -type f
             exit 1
           fi
 
-      - name: Build frontend with Turborepo
+      - name: Build all projects
         run: pnpm turbo run build
         env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
           NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
-
-      - name: Stop API server
-        if: always()
-        run: kill $API_PID || true
