@@ -1,4 +1,3 @@
-import { ProjectPriority, ProjectStatus } from "@workspace/db";
 import { z } from "zod";
 
 export const ProjectStatusEnum = z.enum([
