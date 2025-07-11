@@ -33,6 +33,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@workspace/db':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@workspace/exceptions':
         specifier: workspace:*
         version: link:../../packages/exceptions
@@ -97,9 +100,6 @@ importers:
       '@vitest/ui':
         specifier: ^3.0.9
         version: 3.0.9(vitest@3.0.9)
-      '@workspace/db':
-        specifier: workspace:*
-        version: link:../../packages/database
       '@workspace/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
