@@ -49,9 +49,7 @@
       "persistent": true
     },
     "db:generate": {
-      "cache": false,
-      "outputs": ["packages/database/generated/**"]
-
+      "cache": false
     },
     "db:migrate": {
       "cache": false,

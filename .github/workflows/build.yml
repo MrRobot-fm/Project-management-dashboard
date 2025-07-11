@@ -1,5 +1,4 @@
 name: Build
-
 on:
   workflow_call:
     secrets:
@@ -15,37 +14,36 @@ on:
         required: true
       SUPABASE_SERVICE_ROLE_KEY:
         required: true
-
 jobs:
   build:
     name: Build Project
     timeout-minutes: 15
     runs-on: ubuntu-latest
-
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
-
       - uses: pnpm/action-setup@v3
         with:
           version: 8
-
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "pnpm"
-
       - name: Install dependencies
         run: pnpm install
+
+      - name: Generate Prisma Client
+        run: pnpm turbo db:generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
       - name: Configure API environment
         run: |
@@ -55,31 +53,32 @@ jobs:
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> apps/api/.env
           echo "SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" >> apps/api/.env
           echo "NODE_ENV=production" >> apps/api/.env
-
       - name: Configure Next.js environment
         run: |
           echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > apps/web/.env.local
+      - name: Build API
+        run: pnpm build --filter api
 
-      - name: Generate Prisma Client
-        run: pnpm turbo db:generate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
-
-      - name: Verify Prisma Client Generation
+      - name: Start API server in production mode
         run: |
-          if [ -d "packages/database/generated" ]; then
-            echo "✅ Prisma client generated successfully"
-            ls -la packages/database/generated/
-          else
-            echo "❌ Prisma client not found"
-            find . -name "*.prisma" -type f
+          cd apps/api
+          pnpm start > ../../api.log 2>&1 &
+          echo "API_PID=$!" >> $GITHUB_ENV
+          echo "Waiting for API to be ready..."
+          sleep 10
+
+      - name: Wait for API to be ready
+        run: |
+          npx wait-on http://localhost:${{ secrets.API_PORT }}/api/status -t 30000
+          if [ $? -ne 0 ]; then
+            echo "API did not start in time"
             exit 1
           fi
-
-      - name: Build all projects
+      - name: Build frontend with Turborepo
         run: pnpm turbo run build
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DIRECT_URL: ${{ secrets.DIRECT_URL }}
           NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+
+      - name: Stop API server
+        if: always()
+        run: kill $API_PID || true
