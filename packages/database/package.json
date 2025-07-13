@@ -18,11 +18,8 @@
     "typescript": "^5.8.2"
   },
   "main": "./dist/src/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/src/index.js",
-      "types": "./dist/index.d.ts"
-    }
+    ".": "./dist/src/index.js"
+    
   }
 }
