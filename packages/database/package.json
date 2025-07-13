@@ -17,7 +17,6 @@
     "prisma": "^6.6.0",
     "typescript": "^5.8.2"
   },
-  "main": "./dist/src/index.js",
   "exports": {
     ".": "./dist/src/index.js"
     
