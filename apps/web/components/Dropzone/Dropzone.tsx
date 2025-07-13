@@ -84,9 +84,9 @@ export const Dropzone = ({ image, disabled = false, field }: DropzoneProps) => {
   return (
     <Card
       className={cn(
-        "gap-0 border-none shadow-none pt-0",
+        "gap-0 border-none shadow-none pt-0 pb-0",
         previewUrl && "pt-4",
-        disabled && "pointer-events-none",
+        disabled && "pointer-events-none opacity-50",
       )}
     >
       <CardContent className="space-y-1 p-0">

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "build": "pnpm db:generate && tsc",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev --skip-generate",
     "db:migrate:test": "dotenv -e .env.test -- pnpm db:migrate",
@@ -17,6 +18,7 @@
     "typescript": "^5.8.2"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
+    
   }
 }

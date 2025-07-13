@@ -1,10 +1,13 @@
 import { Router } from "express";
 import {
+  addProjectMember,
+  changeMemberRole,
   createProject,
   deleteProject,
   getProjectById,
   getProjects,
   getWorkspaceProjects,
+  removeProjectMember,
   updateProject,
 } from "@/controllers/projects";
 import { authMiddleware } from "@/middlewares/auth";
@@ -31,6 +34,10 @@ projectsRouter.put(
 );
 
 projectsRouter.delete("/:projectId", [authMiddleware, verifyProjectPermissions], deleteProject);
+
+projectsRouter.post("/:projectId/members", [authMiddleware], addProjectMember);
+projectsRouter.put("/:projectId/members/:userId", [authMiddleware], changeMemberRole);
+projectsRouter.delete("/:projectId/members/:userId", [authMiddleware], removeProjectMember);
 
 export const workspaceProjectsRouter = Router({ mergeParams: true });
 

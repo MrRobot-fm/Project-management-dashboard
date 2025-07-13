@@ -6,7 +6,7 @@ type ActionMapped<T, K extends string = "data"> = {
 };
 
 export interface ActionBase<T extends object> {
-  success: boolean;
+  success?: boolean;
   zodErrors?: typeToFlattenedError<T>;
   error?: ErrorResponse;
 }

@@ -10,4 +10,6 @@ interface User {
   password: string;
   role: string;
   logo: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -1,7 +1,6 @@
 generator client {
-  provider      = "prisma-client"
+  provider      = "prisma-client-js"
   output        = "../generated/client"
-  moduleFormat  = "esm"
   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
@@ -67,14 +66,32 @@ model WorkspaceMember {
   @@map("workspace_members")
 }
 
+enum ProjectStatus {
+  INIT
+  PLANNING
+  IN_PROGRESS
+  BLOCKED
+  COMPLETED
+  CANCELLED
+}
+
+enum ProjectPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
 model Project {
-  id          String   @id @default(uuid())
+  id          String          @id @default(uuid())
   name        String
   description String?
   logo        String?
-  workspaceId String   @map("workspace_id")
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  status      ProjectStatus   @default(INIT)
+  priority    ProjectPriority @default(LOW)
+  workspaceId String          @map("workspace_id")
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @default(now()) @updatedAt @map("updated_at")
 
   workspace Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   members   ProjectMember[]
@@ -92,6 +109,8 @@ model ProjectMember {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
 
   @@unique([userId, projectId])
   @@map("project_members")

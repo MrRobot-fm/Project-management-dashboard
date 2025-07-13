@@ -2,7 +2,7 @@ import type { ApiGetWorkspacesResponseModel } from "@/types/models/api-get-works
 import { fetchInstance } from "@/utils/fetch-instance";
 import { getCookie } from "@/utils/get-cookie";
 
-export const getWorkspaces = async () => {
+export const getWorkspaces = async (): Promise<ApiGetWorkspacesResponseModel> => {
   const jwtToken = await getCookie("jwt_token");
 
   const response = await fetchInstance<ApiGetWorkspacesResponseModel>({

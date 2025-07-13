@@ -4,6 +4,15 @@ import { deleteProjectAction } from "@/services/projects/delete-project";
 import { updateProjectAction } from "@/services/projects/update-project";
 import type { Project } from "@workspace/db";
 
+export interface UseUpdateProjectReturn {
+  optimisticProjects: Project[];
+  updateOptimisticProjects: (update: OptimisticUpdate) => void;
+  handleDeleteProject: (project: Project) => Promise<void>;
+  isPending: boolean;
+  createProjectState: CreateActionState;
+  createAction: (payload: CreateActionPayload) => void;
+}
+
 interface OptimisticUpdate {
   actionType: "remove" | "add" | "update";
   project: Project;
@@ -18,7 +27,7 @@ export interface CreateActionPayload {
   projectId?: string;
 }
 
-export const useUpdateProject = ({ projects }: { projects: Project[] }) => {
+export const useUpdateProject = ({ projects }: { projects: Project[] }): UseUpdateProjectReturn => {
   const [createProjectState, createAction, pending] = useActionState<
     CreateActionState,
     CreateActionPayload

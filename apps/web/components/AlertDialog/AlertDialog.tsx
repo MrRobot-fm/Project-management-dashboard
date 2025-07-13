@@ -1,16 +1,15 @@
 import type { ReactNode } from "react";
 import {
-  AlertDialog as AlertDialogoRoot,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialog as AlertDialogoRoot,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@workspace/ui/components/AlertDialog";
-import { Button } from "@workspace/ui/components/Button";
 
 interface AlertDialogProps {
   title: string;
@@ -31,10 +30,8 @@ export const AlertDialog = ({
 }: AlertDialogProps) => {
   return (
     <AlertDialogoRoot open={isOpen} onOpenChange={onOpenChange}>
-      <AlertDialogTrigger asChild>
-        {triggerSlot ? triggerSlot : <Button variant="outline">Show Dialog</Button>}
-      </AlertDialogTrigger>
-      <AlertDialogContent>
+      {triggerSlot && <AlertDialogTrigger asChild>{triggerSlot}</AlertDialogTrigger>}
+      <AlertDialogContent forceMount>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>

@@ -1,5 +1,21 @@
 import { z } from "zod";
 
+export const ProjectStatusEnum = z.enum([
+  "INIT",
+  "PLANNING",
+  "IN_PROGRESS",
+  "BLOCKED",
+  "COMPLETED",
+  "CANCELLED"
+]);
+
+export const ProjectPriorityEnum = z.enum([
+  "LOW",
+  "MEDIUM",
+  "HIGH",
+  "CRITICAL"
+]);
+
 export const CreateProjectsSchema = z.object({
   name: z
     .string()
@@ -19,7 +35,9 @@ export const CreateProjectsSchema = z.object({
   logo: z
     .union([z.string().url(), z.instanceof(File), z.literal(null)])
     .optional()
-    .transform(val => (val === "" ? undefined : val))
+    .transform(val => (val === "" ? undefined : val)),
+  status: ProjectStatusEnum.optional(),
+  priority: ProjectPriorityEnum.optional()
 });
 
 export type CreateProjectType = z.infer<typeof CreateProjectsSchema>;

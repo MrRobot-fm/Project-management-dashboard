@@ -1,9 +1,5 @@
 import type { ComponentProps } from "react";
-import {
-  AvatarFallback,
-  AvatarImage,
-  Avatar as AvatarRoot,
-} from "@workspace/ui/components/Avatar";
+import { AvatarFallback, AvatarImage, Avatar as AvatarRoot } from "@workspace/ui/components/Avatar";
 import { getAvatarFallback } from "@/utils/get-avatar-fallback";
 import { cva, type VariantProps } from "class-variance-authority";
 
@@ -14,22 +10,13 @@ interface AvatarProps extends ComponentProps<typeof AvatarRoot>, AvatarSize {
   fallback?: string;
 }
 
-export const Avatar = ({
-  image,
-  fallback,
-  size,
-  shape,
-  className,
-  ...props
-}: AvatarProps) => {
+export const Avatar = ({ image, fallback, size, shape, className, ...props }: AvatarProps) => {
   const initials = getAvatarFallback(fallback ?? "");
 
   return (
     <AvatarRoot className={avatarSize({ size, shape, className })} {...props}>
-      {image && (
-        <AvatarImage src={image} alt={initials} className="object-cover" />
-      )}
-      <AvatarFallback className={avatarFallback({ size, shape })}>
+      {image && <AvatarImage src={image} alt={initials} className="object-cover bg-center" />}
+      <AvatarFallback className={avatarFallback({ size, shape, className })}>
         {initials}
       </AvatarFallback>
     </AvatarRoot>

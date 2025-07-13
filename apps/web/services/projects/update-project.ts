@@ -26,8 +26,6 @@ export const updateProjectAction = async ({
     const logo = formData.get("logo");
     const description = formData.get("description");
 
-    console.log("logo:", logo);
-
     if (!description) {
       formData.delete("description");
     }

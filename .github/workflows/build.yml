@@ -21,7 +21,6 @@ jobs:
     name: Build Project
     timeout-minutes: 15
     runs-on: ubuntu-latest
-
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
@@ -32,11 +31,12 @@ jobs:
         with:
           fetch-depth: 2
 
-      - uses: pnpm/action-setup@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
         with:
           version: 8
 
-      - name: Setup Node.js environment
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -46,10 +46,13 @@ jobs:
         run: pnpm install
 
       - name: Generate Prisma Client
-        run: pnpm turbo db:generate
+        run: pnpm --filter '@workspace/db' run db:generate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
+      - name: Build DB package
+        run: pnpm --filter @workspace/db run build
 
       - name: Configure API environment
         run: |
@@ -64,7 +67,7 @@ jobs:
         run: |
           echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > apps/web/.env.local
 
-      - name: Build API
+      - name: Build API package
         run: pnpm build --filter api
 
       - name: Start API server in production mode

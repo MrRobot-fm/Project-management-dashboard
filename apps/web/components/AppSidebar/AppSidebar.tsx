@@ -11,7 +11,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/Sidebar/Sidebar";
-import { CustomSheet } from "@/components/CustomSheet";
+import { useExpandSidebar } from "./AppSidebar.hooks";
+import { CustomDialog } from "@/components/CustomDialog";
 import { NavMain } from "@/components/NavMain";
 import { NavProjects } from "@/components/NavProjects";
 import { NavSecondary } from "@/components/NavSecondary";
@@ -198,6 +199,7 @@ export function AppSidebar({
     },
     { success: false, error: {} },
   );
+
   const isCreateMode = sheetMode === "create";
   const selectedWorkspace = workspaces.find((w) => w.id === currentWorkspaceId);
 
@@ -205,15 +207,22 @@ export function AppSidebar({
     if (workspaceActionState.success) setIsCreateWorkspaceOpen(false);
   }, [workspaceActionState]);
 
+  const { handleMouseEnter, handleMouseLeave } = useExpandSidebar();
+
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
+    <Sidebar
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      collapsible="icon"
+      {...props}
+    >
+      <SidebarHeader className="bg-white">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
               <Link href="/">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Fede Inc.</span>
+                <span className="text-base font-semibold">Vionex Flow</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -245,16 +254,12 @@ export function AppSidebar({
             />
           }
         />
-        <CustomSheet
-          title={
-            isCreateMode
-              ? "Create your workspace"
-              : `Edit your ${selectedWorkspace?.name} workspace`
-          }
+        <CustomDialog
+          title={isCreateMode ? "Create your workspace" : `Edit your workspace`}
           description={
             isCreateMode
-              ? "Create a new workspace and start to collaborate with other people."
-              : "Edit and save the changes"
+              ? "This is where your ideas take shape"
+              : "Edit details and keep your workspace up to date"
           }
           isOpen={isCreateWorkspaceOpen}
           setIsOpen={setIsCreateWorkspaceOpen}

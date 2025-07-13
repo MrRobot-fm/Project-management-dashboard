@@ -30,7 +30,6 @@
     "@types/node": "^22.13.9",
     "@types/supertest": "^6.0.2",
     "@vitest/ui": "^3.0.9",
-    "@workspace/db": "workspace:*",
     "@workspace/eslint-config": "workspace:*",
     "@workspace/vitest-config": "workspace:*",
     "dotenv": "^16.4.7",
@@ -41,6 +40,7 @@
     "vitest": "^3.0.8"
   },
   "dependencies": {
+    "@workspace/db": "workspace:*",
     "@workspace/exceptions": "workspace:*",
     "@workspace/schemas": "workspace:*",
     "@workspace/supabase": "workspace:*",

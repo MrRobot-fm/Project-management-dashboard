@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { uploadFile } from "@/utils/storage";
 import { prisma } from "@workspace/db";
-import { NotFoundError, UnauthorizedError } from "@workspace/exceptions";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { hashSync } from "bcrypt";
 
 export const createUser = async (req: Request, res: Response) => {
@@ -96,4 +96,30 @@ export const deleteUser = async (req: Request, res: Response) => {
   });
 
   res.status(204).json({ user, success: true });
+};
+
+export const searchUsers = async (req: Request, res: Response) => {
+  const { query } = req.query;
+
+  if (typeof query !== "string") {
+    throw new BadRequestError("Query parameter is required");
+  }
+
+  const currentUserId = req.user?.id;
+
+  const users = await prisma.user.findMany({
+    where: {
+      AND: [
+        {
+          OR: [
+            { name: { contains: query, mode: "insensitive" } },
+            { email: { contains: query, mode: "insensitive" } },
+          ],
+        },
+        { id: { not: currentUserId } },
+      ],
+    },
+  });
+
+  res.status(200).json(users);
 };

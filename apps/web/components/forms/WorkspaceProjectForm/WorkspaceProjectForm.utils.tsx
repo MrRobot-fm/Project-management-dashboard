@@ -1,23 +1,33 @@
 import { useTransition } from "react";
 import { useForm } from "@tanstack/react-form";
-import type { Project, Workspace } from "@workspace/db";
+import type { Workspace, Project } from "@workspace/db";
 import {
   CreateProjectsSchema,
   CreateWorkspaceSchema,
   type CreateProjectType,
 } from "@workspace/schemas";
 
-const getDefaultValues = (
+const getDefaultValues = <T extends Project | Workspace>(
   type: "workspace" | "project",
-  data?: Partial<Project & Workspace>,
+  data?: T,
   isEdit = false,
 ): CreateProjectType => {
-  return {
+  const base = {
     name: isEdit ? (data?.name ?? "") : "",
-    ...(type === "project" && {
-      description: isEdit ? (data?.description ?? "") : "",
-    }),
     logo: isEdit ? (data?.logo ?? undefined) : undefined,
+  };
+
+  if (type !== "project") {
+    return base;
+  }
+
+  const projectData = data as Project | undefined;
+
+  return {
+    ...base,
+    description: isEdit ? (projectData?.description ?? "") : "",
+    status: isEdit ? (projectData?.status ?? "INIT") : "INIT",
+    priority: isEdit ? (projectData?.priority ?? "LOW") : "LOW",
   };
 };
 
@@ -33,21 +43,21 @@ interface ProjectPayload extends WorkspacePayload {
 
 export type FormActionPayload = WorkspacePayload | ProjectPayload;
 
-interface UseWorkspaceProjectFormValidationProps {
-  data: Partial<Project & Workspace> | undefined;
+interface UseWorkspaceProjectFormValidationProps<T extends Project | Workspace> {
+  data: T | undefined;
   isEditMode: boolean;
   workspaceId: string | undefined;
   action: (payload: FormActionPayload) => void;
   type: "workspace" | "project";
 }
 
-export const useWorkspaceProjectFormValidation = ({
+export const useWorkspaceProjectFormValidation = <T extends Project | Workspace>({
   data,
   isEditMode,
   workspaceId,
   action,
   type,
-}: UseWorkspaceProjectFormValidationProps) => {
+}: UseWorkspaceProjectFormValidationProps<T>) => {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm({
@@ -68,6 +78,9 @@ export const useWorkspaceProjectFormValidation = ({
           formData.append("logo", value.logo);
         }
       }
+
+      if (value.priority) formData.append("priority", value.priority);
+      if (value.status) formData.append("status", value.status);
 
       startTransition(() => {
         if (type === "project") {

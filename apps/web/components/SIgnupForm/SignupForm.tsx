@@ -65,7 +65,7 @@ export const SignupForm = ({ className, ...props }: SignupFormProps) => {
           >
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome to Fede inc.</h1>
+                <h1 className="text-2xl font-bold">Welcome to Vionex Flow</h1>
                 <p className="text-muted-foreground text-balance">Signup and create your account</p>
               </div>
               <div className="flex flex-col gap-2">
