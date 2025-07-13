@@ -46,13 +46,13 @@ jobs:
         run: pnpm install
 
       - name: Generate Prisma Client
-        run: pnpm turbo run db:generate
+        run: pnpm --filter '@workspace/db' run db:generate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
       - name: Build DB package
-        run: pnpm build --filter '@workspace/db'
+        run: pnpm --filter @workspace/db run build
 
       - name: Configure API environment
         run: |
