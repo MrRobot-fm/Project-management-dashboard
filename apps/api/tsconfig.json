@@ -11,7 +11,8 @@
     "skipLibCheck": true,
     "types": ["vitest/globals"],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@workspace/db": ["../../packages/database/src/index.ts"]
     }
   },
   "include": ["src"],

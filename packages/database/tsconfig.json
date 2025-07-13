@@ -1,10 +1,27 @@
 {
   "compilerOptions": {
+    "target": "ES2020",
+    "module": "nodenext",
     "lib": ["ES2020", "DOM"],
-    "types": ["node"],
-    "module": "NodeNext"
+
+    "emitDeclarationOnly": false,       // compila anche .js
+    "outDir": "dist",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "NodeNext",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,               // evita errori da tipi esterni (utile con Prisma)
+
+    "isolatedModules": false,
+    "noEmitOnError": true,
+    "sourceMap": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]                  // se usi alias @/
+    }
   },
-  "paths": {
-    "@/*": ["./src/*"]
-  }
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
