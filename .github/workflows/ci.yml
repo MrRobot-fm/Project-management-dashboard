@@ -2,7 +2,11 @@ name: CI
 
 on:
   push:
-    branches: ["main", "dev"]
+    branches: [main, dev]
+
+  pull_request:
+    types: [closed]
+    branches: [main, dev]
 
 jobs:
   lint:
@@ -31,7 +35,7 @@ jobs:
       TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
 
   cypress:
-    needs: build
+    needs: [build, test]
     uses: ./.github/workflows/cypress.yml
     secrets:
       API_PORT: ${{ secrets.API_PORT }}
