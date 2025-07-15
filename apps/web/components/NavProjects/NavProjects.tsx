@@ -90,7 +90,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
     : `Make quick edits to keep your project on track`;
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+    <SidebarGroup>
       <CustomDialog
         title={title}
         description={descriptions}
@@ -127,7 +127,12 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
 
             return (
               <SidebarMenuItem key={project.id}>
-                <SidebarMenuButton asChild isActive={isActive} data-test-id="project-item">
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive}
+                  data-test-id="project-item"
+                  className="group-data-[collapsible=icon]:p-1.5!"
+                >
                   <Link href={`${URL_PROJECTS}/${project.id}`} prefetch>
                     <Avatar size="md" shape="square" image={project.logo} fallback={project.name} />
                     <span className="text-sm mr-auto">{project.name}</span>

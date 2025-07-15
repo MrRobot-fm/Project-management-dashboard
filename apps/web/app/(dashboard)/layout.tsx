@@ -29,8 +29,6 @@ export default async function RootLayout({
 }>) {
   const { user, workspaces, projects, currentWorkspaceId } = await getAppLayout();
 
-  console.log({ projects });
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
@@ -40,7 +38,7 @@ export default async function RootLayout({
             style={
               {
                 "--sidebar-width": "calc(var(--spacing) * 72)",
-                "--header-height": "calc(var(--spacing) * 12)",
+                "--header-height": "calc(var(--spacing) * 14)",
               } as CSSProperties
             }
           >
