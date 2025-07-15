@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/Sidebar";
+import { cn } from "@workspace/ui/lib/utils";
 import { NavProjectsItems } from "./NavProjectsItems";
 import { ShowProjectsButton } from "./ShowProjectsButton";
 import { Avatar } from "@/components/Avatar";
@@ -90,7 +91,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
     : `Make quick edits to keep your project on track`;
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className={cn(projects.length === 0 && "group-data-[collapsible=icon]:hidden")}>
       <CustomDialog
         title={title}
         description={descriptions}

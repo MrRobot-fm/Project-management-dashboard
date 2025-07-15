@@ -66,7 +66,9 @@ export const AboutProjectBlock = ({ project, className }: AboutProjectBlockProps
             </div>
             <div className="flex flex-col gap-1 text-sm text-neutral-600">
               <p>Description</p>
-              <h4 className="text-sm font-medium">{project.description}</h4>
+              <p className="text-sm font-medium">
+                {project.description ? project.description : "-"}
+              </p>
             </div>
           </div>
           <ul className="grid grid-cols-2 gap-y-6 gap-x-4 md:gap-x-14 text-sm text-neutral-600 h-fit w-fit">
