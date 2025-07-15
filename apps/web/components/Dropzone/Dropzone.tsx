@@ -85,18 +85,17 @@ export const Dropzone = ({ image, disabled = false, field }: DropzoneProps) => {
     <Card
       className={cn(
         "gap-0 border-none shadow-none pt-0 pb-0",
-        previewUrl && "pt-4",
         disabled && "pointer-events-none opacity-50",
       )}
     >
       <CardContent className="space-y-1 p-0">
         {previewUrl ? (
           <div className="relative w-fit">
-            <Avatar image={previewUrl} className="size-24" />
+            <Avatar image={previewUrl} shape="square" className="size-24 rounded-md" />
             <Button
               size="icon"
               variant="destructive"
-              className="text-white rounded-full !p-1.5 size-fit aspect-square bg-red-500 cursor-pointer absolute -bottom-1 right-2"
+              className="text-white rounded-full !p-1.5 size-fit aspect-square bg-red-500 cursor-pointer absolute -bottom-2 -right-2"
               onClick={handleRemoveFile}
             >
               <Trash2 className="size-3" />
