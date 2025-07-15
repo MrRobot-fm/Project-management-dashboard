@@ -100,12 +100,27 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 export const searchUsers = async (req: Request, res: Response) => {
   const { query } = req.query;
+  const { projectId } = req.params;
+
+  if (!req.user?.id) throw new UnauthorizedError("Unauthorized");
 
   if (typeof query !== "string") {
     throw new BadRequestError("Query parameter is required");
   }
 
-  const currentUserId = req.user?.id;
+  const currentUserId = req.user.id;
+
+  const projectMembers = await prisma.projectMember.findMany({
+    where: {
+      projectId: projectId,
+    },
+    select: {
+      userId: true,
+    },
+  });
+
+  const projectMemberIds = projectMembers.map((member) => member.userId);
+  const excludedUserIds = [...projectMemberIds, currentUserId];
 
   const users = await prisma.user.findMany({
     where: {
@@ -116,7 +131,7 @@ export const searchUsers = async (req: Request, res: Response) => {
             { email: { contains: query, mode: "insensitive" } },
           ],
         },
-        { id: { not: currentUserId } },
+        { id: { notIn: excludedUserIds } },
       ],
     },
   });

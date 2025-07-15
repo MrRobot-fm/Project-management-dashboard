@@ -22,7 +22,6 @@ export const addProjectMembers = async (
 
     const response = await fetchInstance<{ members: ProjectMember[]; success: boolean }>({
       path: `projects/${data?.projectId}/members`,
-
       options: {
         method: "POST",
         body: JSON.stringify(data),
