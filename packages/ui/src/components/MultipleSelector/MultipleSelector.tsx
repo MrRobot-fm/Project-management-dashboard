@@ -551,6 +551,7 @@ export const MultipleSelector = React.forwardRef<
                         {dropdowns.map(option => {
                           return (
                             <CommandItem
+                              data-test-id="search-user-item"
                               key={option.value}
                               value={option.label}
                               disabled={option.disable}

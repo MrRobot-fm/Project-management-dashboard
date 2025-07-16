@@ -92,6 +92,7 @@ const TeamMemberDialogContent = ({
       <div className="flex flex-col gap-4">
         <Label className="ml-1">Share project whit</Label>
         <MultipleSelector
+          data-test-id="multiple-selector"
           ref={selectorRef}
           placeholder="Search and add members..."
           onSearch={async (value) => await mockSearch(value, id as string)}

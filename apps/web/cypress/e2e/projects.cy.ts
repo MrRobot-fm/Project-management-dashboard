@@ -12,6 +12,8 @@ describe("Projects", () => {
   beforeEach(() => {
     user = generateUser();
     cy.createUserAndLogin(user).then(() => cy.visit("/"));
+
+    cy.get('[data-slot="sidebar-trigger"]').click();
   });
 
   afterEach(() => {

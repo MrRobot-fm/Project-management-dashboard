@@ -8,6 +8,8 @@ describe("Workspaces", () => {
   beforeEach(() => {
     user = generateUser();
     cy.createUserAndLogin(user).then(() => cy.visit("/dashboard"));
+
+    cy.get('[data-slot="sidebar-trigger"]').click();
   });
 
   afterEach(() => {

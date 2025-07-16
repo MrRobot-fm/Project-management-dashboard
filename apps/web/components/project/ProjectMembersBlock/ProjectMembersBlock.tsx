@@ -44,6 +44,7 @@ export const ProjectMembersBlock = ({
         ))}
         <div>
           <Button
+            data-test-id="add-team-member-btn"
             variant="transparent"
             className="cursor-pointer h-full justify-start px-2"
             onClick={() => setShowDialog(true)}
@@ -85,7 +86,12 @@ const MemberCardMenu = ({ member, projectId }: { member: ProjectMember; projectI
     <>
       <CustomDropdown
         triggerSlot={
-          <Button size="icon" variant="transparent" className="size-fit p-0 -ml-1.5 cursor-pointer">
+          <Button
+            data-test-id="member-card-menu-btn"
+            size="icon"
+            variant="transparent"
+            className="size-fit p-0 -ml-1.5 cursor-pointer"
+          >
             <IconDotsVertical className="size-3.5" />
           </Button>
         }
