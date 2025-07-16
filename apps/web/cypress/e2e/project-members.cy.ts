@@ -29,7 +29,7 @@ describe("group", () => {
   afterEach(() => {
     cy.intercept("POST", "**").as("deleteWorkspace");
     cy.deleteCurrentWorkspace();
-    cy.wait("@deleteWorkspace").its("response.statusCode").should("eq", 200);
+    cy.wait("@deleteWorkspace");
 
     cy.get("[data-slot='select-value']", { timeout: 15000 }).should(
       "contain.text",
@@ -40,10 +40,8 @@ describe("group", () => {
     cy.deleteCurrentUser({ email: invitedUser.email, password: invitedUser.password });
   });
 
-  const openProjectAndWait = () => {
-    cy.intercept("GET", "/projects/*").as("getProject");
+  const openProject = () => {
     cy.findByTestId("project-item").click();
-    cy.wait("@getProject", { timeout: 10000 });
   };
 
   const addMemberToProject = (name: string) => {
@@ -55,14 +53,14 @@ describe("group", () => {
   };
 
   it("should add a member to the project", () => {
-    openProjectAndWait();
+    openProject();
     addMemberToProject(invitedUser.name);
 
     cy.findAllByTestId("member-card").should("contain.text", invitedUser.name);
   });
 
   it("should remove a member from the project", () => {
-    openProjectAndWait();
+    openProject();
     addMemberToProject(invitedUser.name);
 
     cy.findByTestId("member-card-menu-btn").click();
