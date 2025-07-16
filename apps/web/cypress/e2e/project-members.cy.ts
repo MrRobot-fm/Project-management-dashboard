@@ -1,6 +1,6 @@
 import { generateUser } from "../support/utils";
 
-describe("group", () => {
+describe("Project members", () => {
   let user: ReturnType<typeof generateUser>;
   let invitedUser: ReturnType<typeof generateUser>;
 
@@ -42,14 +42,16 @@ describe("group", () => {
 
   const openProject = () => {
     cy.findByTestId("project-item").click();
+    cy.wait(10000);
   };
 
   const addMemberToProject = (name: string) => {
     cy.findByTestId("add-team-member-btn").click();
     cy.findByRole("combobox").type(name);
-    cy.findByTestId("search-user-item", { timeout: 10000 }).click();
+    cy.findByTestId("search-user-item", { timeout: 10000 }).should("contain.text", name).click();
     cy.findByRole("button", { name: /add members/i }).click();
     cy.get("[data-slot='dialog-close']").click();
+    cy.get('[data-test-id="member-card"]').should("contain.text", invitedUser.name);
   };
 
   it("should add a member to the project", () => {
@@ -63,13 +65,14 @@ describe("group", () => {
     openProject();
     addMemberToProject(invitedUser.name);
 
-    cy.findByTestId("member-card-menu-btn").click();
+    cy.get('[data-test-id="member-card"]').should("contain.text", invitedUser.name);
+
     cy.get("[data-slot='dropdown-menu-item']").click();
 
     cy.intercept("POST", "/projects/*").as("removeMember");
     cy.findByRole("button", { name: /remove/i }).click();
     cy.wait("@removeMember", { timeout: 10000 });
 
-    cy.contains('[data-test-id="member-card"]', invitedUser.name).should("not.exist");
+    cy.get('[data-test-id="member-card"]').should("not.contain.text", invitedUser.name);
   });
 });
