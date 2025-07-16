@@ -58,6 +58,8 @@ export const AboutProjectBlock = ({ project, className }: AboutProjectBlockProps
             src={project.logo ?? "/images/image-placeholder.png"}
             alt={project.name}
             className="object-cover"
+            sizes="33vw"
+            priority
             fill
           />
         </div>

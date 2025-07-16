@@ -34,7 +34,7 @@ interface NavProjectsProps {
 
 export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) => {
   const { id } = useParams();
-  const { isMobile } = useSidebar();
+  const { isMobile, open } = useSidebar();
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
@@ -47,8 +47,8 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
     });
 
   const visibleProjects = useMemo(
-    () => (isExpanded ? optimisticProjects : optimisticProjects.slice(0, 3)),
-    [isExpanded, optimisticProjects],
+    () => (isExpanded || !open ? optimisticProjects : optimisticProjects.slice(0, 3)),
+    [isExpanded, open, optimisticProjects],
   );
 
   const dropdownItems = (project: Project) => [
