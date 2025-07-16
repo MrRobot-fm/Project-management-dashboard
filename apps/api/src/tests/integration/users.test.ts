@@ -89,10 +89,7 @@ describe("API Users", () => {
       },
     });
 
-    await request(app)
-      .delete(`/api/users/${user.id}`)
-      .set("Cookie", cookie)
-      .expect(204);
+    await request(app).delete(`/api/users/${user.id}`).set("Cookie", cookie).expect(204);
 
     const deleted = await prisma.user.findUnique({
       where: { id: user.id },

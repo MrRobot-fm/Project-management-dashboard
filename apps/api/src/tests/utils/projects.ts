@@ -16,7 +16,7 @@ export const createProject = async (
     .post(`/api/workspaces/${workspaceId}/project`)
     .set("Cookie", cookie)
     .field("name", body.name)
-    .field("description", body.description);
+    .field("description", body.description ?? "");
 
   if (body.logo) {
     req.attach("logo", file, body.logo.toString());
@@ -24,4 +24,56 @@ export const createProject = async (
 
   const project = await req.expect(statusCode ?? 201);
   return project.body;
+};
+
+interface AddProjectMember {
+  projectId: string;
+  workspaceId: string;
+  userIds: string[];
+  role?: string;
+  cookie: string;
+}
+
+export const addProjectMembers = async ({
+  projectId,
+  workspaceId,
+  userIds,
+  role = "ADMIN",
+  cookie,
+}: AddProjectMember) => {
+  return request(app)
+    .post(`/api/projects/${projectId}/members`)
+    .set("Cookie", cookie)
+    .send({ workspaceId, role, userId: userIds });
+};
+
+interface DeleteProjectMember {
+  projectId: string;
+  userId: string;
+  cookie: string;
+}
+
+export const deleteProjectMember = async ({ projectId, userId, cookie }: DeleteProjectMember) => {
+  return request(app).delete(`/api/projects/${projectId}/members/${userId}`).set("Cookie", cookie);
+};
+
+interface ChangeMemberRole {
+  projectId: string;
+  workspaceId: string;
+  userId: string;
+  role: string;
+  cookie: string;
+}
+
+export const changeMemberRole = async ({
+  projectId,
+  userId,
+  workspaceId,
+  role,
+  cookie,
+}: ChangeMemberRole) => {
+  return request(app)
+    .put(`/api/projects/${projectId}/members/${userId}`)
+    .set("Cookie", cookie)
+    .send({ workspaceId, role });
 };

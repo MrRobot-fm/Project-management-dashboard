@@ -273,7 +273,7 @@ export const changeMemberRole = async (req: Request, res: Response) => {
       },
     });
 
-    const projectMember = await tx.projectMember.updateMany({
+    const projectMember = await tx.projectMember.updateManyAndReturn({
       where: {
         projectId,
         userId,
