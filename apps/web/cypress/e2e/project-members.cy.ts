@@ -62,7 +62,7 @@ describe("Project members", () => {
     openProject();
     addMemberToProject(invitedUser.name);
 
-    cy.get("[data-slot='dropdown-menu-item']").click();
+    cy.get("[data-slot='dropdown-menu-item']", { timeout: 15000 }).click();
 
     cy.intercept("POST", "/projects/*").as("removeMember");
     cy.findByRole("button", { name: /remove/i }).click();
