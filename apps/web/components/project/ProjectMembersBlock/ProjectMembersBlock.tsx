@@ -61,6 +61,7 @@ export const ProjectMembersBlock = ({
         setIsOpen={setShowDialog}
         members={members}
         workspaceId={workspaceId}
+        projectId={projectId}
       />
     </div>
   );

@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { useParams } from "next/navigation";
 import { Button } from "@workspace/ui/components/Button";
 import { Label } from "@workspace/ui/components/Label";
 import {
@@ -21,6 +20,7 @@ interface AddTeamMemberDialogProps {
   setIsOpen: (isOpen: boolean) => void;
   members: ProjectMember[];
   workspaceId: string;
+  projectId: string;
 }
 
 const mockSearch = async (query: string, projectId: string): Promise<Option[]> => {
@@ -41,6 +41,7 @@ export const AddTeamMemberDialog = ({
   setIsOpen,
   members,
   workspaceId,
+  projectId,
 }: AddTeamMemberDialogProps) => {
   return (
     <CustomDialog
@@ -48,7 +49,13 @@ export const AddTeamMemberDialog = ({
       description="Add members on this projects"
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      contentSlot={<TeamMemberDialogContent members={members} workspaceId={workspaceId} />}
+      contentSlot={
+        <TeamMemberDialogContent
+          members={members}
+          workspaceId={workspaceId}
+          projectId={projectId}
+        />
+      }
     />
   );
 };
@@ -56,11 +63,12 @@ export const AddTeamMemberDialog = ({
 const TeamMemberDialogContent = ({
   members,
   workspaceId,
+  projectId,
 }: {
   members: ProjectMember[];
   workspaceId: string;
+  projectId: string;
 }) => {
-  const { id } = useParams();
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
 
   const selectorRef = useRef<MultipleSelectorRef>(null);
@@ -83,7 +91,7 @@ const TeamMemberDialogContent = ({
       }}
       className="flex flex-col gap-8"
     >
-      <input type="hidden" name="projectId" value={id} />
+      <input type="hidden" name="projectId" value={projectId} />
       <input type="hidden" name="workspaceId" value={workspaceId} />
       <input type="hidden" name="role" value="COLLABORATOR" />
       {selectedOptions.map((option) => (
@@ -95,7 +103,9 @@ const TeamMemberDialogContent = ({
           data-test-id="multiple-selector"
           ref={selectorRef}
           placeholder="Search and add members..."
-          onSearch={async (value) => await mockSearch(value, id as string)}
+          onSearch={async (value) => {
+            return await mockSearch(value, projectId as string);
+          }}
           onChange={setSelectedOptions}
           menuItem={(item) => <UserItem {...item} />}
           inputProps={{ className: "px-1 py-0 ml-0" }}
