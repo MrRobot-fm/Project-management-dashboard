@@ -40,7 +40,7 @@ const workspaces = [
 ];
 
 const mockSearch = async (value: string): Promise<Option[]> => {
-  const res = await searchUsers(value);
+  const res = await searchUsers(value, "ciao");
 
   const options: Option[] = res.map((user) => ({
     label: user.name,
