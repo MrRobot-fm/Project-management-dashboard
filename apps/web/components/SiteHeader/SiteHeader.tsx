@@ -1,4 +1,3 @@
-import { ModeToggle } from "@workspace/ui/components/ModeToggle";
 import { Separator } from "@workspace/ui/components/Separator";
 import { SidebarTrigger } from "@workspace/ui/components/Sidebar";
 import { UserMenu } from "@/components/UserMenu";
@@ -18,7 +17,6 @@ export function SiteHeader({ user }: SiteHeaderProps) {
         {/* <h1 className="text-base font-medium">Documents</h1> */}
         <div className="ml-auto flex items-center gap-2">
           <UserMenu user={user} menuItems={menuLinksItem} variant="avatar" />
-          <ModeToggle />
         </div>
       </div>
     </header>

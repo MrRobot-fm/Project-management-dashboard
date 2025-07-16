@@ -36,26 +36,6 @@ interface WorkspaceSelectorProps {
   actionSlot?: ReactNode;
 }
 
-const SkeletonWorkspace = () => (
-  <div className="flex items-center gap-3 animate-pulse">
-    <div className="size-8 rounded-lg bg-neutral-300 dark:bg-neutral-400" />
-    <div className="flex flex-col items-start">
-      <div className="h-3 w-32 bg-neutral-200 dark:bg-neutral-700 rounded" />
-      <div className="h-2 w-24 bg-neutral-200 dark:bg-neutral-700 rounded mt-1" />
-    </div>
-  </div>
-);
-
-const WorkspaceInfo = ({ workspace }: { workspace: Workspace; haAction?: boolean }) => (
-  <div className="flex items-center gap-3">
-    <Avatar image={workspace.logo} fallback={workspace.name} size="xl" shape="square" />
-    <div className="flex flex-col items-start">
-      <span className="font-medium text-foreground">{workspace.name}</span>
-      <span className="text-xs text-muted-foreground">Workspace</span>
-    </div>
-  </div>
-);
-
 export const WorkspaceSelector = ({
   workspaces,
   sidebarMenuButtonWrapper,
@@ -111,7 +91,7 @@ export const WorkspaceSelector = ({
         <TriggerWithWrapper>
           <SelectTrigger
             data-test-id="workspaces-select"
-            className="w-full bg-white border-neutral-200 dark:border-stone-700 !h-11.5 px-2 py-1 *:data-[slot=select-icon]:hidden cursor-pointer focus-visible:ring-0 focus-visible:border-gray-200 data-[placeholder]:text-stone-700 dark:data-[placeholder]:text-foreground "
+            className="w-full bg-white border-neutral-200 dark:border-stone-700 !h-11.5 px-2 py-1 *:data-[slot=select-icon]:hidden cursor-pointer focus-visible:ring-0 focus-visible:border-gray-200 data-[placeholder]:text-stone-700 dark:data-[placeholder]:text-foreground"
           >
             <SelectValue placeholder="No workspaces. Create one!">
               {isPending ? (
@@ -126,7 +106,7 @@ export const WorkspaceSelector = ({
         <SelectContent className="min-w-64">
           {workspaces.map((workspace) => (
             <Fragment key={workspace.id}>
-              <SelectItem value={workspace.id} className="h-fit px-2 py-1">
+              <SelectItem value={workspace.id} className="h-fit px-2 py-1 cursor-pointer">
                 <WorkspaceInfo workspace={workspace} />
               </SelectItem>
             </Fragment>
@@ -140,3 +120,23 @@ export const WorkspaceSelector = ({
     </div>
   );
 };
+
+const SkeletonWorkspace = () => (
+  <div className="flex items-center gap-3 animate-pulse">
+    <div className="size-8 rounded-lg bg-neutral-300 dark:bg-neutral-400" />
+    <div className="flex flex-col items-start">
+      <div className="h-3 w-32 bg-neutral-200 dark:bg-neutral-700 rounded" />
+      <div className="h-2 w-24 bg-neutral-200 dark:bg-neutral-700 rounded mt-1" />
+    </div>
+  </div>
+);
+
+const WorkspaceInfo = ({ workspace }: { workspace: Workspace; haAction?: boolean }) => (
+  <div className="flex items-center gap-3">
+    <Avatar image={workspace.logo} fallback={workspace.name} size="xl" shape="square" />
+    <div className="flex flex-col items-start">
+      <span className="font-medium text-foreground">{workspace.name}</span>
+      <span className="text-xs text-muted-foreground">Workspace</span>
+    </div>
+  </div>
+);

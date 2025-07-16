@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+import Image from "next/image";
 import { cn } from "@workspace/ui/lib/utils";
 import { EditProjectDialog } from "../EditProjectDialog";
 import { Avatar } from "@/components/Avatar";
@@ -52,12 +53,16 @@ export const AboutProjectBlock = ({ project, className }: AboutProjectBlockProps
       )}
     >
       <div className="flex flex-col md:flex-row w-full flex-1 gap-8">
-        <Avatar
-          className="h-auto w-full max-w-3xs rounded-md hidden md:block"
-          shape="square"
-          image={project.logo}
-          fallback={project.name}
-        />
+        <div className="relative h-auto w-full max-w-3xs rounded-md hidden md:block overflow-hidden border border-neutral-200">
+          <Image
+            src={project.logo ?? "/images/image-placeholder.png"}
+            alt={project.name}
+            className="object-cover"
+            sizes="33vw"
+            priority
+            fill
+          />
+        </div>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1 text-sm text-neutral-600">
@@ -66,7 +71,9 @@ export const AboutProjectBlock = ({ project, className }: AboutProjectBlockProps
             </div>
             <div className="flex flex-col gap-1 text-sm text-neutral-600">
               <p>Description</p>
-              <h4 className="text-sm font-medium">{project.description}</h4>
+              <p className="text-sm font-medium">
+                {project.description ? project.description : "-"}
+              </p>
             </div>
           </div>
           <ul className="grid grid-cols-2 gap-y-6 gap-x-4 md:gap-x-14 text-sm text-neutral-600 h-fit w-fit">

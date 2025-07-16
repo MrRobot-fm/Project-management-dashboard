@@ -11,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@workspace/ui/components/Sidebar/Sidebar";
+import { cn } from "@workspace/ui/lib/utils";
 import { useExpandSidebar } from "./AppSidebar.hooks";
 import { CustomDialog } from "@/components/CustomDialog";
 import { NavMain } from "@/components/NavMain";
@@ -240,7 +241,11 @@ export function AppSidebar({
           workspaces={workspaces}
           sidebarMenuButtonWrapper={{
             component: SidebarMenuButton,
-            props: { asChild: true, size: "lg" },
+            props: {
+              asChild: true,
+              size: "lg",
+              className: cn(workspaces.length === 0 && "group-data-[collapsible=icon]:hidden"),
+            },
           }}
           actionSlot={
             <WorkspaceSelectorActions

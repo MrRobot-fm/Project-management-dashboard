@@ -7,13 +7,10 @@ interface ShowProjectsButtonProps {
   setIsExpanded: Dispatch<SetStateAction<boolean>>;
 }
 
-export const ShowProjectsButton = ({
-  isExpanded,
-  setIsExpanded,
-}: ShowProjectsButtonProps) => {
+export const ShowProjectsButton = ({ isExpanded, setIsExpanded }: ShowProjectsButtonProps) => {
   return (
     <SidebarMenuButton
-      className="text-sidebar-foreground/70 bg-stone-100 dark:bg-transparent justify-center cursor-pointer dark:border dark:border-muted-foreground"
+      className="text-sidebar-foreground/70 bg-stone-100 dark:bg-transparent justify-center cursor-pointer dark:border dark:border-muted-foreground group-data-[collapsible=icon]:hidden"
       onClick={() => setIsExpanded((prev) => !prev)}
     >
       <span>{isExpanded ? "Show less" : "Show all"}</span>

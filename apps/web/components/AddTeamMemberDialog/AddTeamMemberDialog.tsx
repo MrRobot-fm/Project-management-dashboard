@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useParams } from "next/navigation";
 import { Button } from "@workspace/ui/components/Button";
 import { Label } from "@workspace/ui/components/Label";
-import { MultipleSelector, type Option } from "@workspace/ui/components/MultipleSelector";
+import {
+  MultipleSelector,
+  type MultipleSelectorRef,
+  type Option,
+} from "@workspace/ui/components/MultipleSelector";
 import { Spinner } from "@workspace/ui/components/Spinner";
 import { Avatar } from "@/components/Avatar";
 import { CustomDialog } from "@/components/CustomDialog";
@@ -19,8 +23,8 @@ interface AddTeamMemberDialogProps {
   workspaceId: string;
 }
 
-const mockSearch = async (value: string): Promise<Option[]> => {
-  const res = await searchUsers(value);
+const mockSearch = async (query: string, projectId: string): Promise<Option[]> => {
+  const res = await searchUsers(query, projectId);
 
   const options: Option[] = res.map((user) => ({
     label: user.name,
@@ -59,10 +63,23 @@ const TeamMemberDialogContent = ({
   const { id } = useParams();
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([]);
 
+  const selectorRef = useRef<MultipleSelectorRef>(null);
+
+  const addMembersAction = async (formData: FormData) => {
+    const response = await addProjectMembers(formData);
+
+    if (response.success) {
+      setSelectedOptions([]);
+      selectorRef.current?.reset();
+    }
+
+    return response;
+  };
+
   return (
     <form
       action={async (formData) => {
-        await addProjectMembers(formData);
+        await addMembersAction(formData);
       }}
       className="flex flex-col gap-8"
     >
@@ -75,8 +92,10 @@ const TeamMemberDialogContent = ({
       <div className="flex flex-col gap-4">
         <Label className="ml-1">Share project whit</Label>
         <MultipleSelector
+          data-test-id="multiple-selector"
+          ref={selectorRef}
           placeholder="Search and add members..."
-          onSearch={async (value) => await mockSearch(value)}
+          onSearch={async (value) => await mockSearch(value, id as string)}
           onChange={setSelectedOptions}
           menuItem={(item) => <UserItem {...item} />}
           inputProps={{ className: "px-1 py-0 ml-0" }}

@@ -13,6 +13,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/Sidebar";
+import { cn } from "@workspace/ui/lib/utils";
 import { NavProjectsItems } from "./NavProjectsItems";
 import { ShowProjectsButton } from "./ShowProjectsButton";
 import { Avatar } from "@/components/Avatar";
@@ -33,7 +34,7 @@ interface NavProjectsProps {
 
 export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) => {
   const { id } = useParams();
-  const { isMobile } = useSidebar();
+  const { isMobile, open } = useSidebar();
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isProjectDialogOpen, setIsProjectDialogOpen] = useState(false);
@@ -46,8 +47,8 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
     });
 
   const visibleProjects = useMemo(
-    () => (isExpanded ? optimisticProjects : optimisticProjects.slice(0, 3)),
-    [isExpanded, optimisticProjects],
+    () => (isExpanded || !open ? optimisticProjects : optimisticProjects.slice(0, 3)),
+    [isExpanded, open, optimisticProjects],
   );
 
   const dropdownItems = (project: Project) => [
@@ -90,7 +91,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
     : `Make quick edits to keep your project on track`;
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className={cn(projects.length === 0 && "group-data-[collapsible=icon]:hidden")}>
       <CustomDialog
         title={title}
         description={descriptions}

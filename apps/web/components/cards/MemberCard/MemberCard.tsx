@@ -22,7 +22,10 @@ export const MemberCard = ({
   endEnchant,
 }: MemberCardProps) => {
   return (
-    <div className="flex items-center gap-2 border border-neutral-200 rounded-lg p-3">
+    <div
+      data-test-id="member-card"
+      className="flex items-center gap-2 border border-neutral-200 rounded-lg p-3"
+    >
       <Avatar
         size="xl"
         image={member.logo}
