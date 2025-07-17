@@ -37,23 +37,29 @@ jobs:
       - name: Install Xvfb and dependencies for Cypress
         run: |
           sudo apt-get update
-          sudo apt-get install -y xvfb libnss3 libatk1.0-0 libatk-bridge2.0-0 \
-          libcups2 \
-          libx11-xcb1 \
-          libxcomposite1 \
-          libxdamage1 \
-          libxrandr2 \
-          libgbm1 \
-          libgtk-3-0 \
-          libasound2 \
-          libxss1 \
-          libgconf-2-4 \
-          libxtst6 \
-          libatspi2.0-0 \
-          libdrm2 \
-          libxi6 \
-          libxfixes3 \
-          dbus-x11
+           # Install dependencies with error handling for different Ubuntu versions
+           sudo apt-get install -y xvfb libnss3 libatk1.0-0 libatk-bridge2.0-0 \
+           libcups2 \
+           libx11-xcb1 \
+           libxcomposite1 \
+           libxdamage1 \
+           libxrandr2 \
+           libgbm1 \
+           libgtk-3-0 \
+           libxss1 \
+           libxtst6 \
+           libatspi2.0-0 \
+           libdrm2 \
+           libxi6 \
+           libxfixes3 \
+           dbus-x11 \
+           ca-certificates \
+           fonts-liberation \
+           xdg-utils || true
+           
+           sudo apt-get install -y libasound2t64 || sudo apt-get install -y libasound2 || true
+           
+           sudo apt-get install -y libappindicator3-1 libu2f-udev || true
 
       - name: Cache Cypress binary
         uses: actions/cache@v4
