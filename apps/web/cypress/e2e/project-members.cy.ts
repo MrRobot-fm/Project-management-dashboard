@@ -61,9 +61,9 @@ describe("Project members", () => {
     openProject();
     addMemberToProject(invitedUser.name);
 
-    cy.findByTestId("member-card-menu-btn").click();
+    cy.findByTestId("member-card-menu-btn", { timeout: 15000 }).click();
     cy.get("[data-slot='dropdown-menu-item']", { timeout: 15000 }).click();
 
-    cy.findByRole("button", { name: /remove/i }).click();
+    cy.findByRole("button", { name: /remove/i, timeout: 15000 }).click();
   });
 });
