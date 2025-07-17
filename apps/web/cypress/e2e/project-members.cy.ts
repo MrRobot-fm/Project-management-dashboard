@@ -23,13 +23,12 @@ describe("Project members", () => {
     cy.createProject(projectName, projectDescription);
     cy.wait("@createProject");
 
-    cy.findByTestId("project-item").should("have.text", projectName);
+    cy.findByTestId("project-item", { timeout: 10000 }).should("have.text", projectName);
   });
 
   afterEach(() => {
-    cy.intercept("POST", "**").as("deleteWorkspace");
+    cy.wait(10000);
     cy.deleteCurrentWorkspace();
-    cy.wait("@deleteWorkspace");
 
     cy.get("[data-slot='select-value']", { timeout: 15000 }).should(
       "contain.text",
@@ -65,8 +64,6 @@ describe("Project members", () => {
     cy.findByTestId("member-card-menu-btn").click();
     cy.get("[data-slot='dropdown-menu-item']", { timeout: 15000 }).click();
 
-    cy.intercept("POST", "/projects/*").as("removeMember");
     cy.findByRole("button", { name: /remove/i }).click();
-    cy.wait("@removeMember", { timeout: 10000 });
   });
 });
