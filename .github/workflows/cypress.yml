@@ -34,6 +34,27 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
+      - name: Install Xvfb and dependencies for Cypress
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libnss3 libatk1.0-0 libatk-bridge2.0-0 \
+          libcups2 \
+          libx11-xcb1 \
+          libxcomposite1 \
+          libxdamage1 \
+          libxrandr2 \
+          libgbm1 \
+          libgtk-3-0 \
+          libasound2 \
+          libxss1 \
+          libgconf-2-4 \
+          libxtst6 \
+          libatspi2.0-0 \
+          libdrm2 \
+          libxi6 \
+          libxfixes3 \
+          dbus-x11
+
       - name: Cache Cypress binary
         uses: actions/cache@v4
         with:
@@ -120,7 +141,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./apps/web
-          browser: chrome
+          browser: electron
           headed: false
           install: false
           config: baseUrl=http://localhost:3000
