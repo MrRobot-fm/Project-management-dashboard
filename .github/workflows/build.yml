@@ -70,19 +70,26 @@ jobs:
       - name: Build API package
         run: pnpm build --filter api
 
-      - name: Start API server in production mode
+      - name: Start and wait for API (compatible with act)
         run: |
           cd apps/api
           pnpm start > ../../api.log 2>&1 &
           echo "API_PID=$!" >> $GITHUB_ENV
-          echo "Waiting for API to be ready..."
-          sleep 10
-
-      - name: Wait for API to be ready
-        run: |
-          npx wait-on http://localhost:${{ secrets.API_PORT }}/api/status -t 30000
-          if [ $? -ne 0 ]; then
-            echo "API did not start in time"
+              
+          echo "Waiting for API to be ready on port ${{ secrets.API_PORT }}..."
+          for i in {1..30}; do
+            if curl -sf http://localhost:${{ secrets.API_PORT }}/api/status; then
+              echo "API is ready!"
+              break
+            fi
+            echo "Waiting ($i)..."
+            sleep 2
+          done
+              
+          # If it's still not up after the loop, print logs and exit with error
+          if ! curl -sf http://localhost:${{ secrets.API_PORT }}/api/status; then
+            echo "❌ API did not start in time. Logs:"
+            cat ../../api.log
             exit 1
           fi
 
