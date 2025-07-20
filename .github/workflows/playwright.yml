@@ -1,4 +1,4 @@
-name: Cypress
+name: Playwright
 
 on:
   workflow_call:
@@ -21,54 +21,21 @@ on:
         required: true
 
 jobs:
-  cypress:
-    name: Cypress E2E Tests
+  playwright:
+    name: Playwright E2E Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Xvfb and dependencies for Cypress
-        run: |
-          sudo apt-get update
-           # Install dependencies with error handling for different Ubuntu versions
-           sudo apt-get install -y xvfb libnss3 libatk1.0-0 libatk-bridge2.0-0 \
-           libcups2 \
-           libx11-xcb1 \
-           libxcomposite1 \
-           libxdamage1 \
-           libxrandr2 \
-           libgbm1 \
-           libgtk-3-0 \
-           libxss1 \
-           libxtst6 \
-           libatspi2.0-0 \
-           libdrm2 \
-           libxi6 \
-           libxfixes3 \
-           dbus-x11 \
-           ca-certificates \
-           fonts-liberation \
-           xdg-utils || true
-           
-           sudo apt-get install -y libasound2t64 || sudo apt-get install -y libasound2 || true
-           
-           sudo apt-get install -y libappindicator3-1 libu2f-udev || true
-
-      - name: Cache Cypress binary
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-cache-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            cypress-cache-${{ runner.os }}-
-
-      - uses: pnpm/action-setup@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
         with:
           version: 8
 
@@ -78,15 +45,17 @@ jobs:
           node-version: 20
           cache: "pnpm"
 
-      - name: Install all workspace dependencies
+      - name: Install dependencies
         run: pnpm install --recursive
 
       - name: Build schemas package
         run: pnpm --filter @workspace/schemas build
 
-      - name: Install Cypress binary
-        run: pnpm exec cypress install
+      - name: Install Playwright & browsers
         working-directory: apps/web
+        run: |
+          pnpm install
+          pnpm exec playwright install --with-deps
 
       - name: Configure API environment
         run: |
@@ -109,7 +78,7 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
 
       - name: Build DB package
-        run: pnpm --filter @workspace/db run build
+        run: pnpm --filter @workspace/db build
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
 
@@ -135,23 +104,17 @@ jobs:
           pnpm build
           pnpm start > ../../web.log 2>&1 &
           echo "WEB_PID=$!" >> $GITHUB_ENV
-          echo "Waiting for web app to be ready..."
           sleep 10
 
       - name: Wait for Next.js to be ready
         run: |
           npx wait-on http://localhost:3000 || exit 1
 
-      - name: Run Cypress E2E tests
-        uses: cypress-io/github-action@v6
-        with:
-          working-directory: ./apps/web
-          browser: electron
-          headed: false
-          install: false
-          config: baseUrl=http://localhost:3000
+      - name: Run Playwright tests
+        working-directory: apps/web
+        run: pnpm exec playwright test
         env:
-          CYPRESS_API_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+          BASE_URL: http://localhost:3000
 
       - name: Stop servers
         if: always()

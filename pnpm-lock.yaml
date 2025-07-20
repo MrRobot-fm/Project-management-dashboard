@@ -153,7 +153,7 @@ importers:
         version: 5.75.2(@tanstack/react-query@5.75.2(react@19.1.0))(react@19.1.0)
       '@tanstack/react-query-next-experimental':
         specifier: ^5.75.2
-        version: 5.75.2(@tanstack/react-query@5.75.2(react@19.1.0))(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        version: 5.75.2(@tanstack/react-query@5.75.2(react@19.1.0))(next@15.3.2(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
       '@tanstack/react-table':
         specifier: ^8.21.2
         version: 8.21.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -183,7 +183,7 @@ importers:
         version: 0.475.0(react@19.1.0)
       next:
         specifier: ^15.3.2
-        version: 15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 15.3.2(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -209,6 +209,9 @@ importers:
       '@faker-js/faker':
         specifier: ^9.6.0
         version: 9.6.0
+      '@playwright/test':
+        specifier: ^1.54.1
+        version: 1.54.1
       '@tanstack/eslint-plugin-query':
         specifier: ^5.74.7
         version: 5.74.7(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2)
@@ -1285,6 +1288,11 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@playwright/test@1.54.1':
+    resolution: {integrity: sha512-FS8hQ12acieG2dYSksmLOF7BNxnVf2afRJdCuM1eMSxj6QTSE6G4InGF7oApGgDb65MX7AwMVlIkpru0yZA4Xw==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@polka/url@1.0.0-next.28':
     resolution: {integrity: sha512-8LduaNlMZGwdZ6qWrKlfa+2M4gahzFkprZiAt2TF8uS0qQgBizKXpXURqvTJ4WtmupWxaLqjRb2UCTe72mu+Aw==}
@@ -3825,6 +3833,11 @@ packages:
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
+  fsevents@2.3.2:
+    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
+    os: [darwin]
+
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -4960,6 +4973,16 @@ packages:
 
   pkg-types@1.3.1:
     resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
+
+  playwright-core@1.54.1:
+    resolution: {integrity: sha512-Nbjs2zjj0htNhzgiy5wu+3w09YetDx5pkrpI/kZotDlDUaYk0HVA5xrBVPdow4SAUIlhgKcJeJg4GRKW6xHusA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.54.1:
+    resolution: {integrity: sha512-peWpSwIBmSLi6aW2auvrUtf2DqY16YYcCMO8rTVx486jKmDTJg7UAhyrraP98GB8BoPURZP8+nxO7TSd4cPr5g==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
@@ -6879,6 +6902,10 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+  '@playwright/test@1.54.1':
+    dependencies:
+      playwright: 1.54.1
+
   '@polka/url@1.0.0-next.28': {}
 
   '@prisma/client@6.6.0(prisma@6.6.0(typescript@5.8.2))(typescript@5.8.2)':
@@ -7843,10 +7870,10 @@ snapshots:
       '@tanstack/react-query': 5.75.2(react@19.1.0)
       react: 19.1.0
 
-  '@tanstack/react-query-next-experimental@5.75.2(@tanstack/react-query@5.75.2(react@19.1.0))(next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)':
+  '@tanstack/react-query-next-experimental@5.75.2(@tanstack/react-query@5.75.2(react@19.1.0))(next@15.3.2(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@tanstack/react-query': 5.75.2(react@19.1.0)
-      next: 15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next: 15.3.2(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
 
   '@tanstack/react-query@5.75.2(react@19.1.0)':
@@ -8334,7 +8361,7 @@ snapshots:
       sirv: 3.0.1
       tinyglobby: 0.2.12
       tinyrainbow: 2.0.0
-      vitest: 3.0.9(@types/node@22.13.14)(@vitest/ui@3.0.9)(jiti@2.4.2)(jsdom@26.0.0)(lightningcss@1.29.2)(tsx@4.19.3)
+      vitest: 3.0.9(@types/node@20.17.28)(@vitest/ui@3.0.9)(jiti@2.4.2)(jsdom@26.0.0)(lightningcss@1.29.2)(tsx@4.19.3)
 
   '@vitest/utils@1.6.1':
     dependencies:
@@ -9694,6 +9721,9 @@ snapshots:
 
   fs.realpath@1.0.0: {}
 
+  fsevents@2.3.2:
+    optional: true
+
   fsevents@2.3.3:
     optional: true
 
@@ -10576,7 +10606,7 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  next@15.3.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  next@15.3.2(@playwright/test@1.54.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       '@next/env': 15.3.2
       '@swc/counter': 0.1.3
@@ -10596,6 +10626,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 15.3.2
       '@next/swc-win32-arm64-msvc': 15.3.2
       '@next/swc-win32-x64-msvc': 15.3.2
+      '@playwright/test': 1.54.1
       sharp: 0.34.1
     transitivePeerDependencies:
       - '@babel/core'
@@ -10852,6 +10883,14 @@ snapshots:
       confbox: 0.1.8
       mlly: 1.7.4
       pathe: 2.0.3
+
+  playwright-core@1.54.1: {}
+
+  playwright@1.54.1:
+    dependencies:
+      playwright-core: 1.54.1
+    optionalDependencies:
+      fsevents: 2.3.2
 
   possible-typed-array-names@1.1.0: {}
 

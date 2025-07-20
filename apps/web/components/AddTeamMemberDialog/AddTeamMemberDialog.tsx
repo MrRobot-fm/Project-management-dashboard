@@ -108,7 +108,7 @@ const TeamMemberDialogContent = ({
           }}
           onChange={setSelectedOptions}
           menuItem={(item) => <UserItem {...item} />}
-          inputProps={{ className: "px-1 py-0 ml-0" }}
+          inputProps={{ className: "px-1 py-0 ml-0", name: "search-members-input" }}
           badgeClassName="bg-transparent text-neutral-600 border !border-neutral-400"
           className="border-none pl-0 py-0"
           creatable
