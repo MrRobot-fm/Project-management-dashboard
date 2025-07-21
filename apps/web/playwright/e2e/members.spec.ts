@@ -63,6 +63,8 @@ test.describe("Project members", () => {
 
     await page.getByRole("button", { name: /add members/i }).click();
     await page.locator('[data-slot="dialog-close"]').click();
+
+    await expect(page.getByTestId("member-card").filter({ hasText: name })).toContainText(name);
   };
 
   test("should add a member to the project", async ({ page }) => {
@@ -77,5 +79,9 @@ test.describe("Project members", () => {
     await page.getByTestId("member-card-menu-btn").click();
     await page.getByRole("menuitem").click();
     await page.getByRole("button", { name: /remove/i }).click();
+
+    await expect(page.getByTestId("member-card").filter({ hasText: invitedUser.name })).toHaveCount(
+      0,
+    );
   });
 });
