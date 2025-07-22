@@ -5,7 +5,6 @@ import { SidebarInset, SidebarProvider } from "@workspace/ui/components/Sidebar"
 import "@workspace/ui/globals.css";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { getAppLayout } from "@/services/get-app-layout";
 
 const fontSans = Geist({
@@ -32,29 +31,27 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
-        <ThemeProvider>
-          <SidebarProvider
-            defaultOpen={false}
-            style={
-              {
-                "--sidebar-width": "calc(var(--spacing) * 72)",
-                "--header-height": "calc(var(--spacing) * 14)",
-              } as CSSProperties
-            }
-          >
-            <AppSidebar
-              userId={user?.id}
-              workspaces={workspaces}
-              projects={projects}
-              currentWorkspaceId={currentWorkspaceId}
-              variant="floating"
-            />
-            <SidebarInset className="overflow-hidden">
-              <SiteHeader user={user} />
-              <main className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-10">{children}</main>
-            </SidebarInset>
-          </SidebarProvider>
-        </ThemeProvider>
+        <SidebarProvider
+          defaultOpen={false}
+          style={
+            {
+              "--sidebar-width": "calc(var(--spacing) * 72)",
+              "--header-height": "calc(var(--spacing) * 14)",
+            } as CSSProperties
+          }
+        >
+          <AppSidebar
+            userId={user?.id}
+            workspaces={workspaces}
+            projects={projects}
+            currentWorkspaceId={currentWorkspaceId}
+            variant="floating"
+          />
+          <SidebarInset className="overflow-hidden">
+            <SiteHeader user={user} />
+            <main className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-10">{children}</main>
+          </SidebarInset>
+        </SidebarProvider>
       </body>
     </html>
   );

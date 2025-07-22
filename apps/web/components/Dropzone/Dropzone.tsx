@@ -91,7 +91,12 @@ export const Dropzone = ({ image, disabled = false, field }: DropzoneProps) => {
       <CardContent className="space-y-1 p-0">
         {previewUrl ? (
           <div className="relative w-fit">
-            <Avatar image={previewUrl} shape="square" className="size-24 rounded-md" />
+            <Avatar
+              imageDataTestId="uploaded-image"
+              image={previewUrl}
+              shape="square"
+              className="size-24 rounded-md"
+            />
             <Button
               size="icon"
               variant="destructive"

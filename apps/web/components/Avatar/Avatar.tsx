@@ -8,14 +8,30 @@ export type AvatarSize = VariantProps<typeof avatarSize>;
 interface AvatarProps extends ComponentProps<typeof AvatarRoot>, AvatarSize {
   image?: string | null;
   fallback?: string;
+  imageDataTestId?: string;
 }
 
-export const Avatar = ({ image, fallback, size, shape, className, ...props }: AvatarProps) => {
+export const Avatar = ({
+  image,
+  fallback,
+  size,
+  shape,
+  className,
+  imageDataTestId,
+  ...props
+}: AvatarProps) => {
   const initials = getAvatarFallback(fallback ?? "");
 
   return (
     <AvatarRoot className={avatarSize({ size, shape, className })} {...props}>
-      {image && <AvatarImage src={image} alt={initials} className="object-cover bg-center" />}
+      {image && (
+        <AvatarImage
+          data-test-id={imageDataTestId}
+          src={image}
+          alt={initials}
+          className="object-cover bg-center"
+        />
+      )}
       <AvatarFallback className={avatarFallback({ size, shape, className })}>
         {initials}
       </AvatarFallback>

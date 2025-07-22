@@ -61,6 +61,7 @@ export const WorkspaceSelectorActions = ({
             description="This action will delete the workspace and all its data. This action cannot be undone."
             triggerSlot={
               <Button
+                data_test-id="delete-workspace-btn"
                 variant="transparent"
                 className="flex gap-2 items-center cursor-pointer w-full justify-start text-red-500 hover:text-red-500 hover:bg-red-50"
                 onClick={() => setIsDeleteDialogOpen(true)}

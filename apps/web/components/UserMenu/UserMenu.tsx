@@ -43,7 +43,7 @@ export const UserMenu = ({ user, menuItems, variant = "default" }: UserMenuProps
         <Button
           variant="link"
           className={cn("focus-visible:ring-0 h-fit cursor-pointer", variant === "avatar" && "p-0")}
-          dataTestId="nav-user"
+          data-test-id="nav-user"
         >
           <Avatar image={user?.logo} fallback={user?.name} size="xl" />
           {variant === "default" && (
@@ -82,7 +82,7 @@ export const UserMenu = ({ user, menuItems, variant = "default" }: UserMenuProps
           })}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logoutAction}>
+        <DropdownMenuItem data-test-id="logout-btn" onClick={logoutAction}>
           <IconLogout />
           Logout
         </DropdownMenuItem>
