@@ -71,16 +71,15 @@ jobs:
       - name: Configure Next.js environment
         run: |
           echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > apps/web/.env.local
-
       - name: Generate Prisma Client
         run: pnpm turbo db:generate
         env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
 
       - name: Build DB package
         run: pnpm --filter @workspace/db build
         env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
 
       - name: Build API for E2E tests
         run: pnpm build --filter api
@@ -115,6 +114,7 @@ jobs:
         run: pnpm exec playwright test
         env:
           BASE_URL: http://localhost:3000
+          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
 
       - name: Stop servers
         if: always()
