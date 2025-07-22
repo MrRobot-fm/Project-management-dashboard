@@ -1,8 +1,10 @@
 import { type Page, expect } from "@playwright/test";
+import * as dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Fix for __dirname in ESM modules
+dotenv.config();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

@@ -1,4 +1,4 @@
-import { PlaywrightCommands } from "../support/playwright-commands";
+import { PlaywrightCommands } from "../support/commands";
 import { generateUser } from "../support/utils";
 import { test, expect, type Page } from "@playwright/test";
 
