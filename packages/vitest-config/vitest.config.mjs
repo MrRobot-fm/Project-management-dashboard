@@ -11,6 +11,13 @@ export default defineConfig({
       provider: "v8",
       reportsDirectory: "./coverage"
     },
-    exclude: ["node_modules", "**/*.d.ts", "packages/vitest/**"]
+    exclude: [
+      "node_modules",
+      "**/*.d.ts",
+      "packages/vitest/**",
+      "packages/playwright/**",
+      "**/e2e/**",
+      "**/*.spec.ts"
+    ]
   }
 });
