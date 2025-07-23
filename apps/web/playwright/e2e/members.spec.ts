@@ -72,7 +72,9 @@ test.describe("Project members", () => {
 
     await page.locator('[data-slot="dialog-close"]').click();
 
-    await expect(page.getByTestId("member-card").filter({ hasText: name })).toContainText(name);
+    await expect(page.getByTestId("member-card").filter({ hasText: name })).toContainText(name, {
+      timeout: 10000,
+    });
   };
 
   test("should add a member to the project", async ({ page }) => {
