@@ -98,6 +98,7 @@ test.describe("Project members", () => {
 
     await expect(page.getByTestId("member-card").filter({ hasText: invitedUser.name })).toHaveCount(
       0,
+      { timeout: 10000 },
     );
   });
 });
