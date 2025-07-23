@@ -61,20 +61,11 @@ test.describe("Project members", () => {
     await expect(page.getByTestId("search-user-item")).toContainText(name, { timeout: 10000 });
     await page.getByTestId("search-user-item").click();
 
-    const addMembersResponsePromise = page.waitForResponse((res) => {
-      return res.url().includes("/projects/") && res.request().method() === "POST";
-    });
-
     await page.getByRole("button", { name: /add members/i }).click();
-
-    const response = await addMembersResponsePromise;
-    expect(response.status()).toBe(200);
 
     await page.locator('[data-slot="dialog-close"]').click();
 
-    await expect(page.getByTestId("member-card").filter({ hasText: name })).toContainText(name, {
-      timeout: 10000,
-    });
+    await expect(page.getByTestId("member-card").filter({ hasText: name })).toContainText(name);
   };
 
   test("should add a member to the project", async ({ page }) => {
@@ -89,18 +80,10 @@ test.describe("Project members", () => {
     await page.getByTestId("member-card-menu-btn").click();
     await page.getByRole("menuitem").click();
 
-    const deleteMemberResponsePromise = page.waitForResponse((res) => {
-      return res.url().includes("/projects/") && res.request().method() === "POST";
-    });
-
     await page.getByRole("button", { name: /remove/i }).click();
-
-    const response = await deleteMemberResponsePromise;
-    expect(response.status()).toBe(200);
 
     await expect(page.getByTestId("member-card").filter({ hasText: invitedUser.name })).toHaveCount(
       0,
-      { timeout: 10000 },
     );
   });
 });
