@@ -1,6 +1,12 @@
 import { PrismaClient, Prisma } from "@workspace/db";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 
 export async function resetDatabase() {
   const tables = await prisma.$queryRaw<{ tablename: string }[]>(Prisma.sql`
