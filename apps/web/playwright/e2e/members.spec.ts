@@ -2,6 +2,55 @@ import { PlaywrightCommands } from "../support/commands";
 import { generateUser } from "../support/utils";
 import { test, expect, type Page } from "@playwright/test";
 
+const openProject = async (page: Page) => {
+  await page.getByTestId("project-item").click();
+};
+
+const waitForMembersCount = async (page: Page, expectedCount: number) => {
+  const membersCard = page.getByTestId("member-card");
+  await expect(membersCard).toHaveCount(expectedCount);
+};
+
+const addMemberToProject = async (page: Page, userName: string) => {
+  await page.getByTestId("add-team-member-btn").click();
+
+  await page.getByRole("combobox").fill(userName);
+  await expect(page.getByTestId("search-user-item")).toContainText(userName, { timeout: 10000 });
+
+  await page.getByTestId("search-user-item").click();
+
+  await Promise.all([
+    page.waitForResponse(
+      (res) =>
+        res.url().includes("/projects/") &&
+        res.request().method() === "POST" &&
+        res.status() === 200,
+    ),
+    page.getByRole("button", { name: /add members/i }).click(),
+  ]);
+
+  await page.locator('[data-slot="dialog-close"]').click();
+
+  await waitForMembersCount(page, 2);
+};
+
+const removeMemberFromProject = async (page: Page, expectedRemaining = 1) => {
+  await page.getByTestId("member-card-menu-btn").click();
+  await page.getByRole("menuitem").click();
+
+  await Promise.all([
+    page.waitForResponse(
+      (res) =>
+        res.url().includes("/projects/") &&
+        res.request().method() === "POST" &&
+        res.status() === 200,
+    ),
+    page.getByRole("button", { name: /remove/i }).click(),
+  ]);
+
+  await waitForMembersCount(page, expectedRemaining);
+};
+
 test.describe("Project members", () => {
   let commands: PlaywrightCommands;
   let user: ReturnType<typeof generateUser>;
@@ -50,40 +99,27 @@ test.describe("Project members", () => {
     await commands.deleteCurrentUser(invitedUser);
   });
 
-  const openProject = async (page: Page) => {
-    await page.getByTestId("project-item").click();
-  };
-
-  const addMemberToProject = async (page: Page, name: string) => {
-    await page.getByTestId("add-team-member-btn").click();
-
-    await page.getByRole("combobox").fill(name);
-    await expect(page.getByTestId("search-user-item")).toContainText(name, { timeout: 10000 });
-    await page.getByTestId("search-user-item").click();
-
-    await page.getByRole("button", { name: /add members/i }).click();
-
-    await page.locator('[data-slot="dialog-close"]').click();
-
-    const membersCard = page.getByTestId("member-card");
-    await expect(membersCard).toHaveCount(2, { timeout: 10000 });
-  };
-
   test("should add a member to the project", async ({ page }) => {
-    await openProject(page);
-    await addMemberToProject(page, invitedUser.name);
+    await test.step("Open the project", async () => {
+      await openProject(page);
+    });
+
+    await test.step("Add invited user to the project", async () => {
+      await addMemberToProject(page, invitedUser.name);
+    });
   });
 
   test("should remove a member from the project", async ({ page }) => {
-    await openProject(page);
-    await addMemberToProject(page, invitedUser.name);
+    await test.step("Open the project", async () => {
+      await openProject(page);
+    });
 
-    await page.getByTestId("member-card-menu-btn").click();
-    await page.getByRole("menuitem").click();
+    await test.step("Add invited user to the project", async () => {
+      await addMemberToProject(page, invitedUser.name);
+    });
 
-    await page.getByRole("button", { name: /remove/i }).click();
-
-    const membersCard = page.getByTestId("member-card");
-    await expect(membersCard).toHaveCount(1, { timeout: 10000 });
+    await test.step("Remove invited user from the project", async () => {
+      await removeMemberFromProject(page, 1);
+    });
   });
 });
