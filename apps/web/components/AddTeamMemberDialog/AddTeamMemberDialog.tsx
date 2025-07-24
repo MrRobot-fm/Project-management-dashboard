@@ -98,7 +98,9 @@ const TeamMemberDialogContent = ({
         <input key={option.value} type="hidden" name="userId[]" value={option.value} />
       ))}
       <div className="flex flex-col gap-4">
-        <Label className="ml-1">Share project whit</Label>
+        <Label htmlFor="search-members-input" className="ml-1">
+          Share project whit
+        </Label>
         <MultipleSelector
           data-test-id="multiple-selector"
           ref={selectorRef}
@@ -108,7 +110,11 @@ const TeamMemberDialogContent = ({
           }}
           onChange={setSelectedOptions}
           menuItem={(item) => <UserItem {...item} />}
-          inputProps={{ className: "px-1 py-0 ml-0", name: "search-members-input" }}
+          inputProps={{
+            className: "px-1 py-0 ml-0",
+            name: "search-members-input",
+            "data-test-id": "search-members-input",
+          }}
           badgeClassName="bg-transparent text-neutral-600 border !border-neutral-400"
           className="border-none pl-0 py-0"
           creatable

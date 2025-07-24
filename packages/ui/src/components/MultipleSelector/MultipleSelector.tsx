@@ -52,7 +52,9 @@ interface MultipleSelectorProps {
   inputProps?: Omit<
     React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>,
     "value" | "placeholder" | "disabled"
-  >;
+  > & {
+    "data-test-id": string;
+  };
   hideClearAllButton?: boolean;
   menuItem?: (values: Option) => React.ReactNode;
 }
