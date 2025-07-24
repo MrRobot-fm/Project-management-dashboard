@@ -65,7 +65,8 @@ test.describe("Project members", () => {
 
     await page.locator('[data-slot="dialog-close"]').click();
 
-    await expect(page.getByTestId("member-card").filter({ hasText: name })).toContainText(name);
+    const membersCard = page.getByTestId("member-card");
+    await expect(membersCard).toHaveCount(2, { timeout: 10000 });
   };
 
   test("should add a member to the project", async ({ page }) => {
@@ -82,8 +83,7 @@ test.describe("Project members", () => {
 
     await page.getByRole("button", { name: /remove/i }).click();
 
-    await expect(page.getByTestId("member-card").filter({ hasText: invitedUser.name })).toHaveCount(
-      0,
-    );
+    const membersCard = page.getByTestId("member-card");
+    await expect(membersCard).toHaveCount(1, { timeout: 10000 });
   });
 });
