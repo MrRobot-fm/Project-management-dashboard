@@ -9,11 +9,7 @@ export const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024,
   },
-  fileFilter: (
-    _: Request,
-    file: Express.Multer.File,
-    cb: FileFilterCallback,
-  ) => {
+  fileFilter: (_: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
     if (!file.mimetype.startsWith("image/")) {
       const error = new BadRequestError("File type not allowed");
 

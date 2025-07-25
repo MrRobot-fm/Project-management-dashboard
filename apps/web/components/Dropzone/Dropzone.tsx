@@ -6,6 +6,8 @@ import { Card, CardContent } from "@workspace/ui/components/Card";
 import { Input } from "@workspace/ui/components/Input";
 import { cn } from "@workspace/ui/lib/utils";
 import { Avatar } from "@/components/Avatar";
+import { deleteLogo } from "@/services/logo/delete-logo";
+import { uploadLogo } from "@/services/logo/upload-logo";
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { FileImage, Trash2 } from "lucide-react";
 
@@ -13,15 +15,18 @@ interface DropzoneProps {
   disabled?: boolean;
   image: string | null;
   field?: AnyFieldApi;
+  id?: string;
+  type: "workspace" | "project" | "user";
+  mode: "create" | "edit";
 }
 
-export const Dropzone = ({ image, disabled = false, field }: DropzoneProps) => {
+export const Dropzone = ({ id, type, mode, image, disabled = false, field }: DropzoneProps) => {
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(image ?? null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDrop = useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
+    async (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
       event.stopPropagation();
 
@@ -35,9 +40,13 @@ export const Dropzone = ({ image, disabled = false, field }: DropzoneProps) => {
 
       if (droppedFile && droppedFile.type.startsWith("image/")) {
         setPreviewUrl(URL.createObjectURL(droppedFile));
+
+        if (mode === "edit") {
+          await uploadLogo({ id, type, logo: droppedFile });
+        }
       }
     },
-    [field],
+    [field, id, mode, type],
   );
 
   const handleDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
@@ -55,7 +64,7 @@ export const Dropzone = ({ image, disabled = false, field }: DropzoneProps) => {
   }, []);
 
   const handleFileSelect = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
+    async (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
 
       if (field) {
@@ -64,18 +73,28 @@ export const Dropzone = ({ image, disabled = false, field }: DropzoneProps) => {
 
       if (file && file.type.startsWith("image/")) {
         setPreviewUrl(URL.createObjectURL(file));
+
+        if (mode === "edit") {
+          await uploadLogo({ id, type, logo: file });
+        }
       }
     },
-    [field],
+
+    [field, id, mode, type],
   );
 
-  const handleRemoveFile = useCallback(() => {
+  const handleRemoveFile = useCallback(async () => {
+    if (mode === "edit") {
+      await deleteLogo({ id: id ?? "", type });
+    }
+
     setPreviewUrl(null);
+    field?.handleChange(null);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-  }, []);
+  }, [field, id, mode, type]);
 
   const handleClick = () => {
     fileInputRef.current?.click();
@@ -98,6 +117,7 @@ export const Dropzone = ({ image, disabled = false, field }: DropzoneProps) => {
               className="size-24 rounded-md"
             />
             <Button
+              type="button"
               size="icon"
               variant="destructive"
               className="text-white rounded-full !p-1.5 size-fit aspect-square bg-red-500 cursor-pointer absolute -bottom-2 -right-2"
@@ -128,7 +148,7 @@ export const Dropzone = ({ image, disabled = false, field }: DropzoneProps) => {
         <Input
           id={field?.name}
           type="file"
-          name={field?.name}
+          name={mode === "edit" ? "" : field?.name}
           accept="image/*"
           ref={fileInputRef}
           onChange={handleFileSelect}

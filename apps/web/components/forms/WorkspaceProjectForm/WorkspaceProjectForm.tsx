@@ -22,6 +22,7 @@ import { CirclePlus, PencilLine } from "lucide-react";
 interface WorkspaceProjectFormProps<T extends Project | Workspace> {
   data?: T;
   action: (payload: FormActionPayload) => void;
+  id?: string;
   workspaceId?: string;
   mode?: "create" | "edit";
   type: "workspace" | "project";
@@ -30,6 +31,7 @@ interface WorkspaceProjectFormProps<T extends Project | Workspace> {
 export const WorkspaceProjectForm = <T extends Project | Workspace>({
   data,
   action,
+  id,
   workspaceId,
   mode = "create",
   type,
@@ -152,6 +154,9 @@ export const WorkspaceProjectForm = <T extends Project | Workspace>({
               </Label>
               <div className="flex flex-col gap-1">
                 <Dropzone
+                  id={id}
+                  type={type}
+                  mode={mode}
                   image={data?.logo ? data.logo : null}
                   disabled={isPending}
                   field={field}

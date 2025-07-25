@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { uploadFile } from "@/utils/storage";
+import { getBasePath, removeExistingFiles, uploadFile } from "@/utils/storage";
 import { prisma } from "@workspace/db";
-import { BadRequestError, UnauthorizedError } from "@workspace/exceptions";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { randomUUID } from "crypto";
 
 export const createWorkspace = async (req: Request, res: Response) => {
@@ -132,7 +132,7 @@ export const deleteWorkspace = async (req: Request, res: Response) => {
 };
 
 export const updateWorkspace = async (req: Request, res: Response) => {
-  const { body, user, file, params } = req;
+  const { body, user, params } = req;
 
   if (!user) {
     throw new UnauthorizedError("User can't update workspace");
@@ -142,26 +142,70 @@ export const updateWorkspace = async (req: Request, res: Response) => {
     throw new BadRequestError("Workspace ID is required");
   }
 
-  let publicUrl: string | null = null;
-
-  if (file) {
-    publicUrl = await uploadFile({
-      bucket: "workspace-logo",
-      file: file,
-      workspaceId: params.workspaceId,
-    });
-  }
   const updatedWorkspace = await prisma.workspace.update({
     where: {
       id: params.workspaceId,
     },
     data: {
       name: body.name,
-      ...(file && {
-        logo: publicUrl,
-      }),
     },
   });
 
   res.status(200).json({ workspace: updatedWorkspace, success: true });
+};
+
+export const deleteWorkspaceLogo = async (req: Request, res: Response) => {
+  const { workspaceId } = req.params;
+
+  if (!workspaceId) {
+    throw new BadRequestError("Workspace ID is required");
+  }
+
+  const basePath = getBasePath({ workspaceId });
+
+  if (!basePath) {
+    throw new NotFoundError("Workspace logo not found");
+  }
+
+  await removeExistingFiles("workspace-logo", basePath);
+
+  await prisma.workspace.update({
+    where: {
+      id: workspaceId,
+    },
+    data: {
+      logo: null,
+    },
+  });
+
+  res.status(200).json({ success: true });
+};
+
+export const updateWorkspaceLogo = async (req: Request, res: Response) => {
+  const { params, file } = req;
+
+  if (!params.workspaceId) {
+    throw new BadRequestError("Workspace ID is required");
+  }
+
+  if (!file) {
+    throw new BadRequestError("File is required");
+  }
+
+  const publicUrl = await uploadFile({
+    bucket: "workspace-logo",
+    file: file,
+    workspaceId: params.workspaceId,
+  });
+
+  await prisma.workspace.update({
+    where: {
+      id: params.workspaceId,
+    },
+    data: {
+      logo: publicUrl,
+    },
+  });
+
+  res.status(200).json({ success: true });
 };

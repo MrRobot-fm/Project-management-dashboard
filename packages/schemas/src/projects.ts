@@ -40,12 +40,12 @@ export const CreateProjectsSchema = z.object({
   priority: ProjectPriorityEnum.optional()
 });
 
+export const UpdateProjectSchema = CreateProjectsSchema.omit({ logo: true });
+
 export type CreateProjectType = z.infer<typeof CreateProjectsSchema>;
 export type CreateProjectTypeFlatten = z.inferFlattenedErrors<
   typeof CreateProjectsSchema
 >["fieldErrors"];
-
-export const UpdateProjectSchema = CreateProjectsSchema.partial();
 
 export type UpdateProjectType = z.infer<typeof UpdateProjectSchema>;
 

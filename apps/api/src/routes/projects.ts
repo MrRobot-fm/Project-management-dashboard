@@ -4,11 +4,13 @@ import {
   changeMemberRole,
   createProject,
   deleteProject,
+  deleteProjectLogo,
   getProjectById,
   getProjects,
   getWorkspaceProjects,
   removeProjectMember,
   updateProject,
+  updateProjectLogo,
 } from "@/controllers/projects";
 import { authMiddleware } from "@/middlewares/auth";
 import { verifyProjectPermissions, verifyWorkspacePermissions } from "@/middlewares/permissions";
@@ -24,16 +26,21 @@ projectsRouter.get("/:projectId", [authMiddleware], getProjectById);
 
 projectsRouter.put(
   "/:projectId",
-  [
-    authMiddleware,
-    verifyProjectPermissions,
-    upload.single("logo"),
-    validateBody(UpdateProjectSchema),
-  ],
+  [authMiddleware, verifyProjectPermissions, validateBody(UpdateProjectSchema)],
   updateProject,
 );
 
 projectsRouter.delete("/:projectId", [authMiddleware, verifyProjectPermissions], deleteProject);
+projectsRouter.delete(
+  "/:projectId/logo",
+  [authMiddleware, verifyProjectPermissions],
+  deleteProjectLogo,
+);
+projectsRouter.post(
+  "/:projectId/logo",
+  [authMiddleware, verifyProjectPermissions, upload.single("logo")],
+  updateProjectLogo,
+);
 
 projectsRouter.post("/:projectId/members", [authMiddleware], addProjectMember);
 projectsRouter.put("/:projectId/members/:userId", [authMiddleware], changeMemberRole);

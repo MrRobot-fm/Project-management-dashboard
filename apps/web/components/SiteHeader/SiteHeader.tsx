@@ -1,7 +1,7 @@
 import { Separator } from "@workspace/ui/components/Separator";
 import { SidebarTrigger } from "@workspace/ui/components/Sidebar";
 import { UserMenu } from "@/components/UserMenu";
-import { IconCreditCard, IconNotification, IconUserCircle } from "@tabler/icons-react";
+import { IconUserCircle } from "@tabler/icons-react";
 import type { User } from "@workspace/db";
 
 interface SiteHeaderProps {
@@ -28,15 +28,5 @@ const menuLinksItem = [
     title: "Account",
     href: "/account",
     icon: IconUserCircle,
-  },
-  {
-    title: "Billing",
-    href: "/billing",
-    icon: IconCreditCard,
-  },
-  {
-    title: "Notifications",
-    href: "/notifications",
-    icon: IconNotification,
   },
 ];

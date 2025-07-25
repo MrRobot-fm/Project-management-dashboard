@@ -5,7 +5,10 @@ import type { ActionResponse } from "@/types/action";
 import { errorData } from "@/utils/error-data";
 import { fetchInstance } from "@/utils/fetch-instance";
 import { getCookie } from "@/utils/get-cookie";
+import { validateFormData } from "@/utils/validate-form-data";
+import { validationErrorData } from "@/utils/validation-error-data";
 import type { Workspace } from "@workspace/db";
+import { UpdateWorkspaceSchema, type UpdateWorkspaceType } from "@workspace/schemas";
 
 export const updateWorkspaceAction = async ({
   formData,
@@ -13,17 +16,19 @@ export const updateWorkspaceAction = async ({
 }: {
   formData: FormData;
   workspaceId: string;
-}): Promise<ActionResponse<Workspace, "workspace">> => {
+}): Promise<ActionResponse<Workspace, "workspace", UpdateWorkspaceType>> => {
   try {
     if (!workspaceId) throw new Error("Workspace ID is required");
 
     const jwtToken = await getCookie("jwt_token");
 
-    const logo = formData.get("logo");
+    const validation = validateFormData({ schema: UpdateWorkspaceSchema, formData });
 
-    if (!logo || (logo instanceof File && logo.size === 0)) {
-      formData.delete("logo");
+    if (!validation.success) {
+      return validationErrorData<UpdateWorkspaceType>(validation.errors);
     }
+
+    const data = Object.fromEntries(formData.entries());
 
     const response = await fetchInstance<{ success: boolean; workspace: Workspace }>({
       path: `workspaces/${workspaceId}`,
@@ -31,8 +36,9 @@ export const updateWorkspaceAction = async ({
         method: "PUT",
         headers: {
           Cookie: `jwt_token=${jwtToken}`,
+          "Content-Type": "application/json",
         },
-        body: formData,
+        body: JSON.stringify(data),
       },
     });
 

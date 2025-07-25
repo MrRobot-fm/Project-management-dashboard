@@ -32,9 +32,9 @@ export const useUpdateProject = ({ projects }: { projects: Project[] }): UseUpda
     CreateActionState,
     CreateActionPayload
   >(
-    async (_state, { formData, currentWsId, projectLogo, projectId }) => {
+    async (_state, { formData, currentWsId, projectId }) => {
       if (projectId) {
-        return await handleUpdateProject({ formData, projectLogo, projectId });
+        return await handleUpdateProject({ formData, projectId });
       } else {
         return await handleCreateProject({ formData, workspaceId: currentWsId });
       }
@@ -97,20 +97,15 @@ export const useUpdateProject = ({ projects }: { projects: Project[] }): UseUpda
 
   const handleUpdateProject = async ({
     formData,
-    projectLogo,
     projectId,
   }: {
     formData: FormData;
-    projectLogo: string | undefined | null;
     projectId: string | undefined;
   }) => {
-    const logo = formData.get("logo") as File;
-
     const updatedProject = {
       id: projectId,
       name: formData.get("name"),
       description: formData.get("description"),
-      logo: logo instanceof File && logo.size > 0 ? URL.createObjectURL(logo) : projectLogo,
     } as Project;
 
     updateOptimisticProjects({ actionType: "update", project: updatedProject });

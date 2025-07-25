@@ -23,30 +23,22 @@ export const updateProjectAction = async ({
 
     const jwtToken = await getCookie("jwt_token");
 
-    const logo = formData.get("logo");
-    const description = formData.get("description");
-
-    if (!description) {
-      formData.delete("description");
-    }
-
-    if (!logo || (logo instanceof File && logo.size === 0)) {
-      formData.delete("logo");
-    }
-
     const validation = validateFormData({ schema: UpdateProjectSchema, formData });
 
     if (!validation.success) {
       return validationErrorData<UpdateProjectType>(validation.errors);
     }
 
+    const data = Object.fromEntries(formData.entries());
+
     const response = await fetchInstance<ApiCreateProjectResponseModel>({
       path: `projects/${projectId}`,
       options: {
         method: "PUT",
-        body: formData,
+        body: JSON.stringify(data),
         headers: {
           Cookie: `jwt_token=${jwtToken}`,
+          "Content-Type": "application/json",
         },
       },
     });
