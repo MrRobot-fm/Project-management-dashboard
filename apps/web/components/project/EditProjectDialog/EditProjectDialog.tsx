@@ -39,6 +39,7 @@ export const EditProjectDialog = ({ project }: EditProjectDialogProps) => {
       }
       contentSlot={
         <WorkspaceProjectForm
+          id={project.id}
           action={createAction}
           data={project}
           workspaceId={project.workspaceId}

@@ -99,6 +99,7 @@ export const NavProjects = ({ projects, currentWorkspaceId }: NavProjectsProps) 
         setIsOpen={setIsProjectDialogOpen}
         contentSlot={
           <WorkspaceProjectForm
+            id={selectedProject?.id}
             action={createAction}
             mode={sheetMode}
             data={selectedProject && sheetMode === "edit" ? selectedProject : undefined}

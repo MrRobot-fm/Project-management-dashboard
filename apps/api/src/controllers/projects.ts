@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { uploadFile } from "@/utils/storage";
+import { getBasePath, removeExistingFiles, uploadFile } from "@/utils/storage";
 import { prisma } from "@workspace/db";
 import { BadRequestError, NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { randomUUID } from "crypto";
@@ -167,7 +167,7 @@ export const getProjectById = async (req: Request, res: Response) => {
 };
 
 export const updateProject = async (req: Request, res: Response) => {
-  const { params, body, user, file } = req;
+  const { params, body, user } = req;
 
   if (!user) {
     throw new UnauthorizedError("User can't update this project");
@@ -177,25 +177,12 @@ export const updateProject = async (req: Request, res: Response) => {
     throw new BadRequestError("Project ID is required");
   }
 
-  let publicUrl: string | null = null;
-
-  if (file) {
-    publicUrl = await uploadFile({
-      bucket: "project-logo",
-      file: file,
-      projectId: params.projectId,
-    });
-  }
-
   const project = await prisma.project.update({
     where: {
       id: params.projectId,
     },
     data: {
       ...body,
-      ...(file && {
-        logo: publicUrl,
-      }),
     },
   });
 
@@ -302,4 +289,58 @@ export const removeProjectMember = async (req: Request, res: Response) => {
   });
 
   res.status(200).json({ member: projectMember, success: true });
+};
+
+export const deleteProjectLogo = async (req: Request, res: Response) => {
+  const { projectId } = req.params;
+
+  if (!projectId) {
+    throw new BadRequestError("Project ID is required");
+  }
+
+  const basePath = getBasePath({ projectId });
+
+  if (!basePath) throw new NotFoundError("Project logo not found");
+
+  await removeExistingFiles("project-logo", basePath);
+
+  await prisma.project.update({
+    where: {
+      id: projectId,
+    },
+    data: {
+      logo: null,
+    },
+  });
+
+  res.status(200).json({ success: true });
+};
+
+export const updateProjectLogo = async (req: Request, res: Response) => {
+  const { params, file } = req;
+
+  if (!params.projectId) {
+    throw new BadRequestError("Project ID is required");
+  }
+
+  if (!file) {
+    throw new BadRequestError("File is required");
+  }
+
+  const publicUrl = await uploadFile({
+    bucket: "project-logo",
+    file: file,
+    projectId: params.projectId,
+  });
+
+  await prisma.project.update({
+    where: {
+      id: params.projectId,
+    },
+    data: {
+      logo: publicUrl,
+    },
+  });
+
+  res.status(200).json({ success: true });
 };

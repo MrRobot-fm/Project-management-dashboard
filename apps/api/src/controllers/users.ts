@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { uploadFile } from "@/utils/storage";
+import { getBasePath, removeExistingFiles, uploadFile } from "@/utils/storage";
 import { prisma } from "@workspace/db";
 import { BadRequestError, NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { hashSync } from "bcrypt";
@@ -137,4 +137,58 @@ export const searchUsers = async (req: Request, res: Response) => {
   });
 
   res.status(200).json(users);
+};
+
+export const deleteUserLogo = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new BadRequestError("User ID is required");
+  }
+
+  const basePath = getBasePath({ userId: id });
+
+  if (!basePath) throw new NotFoundError("User logo not found");
+
+  await removeExistingFiles("user-logo", basePath);
+
+  await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      logo: null,
+    },
+  });
+
+  res.status(200).json({ success: true });
+};
+
+export const updateUserLogo = async (req: Request, res: Response) => {
+  const { params, file } = req;
+
+  if (!params.id) {
+    throw new BadRequestError("User ID is required");
+  }
+
+  if (!file) {
+    throw new BadRequestError("File is required");
+  }
+
+  const publicUrl = await uploadFile({
+    bucket: "user-logo",
+    file: file,
+    userId: params.id,
+  });
+
+  await prisma.user.update({
+    where: {
+      id: params.id,
+    },
+    data: {
+      logo: publicUrl,
+    },
+  });
+
+  res.status(200).json({ success: true });
 };

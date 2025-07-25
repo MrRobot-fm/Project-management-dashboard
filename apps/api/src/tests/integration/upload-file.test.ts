@@ -34,7 +34,7 @@ describe("API File Upload", () => {
     await removeExistingFiles("user-logo", basePath);
   });
 
-  it("PUT /api/users/:id - should upload a user logo", async () => {
+  it("PUT /api/users/:id/logo - should upload a user logo", async () => {
     const user = await prisma.user.findUnique({
       where: { email: adminUser.email },
     });
@@ -43,13 +43,12 @@ describe("API File Upload", () => {
     const fileName = "logo.png";
 
     const response = await request(app)
-      .put(`/api/users/${user?.id}`)
+      .post(`/api/users/${user?.id}/logo`)
       .set("Cookie", cookie)
       .attach("logo", file, fileName)
       .expect(200);
 
     expect(response.body.success).toBe(true);
-    expect(response.body.user.logo).toBeDefined();
 
     const updatedUser = await prisma.user.findUnique({
       where: { id: user?.id },
@@ -58,7 +57,7 @@ describe("API File Upload", () => {
     expect(updatedUser?.logo).toBeDefined();
   });
 
-  it("PUT /api/users/:id - should fail if file type is not allowed", async () => {
+  it("PUT /api/users/:id/logo - should fail if file type is not allowed", async () => {
     const user = await prisma.user.findUnique({
       where: { email: adminUser.email },
     });
@@ -67,7 +66,7 @@ describe("API File Upload", () => {
     const fileName = "invalid.txt";
 
     const response = await request(app)
-      .put(`/api/users/${user?.id}`)
+      .post(`/api/users/${user?.id}/logo`)
       .set("Cookie", cookie)
       .attach("logo", file, fileName)
       .expect(400);
@@ -83,19 +82,12 @@ describe("API File Upload", () => {
     const nonAdminUser = generateUser();
 
     await createUsers([nonAdminUser]);
-    const nonAdminLogin = await loginUser(
-      nonAdminUser.email,
-      nonAdminUser.password,
-    );
+    const nonAdminLogin = await loginUser(nonAdminUser.email, nonAdminUser.password);
     const nonAdminCookie = nonAdminLogin.cookie;
-
-    const file = Buffer.from("fake image data");
-    const fileName = "logo.png";
 
     const response = await request(app)
       .put(`/api/users/${user?.id}`)
       .set("Cookie", nonAdminCookie)
-      .attach("logo", file, fileName)
       .expect(401);
 
     expect(response.body.message).toBe(

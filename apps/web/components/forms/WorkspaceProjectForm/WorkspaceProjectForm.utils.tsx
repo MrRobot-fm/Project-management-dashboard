@@ -73,8 +73,9 @@ export const useWorkspaceProjectFormValidation = <T extends Project | Workspace>
       if (value.description && value.description.trim() !== "") {
         formData.append("description", value.description);
       }
+
       if (value.logo) {
-        if (value.logo instanceof File) {
+        if (value.logo instanceof File && !isEditMode) {
           formData.append("logo", value.logo);
         }
       }

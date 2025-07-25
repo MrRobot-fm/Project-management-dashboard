@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Button } from "@workspace/ui/components/Button";
 import {
   DropdownMenu,
@@ -42,7 +41,10 @@ export const UserMenu = ({ user, menuItems, variant = "default" }: UserMenuProps
       <DropdownMenuTrigger asChild>
         <Button
           variant="link"
-          className={cn("focus-visible:ring-0 h-fit cursor-pointer", variant === "avatar" && "p-0")}
+          className={cn(
+            "focus-visible:ring-0 h-fit cursor-pointer hover:no-underline",
+            variant === "avatar" && "p-0",
+          )}
           data-test-id="nav-user"
         >
           <Avatar image={user?.logo} fallback={user?.name} size="xl" />
@@ -70,11 +72,9 @@ export const UserMenu = ({ user, menuItems, variant = "default" }: UserMenuProps
           {menuItems.map((item) => {
             if (item.href) {
               return (
-                <DropdownMenuItem asChild key={item.title} className="cursor-pointer">
-                  <Link href={item.href ?? ""}>
-                    <item.icon className="mr-2 size-4" />
-                    {item.title}
-                  </Link>
+                <DropdownMenuItem key={item.title} className="cursor-pointer">
+                  <item.icon className="mr-2 size-4" />
+                  {item.title}
                 </DropdownMenuItem>
               );
             }

@@ -270,6 +270,7 @@ export function AppSidebar({
           setIsOpen={setIsCreateWorkspaceOpen}
           contentSlot={
             <WorkspaceProjectForm
+              id={currentWorkspaceId}
               data={selectedWorkspace && sheetMode === "edit" ? selectedWorkspace : undefined}
               action={workspaceAction}
               mode={sheetMode}

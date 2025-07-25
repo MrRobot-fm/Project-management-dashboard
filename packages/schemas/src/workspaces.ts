@@ -10,3 +10,7 @@ export const CreateWorkspaceSchema = z.object({
     .optional()
     .transform(val => (val === "" ? undefined : val))
 });
+
+export const UpdateWorkspaceSchema = CreateWorkspaceSchema.omit({ logo: true });
+
+export type UpdateWorkspaceType = z.infer<typeof UpdateWorkspaceSchema>;
