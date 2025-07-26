@@ -89,6 +89,7 @@ test.describe("Project members", () => {
       hasText: invitedUser.name,
     });
     await invitedMemberCard.getByTestId("member-card-menu-btn").click();
+
     await page.getByRole("menuitem", { name: /remove/i }).click();
 
     const removeDialog = page.getByRole("alertdialog");
