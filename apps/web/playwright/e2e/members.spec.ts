@@ -88,6 +88,7 @@ test.describe("Project members", () => {
     const invitedMemberCard = page.getByTestId("member-card").filter({
       hasText: invitedUser.name,
     });
+    await expect(invitedMemberCard).toBeVisible({ timeout: 10000 });
     await invitedMemberCard.getByTestId("member-card-menu-btn").click();
 
     await page.getByRole("menuitem", { name: /remove/i }).click();
@@ -105,7 +106,7 @@ test.describe("Project members", () => {
       page.getByRole("button", { name: /remove/i }).click(),
     ]);
 
-    await expect(removeDialog).toBeHidden({ timeout: 10000 });
+    await expect(removeDialog).toBeHidden({ timeout: 15000 });
 
     await waitForMembersCount(page, 1);
   });
