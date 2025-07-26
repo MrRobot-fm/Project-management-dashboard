@@ -70,15 +70,18 @@ export const UserMenu = ({ user, menuItems, variant = "default" }: UserMenuProps
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {menuItems.map((item) => {
-            if (item.href) {
-              return (
-                <DropdownMenuItem key={item.title} className="cursor-pointer">
+            return (
+              <DropdownMenuItem asChild key={item.title} className="cursor-pointer">
+                <Button
+                  variant="transparent"
+                  onClick={item.action}
+                  className="!px-2 !py-1.5 w-full h-fit justify-start"
+                >
                   <item.icon className="mr-2 size-4" />
                   {item.title}
-                </DropdownMenuItem>
-              );
-            }
-            return null;
+                </Button>
+              </DropdownMenuItem>
+            );
           })}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

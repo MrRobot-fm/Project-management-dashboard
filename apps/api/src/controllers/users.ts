@@ -57,20 +57,10 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 };
 
 export const updateUser = async (req: Request, res: Response) => {
-  const { body, params, file, user } = req;
+  const { body, params, user } = req;
 
   if (!user) {
     throw new UnauthorizedError("User can't update workspace");
-  }
-
-  let publicUrl: string | null = null;
-
-  if (file) {
-    publicUrl = await uploadFile({
-      bucket: "user-logo",
-      file,
-      userId: user?.id,
-    });
   }
 
   const updatedUser = await prisma.user.update({
@@ -79,7 +69,6 @@ export const updateUser = async (req: Request, res: Response) => {
     },
     data: {
       ...body,
-      logo: publicUrl,
     },
   });
 
@@ -166,6 +155,8 @@ export const deleteUserLogo = async (req: Request, res: Response) => {
 
 export const updateUserLogo = async (req: Request, res: Response) => {
   const { params, file } = req;
+
+  console.log("file:", file);
 
   if (!params.id) {
     throw new BadRequestError("User ID is required");

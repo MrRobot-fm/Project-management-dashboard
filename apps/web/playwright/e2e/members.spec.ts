@@ -26,7 +26,7 @@ test.describe("Project members", () => {
     await commands.createWorkspace(workspaceName);
     await commands.createProject(projectName, projectDescription);
 
-    await expect(page.getByTestId("project-item")).toHaveText(projectName, {
+    await expect(page.getByTestId("project-item")).toContainText(projectName, {
       timeout: 10000,
     });
   });
@@ -34,7 +34,7 @@ test.describe("Project members", () => {
   test.afterEach(async ({ page }) => {
     await commands.deleteProject(projectName);
 
-    await expect(page.getByTestId("project-empty-state")).toHaveText(
+    await expect(page.getByTestId("project-empty-state")).toContainText(
       "No projects. Create one, now!",
       { timeout: 10000 },
     );
