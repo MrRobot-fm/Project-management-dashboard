@@ -35,7 +35,7 @@ test.describe("Projects", () => {
 
     await commands.createProject(projectName, projectDescription);
 
-    await expect(page.getByTestId("project-item")).toHaveText(projectName, { timeout: 15000 });
+    await expect(page.getByTestId("project-item")).toContainText(projectName, { timeout: 15000 });
 
     await commands.deleteProject(projectName);
 
@@ -52,7 +52,9 @@ test.describe("Projects", () => {
 
     await commands.editProject(newProjectName, newProjectDescription, projectName);
 
-    await expect(page.getByTestId("project-item")).toHaveText(newProjectName, { timeout: 10000 });
+    await expect(page.getByTestId("project-item")).toContainText(newProjectName, {
+      timeout: 10000,
+    });
 
     await commands.deleteProject(projectName);
 

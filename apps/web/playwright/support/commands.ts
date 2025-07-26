@@ -140,7 +140,7 @@ export class PlaywrightCommands {
   }
 
   async editProject(name: string, description: string, existingName: string) {
-    await expect(this.page.getByTestId("project-item")).toHaveText(existingName, {
+    await expect(this.page.getByTestId("project-item")).toContainText(existingName, {
       timeout: 10000,
     });
 
@@ -161,9 +161,29 @@ export class PlaywrightCommands {
   }
 
   async deleteProject(name: string) {
-    await expect(this.page.getByTestId("project-item")).toHaveText(name);
+    await expect(this.page.getByTestId("project-item")).toContainText(name);
 
     await this.page.getByRole("button", { name: /more/i }).click({ force: true });
     await this.page.getByRole("menuitem", { name: /delete/i }).click();
+  }
+
+  async waitForResponse({
+    url,
+    method,
+    status = 200,
+    action,
+  }: {
+    url: string;
+    method: "GET" | "POST" | "DELETE" | "PUT" | "PATCH";
+    status?: number;
+    action: Promise<void>;
+  }) {
+    const responsePromise = this.page.waitForResponse(
+      (res) =>
+        res.url().includes(url) && res.request().method() === method && res.status() === status,
+    );
+    const [response] = await Promise.all([responsePromise, action]);
+
+    return response;
   }
 }

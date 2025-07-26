@@ -42,7 +42,7 @@ model Workspace {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  owner          User              @relation("ownedWorkspaces", fields: [ownerId], references: [id])
+  owner          User              @relation("ownedWorkspaces", fields: [ownerId], references: [id], onDelete: Cascade)
   members        WorkspaceMember[]
   projects       Project[]
   labels         Label[]
@@ -59,7 +59,7 @@ model WorkspaceMember {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workspaceId])

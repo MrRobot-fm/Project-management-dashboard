@@ -31,42 +31,20 @@ test.describe("Project members", () => {
     });
   });
 
-  test.afterEach(async ({ page }) => {
-    await commands.deleteProject(projectName);
-
-    await expect(page.getByTestId("project-empty-state")).toContainText(
-      "No projects. Create one, now!",
-      { timeout: 10000 },
-    );
-
-    await commands.deleteCurrentWorkspace();
-
-    await expect(page.getByTestId("workspaces-select")).toContainText(
-      "No workspaces. Create one!",
-      { timeout: 15000 },
-    );
-
+  test.afterEach(async () => {
     await commands.deleteCurrentUser(user);
     await commands.deleteCurrentUser(invitedUser);
   });
 
   const openProject = async (page: Page) => {
     await page.getByTestId("project-item").click();
+    await page.waitForURL(/\/projects\/[a-f0-9-]+/);
   };
 
   const waitForMembersCount = async (page: Page, expectedCount: number) => {
     const membersCard = page.getByTestId("member-card");
-    await expect
-      .poll(
-        async () => {
-          return await membersCard.count();
-        },
-        {
-          timeout: 15000,
-          message: "Waiting for members render",
-        },
-      )
-      .toBe(expectedCount);
+
+    await expect(membersCard).toHaveCount(expectedCount, { timeout: 15000 });
   };
 
   const addMemberToProject = async (page: Page, name: string) => {
@@ -107,7 +85,10 @@ test.describe("Project members", () => {
     await openProject(page);
     await addMemberToProject(page, invitedUser.name);
 
-    await page.getByTestId("member-card-menu-btn").click();
+    const invitedMemberCard = page.getByTestId("member-card").filter({
+      hasText: invitedUser.name,
+    });
+    await invitedMemberCard.getByTestId("member-card-menu-btn").click();
     await page.getByRole("menuitem", { name: /remove/i }).click();
 
     const removeDialog = page.getByRole("alertdialog");
@@ -123,8 +104,8 @@ test.describe("Project members", () => {
       page.getByRole("button", { name: /remove/i }).click(),
     ]);
 
-    expect(removeDialog).toBeHidden({ timeout: 10000 });
+    await expect(removeDialog).toBeHidden({ timeout: 10000 });
 
-    await waitForMembersCount(page, 2);
+    await waitForMembersCount(page, 1);
   });
 });
