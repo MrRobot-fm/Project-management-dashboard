@@ -15,6 +15,9 @@ export const getCurrentUser = async (): Promise<{
         "Content-Type": "application/json",
         Cookie: `jwt_token=${jwtToken}`,
       },
+      next: {
+        tags: ["get-current-user"],
+      },
     },
   });
 

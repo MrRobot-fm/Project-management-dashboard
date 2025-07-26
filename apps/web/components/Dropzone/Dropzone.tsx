@@ -1,6 +1,13 @@
 "use client";
 
-import { type ChangeEvent, type DragEvent, useCallback, useRef, useState } from "react";
+import {
+  type ChangeEvent,
+  type DragEvent,
+  useCallback,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { Button } from "@workspace/ui/components/Button";
 import { Card, CardContent } from "@workspace/ui/components/Card";
 import { Input } from "@workspace/ui/components/Input";
@@ -24,6 +31,7 @@ export const Dropzone = ({ id, type, mode, image, disabled = false, field }: Dro
   const [isDragging, setIsDragging] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(image ?? null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isPending, startTransition] = useTransition();
 
   const handleDrop = useCallback(
     async (event: React.DragEvent<HTMLDivElement>) => {
@@ -42,7 +50,9 @@ export const Dropzone = ({ id, type, mode, image, disabled = false, field }: Dro
         setPreviewUrl(URL.createObjectURL(droppedFile));
 
         if (mode === "edit") {
-          await uploadLogo({ id, type, logo: droppedFile });
+          startTransition(async () => {
+            await uploadLogo({ id, type, logo: droppedFile });
+          });
         }
       }
     },
@@ -75,7 +85,9 @@ export const Dropzone = ({ id, type, mode, image, disabled = false, field }: Dro
         setPreviewUrl(URL.createObjectURL(file));
 
         if (mode === "edit") {
-          await uploadLogo({ id, type, logo: file });
+          startTransition(async () => {
+            await uploadLogo({ id, type, logo: file });
+          });
         }
       }
     },
@@ -84,17 +96,28 @@ export const Dropzone = ({ id, type, mode, image, disabled = false, field }: Dro
   );
 
   const handleRemoveFile = useCallback(async () => {
+    const clearState = () => {
+      setPreviewUrl(null);
+      field?.handleChange(null);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    };
+
     if (mode === "edit") {
-      await deleteLogo({ id: id ?? "", type });
+      startTransition(async () => {
+        const result = await deleteLogo({ id: id ?? "", type });
+
+        if (result.success && !isPending) {
+          clearState();
+        }
+      });
+      return;
     }
 
-    setPreviewUrl(null);
-    field?.handleChange(null);
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  }, [field, id, mode, type]);
+    clearState();
+  }, [field, id, isPending, mode, type]);
 
   const handleClick = () => {
     fileInputRef.current?.click();
@@ -114,7 +137,7 @@ export const Dropzone = ({ id, type, mode, image, disabled = false, field }: Dro
               imageDataTestId="uploaded-image"
               image={previewUrl}
               shape="square"
-              className="size-24 rounded-md"
+              className={cn("size-24 rounded-md", isPending && "animate-pulse")}
             />
             <Button
               type="button"

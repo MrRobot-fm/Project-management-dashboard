@@ -24,14 +24,12 @@ export const Avatar = ({
 
   return (
     <AvatarRoot className={avatarSize({ size, shape, className })} {...props}>
-      {image && (
-        <AvatarImage
-          data-test-id={imageDataTestId}
-          src={image}
-          alt={initials}
-          className="object-cover bg-center"
-        />
-      )}
+      <AvatarImage
+        data-test-id={imageDataTestId}
+        src={image ?? undefined}
+        alt={initials}
+        className="object-cover bg-center"
+      />
       <AvatarFallback className={avatarFallback({ size, shape, className })}>
         {initials}
       </AvatarFallback>

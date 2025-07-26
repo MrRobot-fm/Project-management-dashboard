@@ -13,6 +13,9 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
     testIdAttribute: "data-test-id",
     trace: "on-first-retry",
+    contextOptions: {
+      reducedMotion: "reduce",
+    },
   },
   retries: 1,
   workers: 1,
