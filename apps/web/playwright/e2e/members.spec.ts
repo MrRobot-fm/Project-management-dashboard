@@ -77,6 +77,7 @@ test.describe("Project members", () => {
           res.url().includes("/projects/") &&
           res.request().method() === "POST" &&
           res.status() === 200,
+        { timeout: 1000 },
       ),
       page.getByRole("button", { name: /add members/i }).click(),
     ]);
@@ -113,7 +114,9 @@ test.describe("Project members", () => {
           res.url().includes("/projects/") &&
           res.request().method() === "POST" &&
           res.status() === 200,
+        { timeout: 1000 },
       ),
+
       page.getByRole("button", { name: /remove/i }).click(),
     ]);
 
