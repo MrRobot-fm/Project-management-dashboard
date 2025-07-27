@@ -26,24 +26,36 @@ test.describe("Project members", () => {
     await commands.createWorkspace(workspaceName);
     await commands.createProject(projectName, projectDescription);
 
-    await expect(page.getByTestId("project-item")).toContainText(projectName, {
+    await expect(page.getByTestId("project-item")).toHaveText(projectName, {
       timeout: 10000,
     });
   });
 
-  test.afterEach(async () => {
+  test.afterEach(async ({ page }) => {
+    await commands.deleteProject(projectName);
+
+    await expect(page.getByTestId("project-empty-state")).toHaveText(
+      "No projects. Create one, now!",
+      { timeout: 10000 },
+    );
+
+    await commands.deleteCurrentWorkspace();
+
+    await expect(page.getByTestId("workspaces-select")).toContainText(
+      "No workspaces. Create one!",
+      { timeout: 15000 },
+    );
+
     await commands.deleteCurrentUser(user);
     await commands.deleteCurrentUser(invitedUser);
   });
 
   const openProject = async (page: Page) => {
     await page.getByTestId("project-item").click();
-    await page.waitForURL(/\/projects\/[a-f0-9-]+/);
   };
 
   const waitForMembersCount = async (page: Page, expectedCount: number) => {
     const membersCard = page.getByTestId("member-card");
-
     await expect(membersCard).toHaveCount(expectedCount, { timeout: 15000 });
   };
 
@@ -90,7 +102,6 @@ test.describe("Project members", () => {
     });
     await expect(invitedMemberCard).toBeVisible({ timeout: 10000 });
     await invitedMemberCard.getByTestId("member-card-menu-btn").click();
-
     await page.getByRole("menuitem", { name: /remove/i }).click();
 
     const removeDialog = page.getByRole("alertdialog");
@@ -106,7 +117,7 @@ test.describe("Project members", () => {
       page.getByRole("button", { name: /remove/i }).click(),
     ]);
 
-    await expect(removeDialog).toBeHidden({ timeout: 15000 });
+    expect(removeDialog).toBeHidden({ timeout: 10000 });
 
     await waitForMembersCount(page, 1);
   });
