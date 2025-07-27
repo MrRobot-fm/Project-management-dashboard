@@ -1,6 +1,6 @@
 import { PlaywrightCommands } from "../support/commands";
 import { generateUser } from "../support/utils";
-import { test, expect } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
 test.describe("User account", () => {
   let user: ReturnType<typeof generateUser>;
@@ -18,21 +18,23 @@ test.describe("User account", () => {
     await commands.createUserAndLogin(user);
   });
 
-  test.afterEach(async () => {
-    await commands.deleteCurrentUser({
-      ...updatedUser,
-      password: user.password,
-    });
-  });
-
-  test("should edit successfully the user account info", async ({ page }) => {
+  const openUserMenu = async (page: Page) => {
     const userMenuAvatar = page.getByTestId("nav-user");
     await userMenuAvatar.click();
 
     const userMenu = page.getByRole("menu");
     await expect(userMenu).toBeVisible();
 
-    const accountButton = page.getByRole("menuitem", { name: /account/i });
+    return {
+      userMenuAvatar,
+      userMenu,
+    };
+  };
+
+  test("should edit successfully the user account info", async ({ page }) => {
+    const { userMenuAvatar, userMenu } = await openUserMenu(page);
+
+    const accountButton = page.getByRole("menuitem", { name: "Edit account", exact: true });
     await accountButton.click();
 
     const userAccountDialog = page.getByRole("dialog");
@@ -61,8 +63,32 @@ test.describe("User account", () => {
     await userMenuAvatar.click();
     await expect(userMenu).toBeVisible();
 
-    const user = userMenu.locator('[data-slot="dropdown-menu-label"]');
-    await expect(user).toContainText(updatedUser.name);
-    await expect(user).toContainText(updatedUser.email);
+    const userInfo = userMenu.locator('[data-slot="dropdown-menu-label"]');
+    await expect(userInfo).toContainText(updatedUser.name);
+    await expect(userInfo).toContainText(updatedUser.email);
+
+    await commands.deleteCurrentUser({
+      ...updatedUser,
+      password: user.password,
+    });
+  });
+
+  test("should delete user account successfully", async ({ page }) => {
+    const { userMenu } = await openUserMenu(page);
+
+    const deleteAccountButton = page.getByRole("menuitem", { name: "Delete account", exact: true });
+
+    await deleteAccountButton.click();
+
+    await expect(userMenu).toBeHidden();
+
+    const deleteAccountDialog = page.getByRole("dialog");
+    await expect(deleteAccountDialog).toBeVisible();
+
+    const deleteButton = deleteAccountDialog.getByRole("button", { name: /delete account/i });
+    await deleteButton.click();
+
+    await page.waitForURL("/signup", { timeout: 15000 });
+    await expect(page).toHaveURL("/signup");
   });
 });

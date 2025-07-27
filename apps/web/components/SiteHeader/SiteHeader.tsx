@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Separator } from "@workspace/ui/components/Separator";
 import { SidebarTrigger } from "@workspace/ui/components/Sidebar";
+import { DeleteAccountDialog } from "../DeleteAccountDialog";
 import { UserAccountDialog } from "@/components/UserAccountDialog";
 import { UserMenu } from "@/components/UserMenu";
 import { IconUserCircle } from "@tabler/icons-react";
 import type { User } from "@workspace/db";
+import { Trash2 } from "lucide-react";
 
 interface SiteHeaderProps {
   user: User | undefined;
@@ -14,14 +16,24 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ user }: SiteHeaderProps) {
   const [isUserAccountOpen, setIsUserAccountOpen] = useState(false);
+  const [isDeleteUserAccountOpen, setIsDeleteUserAccountOpen] = useState(false);
 
-  const menuLinksItem = [
-    {
-      title: "Account",
-      icon: IconUserCircle,
-      action: () => setIsUserAccountOpen(true),
-    },
-  ];
+  const menuLinksItem = useMemo(() => {
+    return [
+      {
+        title: "Edit account",
+        value: "edit-account",
+        icon: IconUserCircle,
+        action: () => setIsUserAccountOpen(true),
+      },
+      {
+        title: "Delete account",
+        value: "delete-account",
+        icon: Trash2,
+        action: () => setIsDeleteUserAccountOpen(true),
+      },
+    ];
+  }, []);
 
   return (
     <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height) sticky top-0 z-50 bg-background">
@@ -37,6 +49,13 @@ export function SiteHeader({ user }: SiteHeaderProps) {
             user={user}
             isOpen={isUserAccountOpen}
             setIsOpen={setIsUserAccountOpen}
+          />
+          <DeleteAccountDialog
+            title="Delete account"
+            description="Please confirm that you want to permanently delete your account. Once deleted, your account and all associated data will be irretrievably lost."
+            userId={user?.id}
+            isOpen={isDeleteUserAccountOpen}
+            setIsOpen={setIsDeleteUserAccountOpen}
           />
         </div>
       </div>
