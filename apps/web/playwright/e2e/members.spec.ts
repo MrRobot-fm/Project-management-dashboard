@@ -55,7 +55,7 @@ test.describe("Project members", () => {
   };
 
   const waitForMembersCount = async (page: Page, expectedCount: number) => {
-    const membersCard = page.getByTestId("member-card");
+    const membersCard = page.getByTestId("member-card").filter({ hasText: invitedUser.name });
     await expect(membersCard).toHaveCount(expectedCount, { timeout: 15000 });
   };
 
@@ -85,7 +85,7 @@ test.describe("Project members", () => {
 
     await expect(searchDialog).toBeHidden({ timeout: 10000 });
 
-    await waitForMembersCount(page, 2);
+    await waitForMembersCount(page, 1);
   };
 
   test("should add a member to the project", async ({ page }) => {
@@ -117,8 +117,8 @@ test.describe("Project members", () => {
       page.getByRole("button", { name: /remove/i }).click(),
     ]);
 
-    expect(removeDialog).toBeHidden({ timeout: 10000 });
+    await expect(removeDialog).toBeHidden({ timeout: 10000 });
 
-    await waitForMembersCount(page, 1);
+    await waitForMembersCount(page, 0);
   });
 });
