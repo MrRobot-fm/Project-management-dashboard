@@ -113,7 +113,7 @@ test.describe("Project members", () => {
 
     await page.waitForTimeout(1000);
 
-    const invitedMemberCard = page.getByTestId("member-card").getByRole("paragraph").filter({
+    const invitedMemberCard = page.getByTestId("member-card").filter({
       hasText: invitedUser.name,
     });
     await expect(invitedMemberCard).toBeVisible({ timeout: 10000 });
