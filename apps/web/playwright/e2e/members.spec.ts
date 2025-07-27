@@ -31,9 +31,23 @@ test.describe("Project members", () => {
     });
   });
 
-  test.afterEach(async () => {
-    await commands.deleteCurrentUser(invitedUser);
+  test.afterEach(async ({ page }) => {
+    await commands.deleteProject(projectName);
+
+    await expect(page.getByTestId("project-empty-state")).toHaveText(
+      "No projects. Create one, now!",
+      { timeout: 10000 },
+    );
+
+    await commands.deleteCurrentWorkspace();
+
+    await expect(page.getByTestId("workspaces-select")).toContainText(
+      "No workspaces. Create one!",
+      { timeout: 15000 },
+    );
+
     await commands.deleteCurrentUser(user);
+    await commands.deleteCurrentUser(invitedUser);
   });
 
   const openProject = async (page: Page) => {
