@@ -49,7 +49,6 @@
     "@faker-js/faker": "^9.6.0",
     "@playwright/test": "^1.54.1",
     "@tanstack/eslint-plugin-query": "^5.74.7",
-    "@testing-library/cypress": "^10.0.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/js-cookie": "^3.0.6",
@@ -63,7 +62,6 @@
     "@workspace/playwright": "workspace:*",
     "@workspace/typescript-config": "workspace:*",
     "@workspace/vitest-config": "workspace:*",
-    "cypress-file-upload": "^5.0.8",
     "dotenv": "^16.4.7",
     "typescript": "^5.8.2",
     "vitest": "^3.0.9"
