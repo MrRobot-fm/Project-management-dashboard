@@ -22,6 +22,7 @@ interface UserMenuProps {
     href?: string;
     action?: () => void;
     icon: LucideIcon | TablerIcon;
+    value: string;
   }[];
   variant?: "default" | "avatar";
 }
@@ -70,14 +71,19 @@ export const UserMenu = ({ user, menuItems, variant = "default" }: UserMenuProps
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {menuItems.map((item) => {
+            const isDeleteAccount = item.value === "delete-account";
+
             return (
               <DropdownMenuItem asChild key={item.title} className="cursor-pointer">
                 <Button
                   variant="transparent"
                   onClick={item.action}
-                  className="!px-2 !py-1.5 w-full h-fit justify-start"
+                  className={cn(
+                    "!px-2 !py-1.5 w-full h-fit justify-start font-normal",
+                    isDeleteAccount && "text-red-500 focus:text-red-500 focus:bg-red-50",
+                  )}
                 >
-                  <item.icon className="mr-2 size-4" />
+                  <item.icon className={cn("mr-2 size-4", isDeleteAccount && "text-red-500")} />
                   {item.title}
                 </Button>
               </DropdownMenuItem>

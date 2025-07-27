@@ -1,4 +1,5 @@
 import type { Request, Response } from "express";
+import { clearCookie } from "@/utils/auth";
 import { getBasePath, removeExistingFiles, uploadFile } from "@/utils/storage";
 import { prisma } from "@workspace/db";
 import { BadRequestError, NotFoundError, UnauthorizedError } from "@workspace/exceptions";
@@ -78,13 +79,40 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const user = await prisma.user.delete({
+  if (!id) {
+    throw new BadRequestError("User ID is required");
+  }
+
+  await prisma.user.delete({
     where: {
       id,
     },
   });
 
-  res.status(204).json({ user, success: true });
+  const pastDate = new Date(0);
+
+  if (req.cookies.jwt_token) {
+    console.log("JWT token found in cookies");
+    clearCookie({
+      res,
+      cookieName: "jwt_token",
+      cookieOpts: {
+        expires: pastDate,
+      },
+    });
+  }
+
+  if (req.cookies.refresh_token) {
+    clearCookie({
+      res,
+      cookieName: "refresh_token",
+      cookieOpts: {
+        expires: pastDate,
+      },
+    });
+  }
+
+  res.status(204).send();
 };
 
 export const searchUsers = async (req: Request, res: Response) => {
