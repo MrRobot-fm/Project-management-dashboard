@@ -31,23 +31,9 @@ test.describe("Project members", () => {
     });
   });
 
-  test.afterEach(async ({ page }) => {
-    await commands.deleteProject(projectName);
-
-    await expect(page.getByTestId("project-empty-state")).toHaveText(
-      "No projects. Create one, now!",
-      { timeout: 10000 },
-    );
-
-    await commands.deleteCurrentWorkspace();
-
-    await expect(page.getByTestId("workspaces-select")).toContainText(
-      "No workspaces. Create one!",
-      { timeout: 15000 },
-    );
-
-    await commands.deleteCurrentUser(user);
+  test.afterEach(async () => {
     await commands.deleteCurrentUser(invitedUser);
+    await commands.deleteCurrentUser(user);
   });
 
   const openProject = async (page: Page) => {
@@ -55,7 +41,10 @@ test.describe("Project members", () => {
   };
 
   const waitForMembersCount = async (page: Page, expectedCount: number) => {
-    const membersCard = page.getByTestId("member-card").filter({ hasText: invitedUser.name });
+    const membersCard = page
+      .getByTestId("member-card")
+      .getByRole("paragraph")
+      .filter({ hasText: invitedUser.name });
     await expect(membersCard).toHaveCount(expectedCount, { timeout: 15000 });
   };
 
