@@ -39,9 +39,11 @@ test.describe("User account", () => {
     await expect(userAccountDialog).toBeVisible();
 
     const nameInput = userAccountDialog.getByLabel("name");
+    await nameInput.clear();
     await nameInput.fill(updatedUser.name);
 
     const emailInput = userAccountDialog.getByLabel("email");
+    await emailInput.clear();
     await emailInput.fill(updatedUser.email);
 
     const saveChangeButton = userAccountDialog.getByRole("button", { name: /save changes/i });
