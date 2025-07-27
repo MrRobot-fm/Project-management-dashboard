@@ -101,7 +101,9 @@ export class PlaywrightCommands {
   async editWorkspace(name: string) {
     await this.page.getByTestId("workspaces-select").click();
     await this.page.getByRole("button", { name: /edit workspace/i }).click();
-    await this.page.getByRole("textbox", { name: /name/i }).fill(name);
+    const nameInput = this.page.getByRole("textbox", { name: /name/i });
+    await nameInput.clear();
+    await nameInput.fill(name);
 
     await this.page.getByRole("button", { name: /remove logo/i }).click();
     const fileInput = this.page.locator('input[type="file"]');
@@ -146,10 +148,15 @@ export class PlaywrightCommands {
 
     await this.page.getByRole("button", { name: /more/i }).click({ force: true });
     await this.page.getByRole("menuitem", { name: /edit/i }).click({ force: true });
-    await this.page.getByRole("textbox", { name: /name/i }).clear();
+
+    const nameInput = this.page.getByRole("textbox", { name: /name/i });
+    await nameInput.clear();
     await this.page.waitForTimeout(100);
-    await this.page.getByRole("textbox", { name: /name/i }).fill(name);
-    await this.page.getByRole("textbox", { name: /description/i }).fill(description);
+    await nameInput.fill(name);
+
+    const descriptionInput = this.page.getByRole("textbox", { name: /description/i });
+    await descriptionInput.clear();
+    await descriptionInput.fill(description);
 
     const fileInput = this.page.locator('input[type="file"]');
     await fileInput.setInputFiles(path.join(__dirname, "..", "fixtures", "super_mario.jpeg"));
