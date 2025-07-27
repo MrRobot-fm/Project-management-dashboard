@@ -52,6 +52,7 @@ test.describe("Project members", () => {
 
   const openProject = async (page: Page) => {
     await page.getByTestId("project-item").click();
+    await page.waitForURL(/\/projects\/[a-f0-9-]+/, { timeout: 10000 });
   };
 
   const waitForMembersCount = async (page: Page, expectedCount: number) => {
@@ -63,16 +64,26 @@ test.describe("Project members", () => {
   };
 
   const addMemberToProject = async (page: Page, name: string) => {
-    await page.getByTestId("add-team-member-btn").click();
+    await page.waitForLoadState("networkidle");
+
+    const addButton = page.getByTestId("add-team-member-btn");
+    await expect(addButton).toBeVisible({ timeout: 15000 });
+    await addButton.scrollIntoViewIfNeeded();
+    await addButton.click();
 
     const searchDialog = page.getByRole("dialog");
+
     await expect(searchDialog).toBeVisible({ timeout: 10000 });
 
     await page.getByTestId("search-members-input").fill(name);
 
     const searchItem = page.getByTestId("search-user-item");
+    await expect(searchItem).toBeVisible({ timeout: 10000 });
     await expect(searchItem).toContainText(name, { timeout: 10000 });
     await searchItem.click();
+
+    const addMembersButton = page.getByRole("button", { name: /add members/i });
+    await expect(addMembersButton).toBeEnabled({ timeout: 10000 });
 
     await Promise.all([
       page.waitForResponse(
@@ -81,7 +92,7 @@ test.describe("Project members", () => {
           res.request().method() === "POST" &&
           res.status() === 200,
       ),
-      page.getByRole("button", { name: /add members/i }).click(),
+      addMembersButton.click(),
     ]);
 
     await page.locator('[data-slot="dialog-close"]').click();
@@ -100,12 +111,19 @@ test.describe("Project members", () => {
     await openProject(page);
     await addMemberToProject(page, invitedUser.name);
 
-    const invitedMemberCard = page.getByTestId("member-card").filter({
+    await page.waitForTimeout(1000);
+
+    const invitedMemberCard = page.getByTestId("member-card").getByRole("paragraph").filter({
       hasText: invitedUser.name,
     });
     await expect(invitedMemberCard).toBeVisible({ timeout: 10000 });
-    await invitedMemberCard.getByTestId("member-card-menu-btn").click();
-    await page.getByRole("menuitem", { name: /remove/i }).click();
+
+    const menuButton = invitedMemberCard.getByTestId("member-card-menu-btn");
+    await menuButton.click();
+
+    const removeMenuItem = page.getByRole("menuitem", { name: /remove/i });
+    await expect(removeMenuItem).toBeVisible({ timeout: 10000 });
+    await removeMenuItem.click();
 
     const removeDialog = page.getByRole("alertdialog");
     await expect(removeDialog).toBeVisible({ timeout: 10000 });
