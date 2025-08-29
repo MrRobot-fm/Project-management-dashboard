@@ -183,7 +183,7 @@ export const WorkspaceProjectForm = <T extends Project | Workspace>({
                 {isPending ? (
                   <Spinner size="xs" className="text-black" />
                 ) : isCreateMode ? (
-                  <CirclePlus className="size 4 " />
+                  <CirclePlus className="size-4" />
                 ) : (
                   <PencilLine className="size-4" />
                 )}

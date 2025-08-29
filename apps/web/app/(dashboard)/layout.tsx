@@ -49,7 +49,7 @@ export default async function RootLayout({
           />
           <SidebarInset className="overflow-hidden">
             <SiteHeader user={user} />
-            <main className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-10">{children}</main>
+            <main className="w-full max-w-[1320px] mx-auto px-4 sm:px-6 py-10">{children}</main>
           </SidebarInset>
         </SidebarProvider>
       </body>

@@ -3,3 +3,12 @@
 @theme {
   --color-mango: #ffa942;
 }
+
+@layer base {
+  .scrollbar-none {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
