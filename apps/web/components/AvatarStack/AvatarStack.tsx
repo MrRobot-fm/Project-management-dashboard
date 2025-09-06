@@ -4,7 +4,7 @@ import { Tooltip } from "../Tooltip";
 import { Avatar, type AvatarSize } from "@/components/Avatar";
 import { cva, type VariantProps } from "class-variance-authority";
 
-const avatarStackVariants = cva("flex -space-x-4 -space-y-4", {
+const avatarStackVariants = cva("flex -space-x-3 -space-y-4", {
   variants: {
     orientation: {
       vertical: "flex-row",
@@ -60,7 +60,7 @@ const AvatarStack = ({
           contents={<p>{name}</p>}
         />
       ))}
-      {hiddenAvatars.length && (
+      {avatars.length > maxAvatarsAmount && (
         <Tooltip
           key="hidden-avatars"
           trigger={

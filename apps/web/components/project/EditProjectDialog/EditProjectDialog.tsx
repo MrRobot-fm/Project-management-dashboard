@@ -5,7 +5,7 @@ import { Button } from "@workspace/ui/components/Button";
 import { CustomDialog } from "@/components/CustomDialog";
 import { WorkspaceProjectForm } from "@/components/forms/WorkspaceProjectForm";
 import { useUpdateProject } from "@/hooks/use-update-project";
-import type { Project } from "@workspace/db";
+import type { Project } from "@/types/models/api-get-project-by-id";
 import { PencilLine } from "lucide-react";
 
 interface EditProjectDialogProps {

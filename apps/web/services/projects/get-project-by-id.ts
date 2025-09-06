@@ -1,11 +1,12 @@
 import type { ActionResponse } from "@/types/action";
-import type { ProjectMember } from "@/types/models/api-get-project-by-id";
+import type { Project, ProjectMember } from "@/types/models/api-get-project-by-id";
 import { errorData } from "@/utils/error-data";
 import { fetchInstance } from "@/utils/fetch-instance";
 import { getCookie } from "@/utils/get-cookie";
-import type { Project } from "@workspace/db";
 
-type GetProjectByIdResponse = { project: (Project & { members: ProjectMember[] }) | undefined };
+type GetProjectByIdResponse = {
+  project: (Project & { members: ProjectMember[] } & { tasks: Project["tasks"] }) | undefined;
+};
 
 export const getProjectById = async (
   projectId: string,

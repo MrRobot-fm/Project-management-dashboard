@@ -1,4 +1,4 @@
-import type { ProjectPriority, ProjectStatus, UserRole } from "@workspace/db";
+import type { ProjectPriority, ProjectStatus, TaskStatus, UserRole } from "@workspace/db";
 
 export const statusBadgeData: { id: string | number; value: ProjectStatus; label?: string }[] = [
   {
@@ -24,6 +24,21 @@ export const statusBadgeData: { id: string | number; value: ProjectStatus; label
   {
     id: 6,
     value: "CANCELLED",
+  },
+];
+
+export const taskStatusBadgeData: { id: string | number; value: TaskStatus; label?: string }[] = [
+  {
+    id: 1,
+    value: "TODO",
+  },
+  {
+    id: 2,
+    value: "IN_PROGRESS",
+  },
+  {
+    id: 3,
+    value: "DONE",
   },
 ];
 

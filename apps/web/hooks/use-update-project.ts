@@ -2,7 +2,7 @@ import { useActionState, useOptimistic } from "react";
 import { createProjectAction } from "@/services/projects/create-project";
 import { deleteProjectAction } from "@/services/projects/delete-project";
 import { updateProjectAction } from "@/services/projects/update-project";
-import type { Project } from "@workspace/db";
+import type { Project } from "@/types/models/api-get-project-by-id";
 
 export interface UseUpdateProjectReturn {
   optimisticProjects: Project[];

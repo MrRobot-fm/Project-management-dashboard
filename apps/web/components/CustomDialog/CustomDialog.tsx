@@ -28,14 +28,21 @@ export const CustomDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       {triggerSlot && <DialogTrigger asChild>{triggerSlot}</DialogTrigger>}
-      <DialogContent className="w-full sm:max-w-lg lg:max-w-xl px-8 py-6 overflow-y-auto">
-        {(title || description) && (
+      <DialogContent
+        aria-describedby={undefined}
+        className="w-full sm:max-w-lg lg:max-w-xl px-8 py-6 overflow-y-auto"
+      >
+        {title || description ? (
           <div className="w-full mx-auto pb-4">
             <DialogHeader className="px-0">
               <DialogTitle>{title} </DialogTitle>
               <DialogDescription>{description}</DialogDescription>
             </DialogHeader>
           </div>
+        ) : (
+          <span className="sr-only">
+            <DialogTitle>{title} </DialogTitle>
+          </span>
         )}
         {contentSlot}
       </DialogContent>

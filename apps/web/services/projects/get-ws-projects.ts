@@ -1,6 +1,6 @@
+import type { Project } from "@/types/models/api-get-project-by-id";
 import { fetchInstance } from "@/utils/fetch-instance";
 import { getCookie } from "@/utils/get-cookie";
-import type { Project } from "@workspace/db";
 
 interface GetWsProjectResponse {
   projects: Project[] | undefined;

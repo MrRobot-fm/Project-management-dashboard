@@ -64,7 +64,7 @@ const avatarFallback = cva("bg-neutral-200 dark:bg-neutral-400", {
     size: {
       sm: "text-[9px]",
       md: "text-[10px]",
-      lg: "",
+      lg: "text-[10px]",
       xl: "",
       "2xl": "",
       "3xl": "",

@@ -29,7 +29,7 @@ model User {
   ownedWorkspaces Workspace[]       @relation("ownedWorkspaces")
   workspaceMember WorkspaceMember[]
   ProjectMember   ProjectMember[]
-  Task            Task[]
+  assignedTasks   TaskAssignee[]
 
   @@map("users")
 }
@@ -137,16 +137,46 @@ model Task {
   status      TaskStatus   @default(TODO)
   priority    TaskPriority @default(LOW)
   position    Int?
-  assigneeId  String?      @map("assignee_id")
   projectId   String       @map("project_id")
+  startDate   DateTime?    @map("start_date")
+  dueDate     DateTime?    @map("due_date")
   createdAt   DateTime     @default(now()) @map("created_at")
   updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at")
 
-  assignee User?       @relation(fields: [assigneeId], references: [id])
-  project  Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  labels   TaskLabel[]
+  project   Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  labels    TaskLabel[]
+  assignees TaskAssignee[]
+  assets    TaskAsset[]
 
   @@map("tasks")
+}
+
+model TaskAssignee {
+  taskId    String
+  userId    String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, userId])
+  @@map("task_assignees")
+}
+
+model TaskAsset {
+  id        String   @id @default(uuid())
+  taskId    String
+  path      String
+  name      String
+  type      String?
+  size      Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("task_files")
 }
 
 model Label {

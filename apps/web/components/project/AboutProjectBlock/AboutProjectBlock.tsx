@@ -5,12 +5,11 @@ import { EditProjectDialog } from "../EditProjectDialog";
 import { Avatar } from "@/components/Avatar";
 import { PriorityBadge } from "@/components/badges/PriorityBadge";
 import { StatusBadge } from "@/components/badges/StatusBadge";
-import type { ProjectMember } from "@/types/models/api-get-project-by-id";
+import type { Project, ProjectMember } from "@/types/models/api-get-project-by-id";
 import { formatDate } from "@/utils/format-date";
-import type { Project } from "@workspace/db";
 
 interface AboutProjectBlockProps extends ComponentProps<"div"> {
-  project: Project & { members: ProjectMember[] };
+  project: Project & { members: ProjectMember[] } & { tasks: Project["tasks"] };
 }
 
 export const AboutProjectBlock = ({ project, className }: AboutProjectBlockProps) => {

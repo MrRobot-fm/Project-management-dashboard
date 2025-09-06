@@ -23,6 +23,7 @@ import { WorkspaceProjectForm } from "@/components/forms/WorkspaceProjectForm";
 import type { CreateActionPayload } from "@/hooks/use-update-project";
 import { createWorkspaceAction } from "@/services/workspaces/create-workspace";
 import { updateWorkspaceAction } from "@/services/workspaces/update-workspace";
+import type { Project } from "@/types/models/api-get-project-by-id";
 import {
   IconCamera,
   IconChartBar,
@@ -41,7 +42,7 @@ import {
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
-import type { Project, Workspace } from "@workspace/db";
+import type { Workspace } from "@workspace/db";
 
 const data = {
   user: {

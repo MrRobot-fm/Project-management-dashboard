@@ -2,7 +2,7 @@ import type { Request } from "express";
 import { BadRequestError } from "@workspace/exceptions";
 import multer, { type FileFilterCallback } from "multer";
 
-const storage = multer.memoryStorage();
+export const storage = multer.memoryStorage();
 
 export const upload = multer({
   storage,

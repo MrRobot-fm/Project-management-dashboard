@@ -4,8 +4,9 @@ import { getWsProjects } from "./projects/get-ws-projects";
 import { getCurrentUser } from "./users/get-current-user";
 import { getWorkspaces } from "./workspaces/get-workspaces";
 import { SELECTED_WS_ID_COOKIE_KEY } from "@/constants/workspaces";
+import type { Project } from "@/types/models/api-get-project-by-id";
 import { getCookie } from "@/utils/get-cookie";
-import type { Project, User, Workspace } from "@workspace/db";
+import type { User, Workspace } from "@workspace/db";
 
 type AppLayoutData = {
   user: User | undefined;

@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { TaskCad } from "../TaskCad";
+import { TaskContent } from "../TaskCad";
 import { TaskColumn } from "@/components/TaskColumn";
-import type { ProjectMember } from "@/types/models/api-get-project-by-id";
+import type { Project, ProjectMember } from "@/types/models/api-get-project-by-id";
+import { fetchInstance } from "@/utils/fetch-instance";
 import {
   DndContext,
+  type DragEndEvent,
   type DragOverEvent,
   DragOverlay,
   type DragStartEvent,
@@ -15,81 +17,52 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
+import type { Task, TaskStatus } from "@workspace/db";
 
 interface Column {
-  id: string;
+  id: TaskStatus;
   title: string;
 }
 
-export interface Task {
-  id: string;
-  columnId: string;
-  content: string;
-}
-
 interface KanbanBoardProps {
+  tasks: Project["tasks"];
   projectMembers: ProjectMember[];
 }
 
-export const KanbanBoard = ({ projectMembers }: KanbanBoardProps) => {
+export const KanbanBoard = ({ tasks: projectTasks, projectMembers }: KanbanBoardProps) => {
   const [columns] = useState<Column[]>([
-    {
-      id: "1",
-      title: "To Do",
-    },
-    {
-      id: "2",
-      title: "In Progress",
-    },
-    {
-      id: "3",
-      title: "Done",
-    },
+    { id: "TODO", title: "To Do" },
+    { id: "IN_PROGRESS", title: "In Progress" },
+    { id: "DONE", title: "Done" },
   ]);
 
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: "10", columnId: "1", content: "Task 1" },
-    { id: "20", columnId: "1", content: "Task 2" },
-    { id: "30", columnId: "2", content: "Task 3" },
-    { id: "40", columnId: "3", content: "Task 4" },
-    { id: "50", columnId: "3", content: "Task 4" },
-    { id: "60", columnId: "3", content: "Task 4" },
-    { id: "70", columnId: "3", content: "Task 4" },
-    { id: "80", columnId: "3", content: "Task 4" },
-    { id: "90", columnId: "3", content: "Task 4" },
-    { id: "100", columnId: "3", content: "Task 4" },
-    { id: "110", columnId: "3", content: "Task 4" },
-    { id: "120", columnId: "3", content: "Task 4" },
-    { id: "130", columnId: "3", content: "Task 4" },
-    { id: "140", columnId: "3", content: "Task 4" },
-    { id: "150", columnId: "3", content: "Task 4" },
-    { id: "160", columnId: "3", content: "Task 4" },
-    { id: "170", columnId: "3", content: "Task 4" },
-    { id: "180", columnId: "3", content: "Task 4" },
-  ]);
+  const [tasks, setTasks] = useState<Project["tasks"]>(projectTasks);
 
-  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  useEffect(() => {
+    setTasks(projectTasks);
+  }, [projectTasks]);
+
+  const [activeTask, setActiveTask] = useState<Project["tasks"][number] | null>(null);
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
 
   const onDragStart = (event: DragStartEvent) => {
     if (event.active.data.current?.type === "task") {
       setActiveTask(event.active.data.current.task);
+      setActiveTaskId(event.active.id as string);
       return;
     }
   };
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 30,
-      },
+      activationConstraint: { distance: 30 },
     }),
   );
 
-  const tasksIds = useMemo(() => tasks?.map((task) => task.id), [tasks]);
+  const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
 
   const onDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
-
     if (!over) return;
     if (active.id === over.id) return;
 
@@ -101,12 +74,12 @@ export const KanbanBoard = ({ projectMembers }: KanbanBoardProps) => {
 
     if (isActiveTask && isOverTask) {
       setTasks((tasks) => {
-        const activeTaskIndex = tasks.findIndex((task) => task.id === active.id);
-        const overTaskIndex = tasks.findIndex((task) => task.id === over.id);
+        const activeTaskIndex = tasks.findIndex((t) => t.id === active.id);
+        const overTaskIndex = tasks.findIndex((t) => t.id === over.id);
 
         if (tasks[activeTaskIndex] && tasks[overTaskIndex]) {
-          if (tasks[overTaskIndex].columnId !== tasks[activeTaskIndex].columnId) {
-            tasks[activeTaskIndex].columnId = tasks[overTaskIndex].columnId;
+          if (tasks[overTaskIndex].status !== tasks[activeTaskIndex].status) {
+            tasks[activeTaskIndex].status = tasks[overTaskIndex].status;
           }
         }
 
@@ -116,10 +89,10 @@ export const KanbanBoard = ({ projectMembers }: KanbanBoardProps) => {
 
     if (isActiveTask && isOverColumn) {
       setTasks((tasks) => {
-        const activeTaskIndex = tasks.findIndex((task) => task.id === active.id);
+        const activeTaskIndex = tasks.findIndex((t) => t.id === active.id);
 
         if (tasks[activeTaskIndex]) {
-          tasks[activeTaskIndex].columnId = over.id as string;
+          tasks[activeTaskIndex].status = over.id as Task["status"];
         }
 
         return [...tasks];
@@ -127,36 +100,71 @@ export const KanbanBoard = ({ projectMembers }: KanbanBoardProps) => {
     }
   };
 
-  const onDragEnd = () => {
+  const onDragEnd = async (event: DragEndEvent) => {
+    if (!activeTask) return;
+
+    const overId = event.over?.id;
+
+    if (!overId) {
+      setActiveTask(null);
+      setActiveTaskId(null);
+      return;
+    }
+
+    const overTask = tasks.find((t) => t.id === overId);
+    const overColumnId = event.over?.data.current?.type === "column" ? overId : undefined;
+
+    let newStatus = activeTask.status;
+    let newPosition = 0;
+
+    if (overTask) {
+      newStatus = overTask.status;
+      newPosition = overTask.position ?? 0;
+    } else if (overColumnId) {
+      newStatus = overColumnId as Task["status"];
+      newPosition = tasks.filter((task) => task.status === newStatus).length;
+    }
+
+    await fetchInstance({
+      path: `tasks/${activeTask.id}/move`,
+      options: {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ newStatus, newPosition }),
+        credentials: "include",
+      },
+    });
+
     setActiveTask(null);
+    setActiveTaskId(null);
   };
 
   return (
-    <div className="h-screen">
+    <div className="">
       <DndContext
+        id="kanban-board"
         onDragStart={onDragStart}
         onDragOver={onDragOver}
         onDragEnd={onDragEnd}
         sensors={sensors}
       >
         <div className="flex gap-4">
-          <SortableContext items={tasksIds || []}>
+          <SortableContext items={tasksIds}>
             {columns.map((column) => (
               <TaskColumn
                 key={column.id}
                 id={column.id}
                 title={column.title}
-                tasks={tasks.filter((task) => task.columnId === column.id)}
+                tasks={tasks.filter((task) => task.status === column.id)}
                 projectMembers={projectMembers}
+                activeTaskId={activeTaskId}
               />
             ))}
           </SortableContext>
         </div>
         {typeof window !== "undefined" &&
           createPortal(
-            <DragOverlay>
-              {activeTask && <TaskCad id={activeTask.id} content={activeTask.content} />}
-            </DragOverlay>,
+            <DragOverlay>{activeTask && <TaskContent task={activeTask} isOverlay />}</DragOverlay>,
             document.body,
           )}
       </DndContext>

@@ -16,12 +16,14 @@ export default async function Tasks({ params }: { params: Promise<{ id: string }
   if (!project) return;
 
   return (
-    <div className="flex flex-col gap-10 h-screen w-full">
-      <div className="flex flex-col gap-0.5">
-        <p className="text-neutral-600 font-medium">Tasks</p>
-        <h1 className="font-semibold text-4xl">{project.name}</h1>
+    <div className="flex flex-col gap-10 w-full h-full">
+      <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-0.5">
+          <p className="text-neutral-600 font-medium">Tasks</p>
+          <h1 className="font-semibold text-4xl">{project.name}</h1>
+        </div>
       </div>
-      <KanbanBoard projectMembers={project.members} />
+      <KanbanBoard tasks={project.tasks} projectMembers={project.members} />
     </div>
   );
 }

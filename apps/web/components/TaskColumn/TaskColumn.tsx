@@ -1,31 +1,27 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@workspace/ui/components/Button";
-import { Input } from "@workspace/ui/components/Input";
-import { Label } from "@workspace/ui/components/Label";
-import { MultipleSelector } from "@workspace/ui/components/MultipleSelector";
-import { Textarea } from "@workspace/ui/components/Textarea";
 import { cn } from "@workspace/ui/lib/utils";
-import { UserItem } from "@/components/AddTeamMemberDialog";
-import { CustomDialog } from "@/components/CustomDialog";
-import { CustomSelect } from "@/components/CustomSelect";
-import type { Task } from "@/components/KanbanBoard";
+import { CustomDialog } from "../CustomDialog";
+import { EditTaskDialogContent } from "../EditTaskDialogContent";
 import { TaskCad } from "@/components/TaskCad";
-import { PriorityBadge } from "@/components/badges/PriorityBadge";
-import { priorityBadgeData } from "@/constants/badges";
-import type { ProjectMember } from "@/types/models/api-get-project-by-id";
+import type { Project, ProjectMember } from "@/types/models/api-get-project-by-id";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
-import { CirclePlus, Plus } from "lucide-react";
+import type { TaskStatus } from "@workspace/db";
+import { Plus } from "lucide-react";
 
 interface TaskColumnProps {
-  id: string;
+  id: TaskStatus;
   title: string;
-  tasks?: Task[];
+  tasks?: Project["tasks"];
   projectMembers: ProjectMember[];
+  activeTaskId?: string | null;
 }
 
-export const TaskColumn = ({ id, title, tasks, projectMembers }: TaskColumnProps) => {
-  const tasksIds = useMemo(() => tasks?.map((task) => task.id), [tasks]);
+export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: TaskColumnProps) => {
+  const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [dialogTaskMode, setDialogTaskMode] = useState<"create" | "read">("create");
 
   const { setNodeRef, isOver } = useDroppable({
     id: id,
@@ -35,123 +31,104 @@ export const TaskColumn = ({ id, title, tasks, projectMembers }: TaskColumnProps
     },
   });
 
+  const taskDialogHeader = useMemo(() => {
+    if (dialogTaskMode === "create")
+      return {
+        title: "Create a task",
+        description: "Define your task, set deadlines, and loop in the team.",
+      };
+  }, [dialogTaskMode]);
+
+  const sortedTasks = useMemo(() => {
+    if (!tasks) return [];
+    return [...tasks].sort((a, b) => {
+      const posA = a.position ?? 0;
+      const posB = b.position ?? 0;
+
+      return posA - posB;
+    });
+  }, [tasks]);
+
+  const tasksIds = useMemo(() => sortedTasks?.map((task) => task.id), [sortedTasks]);
+
   return (
     <div
       className={cn(
-        "w-1/3 min-w-[370px] h-[750px] rounded-lg bg-white border border-neutral-200/70 shadow-neutral-100 shadow-md flex flex-col p-4",
+        "w-1/3 min-w-[300px] h-full min-h-[550px] max-h-[750px] rounded-lg bg-white border border-neutral-200/90 shadow-neutral-100 shadow-md flex flex-col p-4 pb-8",
+        isOver && "border-2 border-neutral-200",
       )}
     >
-      <div className="flex gap-2 items-center pb-2 cursor-grab">
-        <h2 className="font-semibold">{title}</h2>
-        <div className="rounded-full font-medium bg-neutral-50 border aspect-square px-2 py-2 size-6 flex items-center justify-center text-xs">
-          {tasks?.length ?? 0}
+      <div className="flex gap-2 items-center justify-between pb-2">
+        <div className="flex gap-2 items-center">
+          <h2 className="font-semibold">{title}</h2>
+          <div className="rounded-full font-medium bg-neutral-50 border aspect-square px-2 py-2 size-6 flex items-center justify-center text-xs">
+            {tasks?.length ?? 0}
+          </div>
+        </div>
+        <div>
+          <Button
+            variant="ghost"
+            className="flex items-center rounded text-xs text-neutral-600 font-semibold p-0 h-fit py-1 cursor-pointer"
+            onClick={() => {
+              setDialogTaskMode("create");
+              setIsTaskDialogOpen(true);
+            }}
+          >
+            <Plus className="size-5" />
+          </Button>
         </div>
       </div>
       <div
         ref={setNodeRef}
         className={cn(
-          "flex flex-col gap-2 flex-grow py-2 rounded-md transition-colors overflow-y-auto scrollbar-none",
-          isOver && "bg-blue-100 border-2 border-blue-300 border-dashed",
+          "flex flex-col gap-4 flex-grow py-2 rounded-md transition-all duration-200 overflow-y-auto scrollbar-none",
+          isOver && "bg-neutral-100/30",
         )}
       >
         <SortableContext items={tasksIds || []}>
-          {tasks?.map((task) => <TaskCad key={task.id} id={task.id} content={task.content} />)}
+          {sortedTasks?.map((task) => (
+            <TaskCad
+              key={task.id}
+              id={task.id}
+              content={task}
+              activeTaskId={activeTaskId}
+              onClick={() => {
+                setSelectedTaskId(task.id);
+                setDialogTaskMode("read");
+                setIsTaskDialogOpen(true);
+              }}
+            />
+          ))}
         </SortableContext>
         {tasks?.length === 0 && (
-          <div className="text-gray-400 text-center py-8">Trascina qui una task</div>
+          <div
+            className={cn(
+              "text-gray-400 text-center py-8 transition-all duration-200",
+              isOver && "text-blue-500 font-medium",
+            )}
+          >
+            {isOver ? "Rilascia qui la task" : "Trascina qui una task"}
+          </div>
         )}
       </div>
-      <div>
-        <CustomDialog
-          title="Add Task"
-          description="Add a new task to the column"
-          triggerSlot={
-            <button className="flex items-center mt-2 w-full px-4 py-1 cursor-pointer">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Task
-            </button>
-          }
-          contentSlot={
-            <div className="">
-              <form className="flex flex-col gap-8">
-                <div className="flex flex-col gap-4 w-fit">
-                  <Label className="text-right">Priority</Label>
-                  <div className="flex flex-col gap-1">
-                    <CustomSelect
-                      data={priorityBadgeData}
-                      value="MEDIUM"
-                      triggerProps={{
-                        className:
-                          "w-full justify-between focus:border-neutral-300 bg-white border-none shadow-none p-0 data-[size=default]:h-fit",
-                      }}
-                      contentProps={{ className: "w-[180px]" }}
-                      renderItem={({ value }) => (
-                        <PriorityBadge priority={value} className="mx-px" />
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <Label className="text-right">Assignee</Label>
-                  <div className="flex flex-col gap-1">
-                    <MultipleSelector
-                      defaultOptions={projectMembers.map((member) => ({
-                        value: member.id,
-                        label: member.name,
-                        logo: member.logo,
-                      }))}
-                      placeholder="Select members..."
-                      menuItem={(item) => <UserItem {...item} />}
-                      inputProps={{
-                        className: "pl-0 pr-1 py-0 ml-0 w-full",
-                        "data-test-id": "search-members-input",
-                        name: "members",
-                      }}
-                      className="border-none pl-0 py-0 w-full"
-                      badgeClassName="bg-white text-neutral-600 border !border-neutral-400"
-                      hidePlaceholderWhenSelected
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <Label htmlFor="title" className="text-right">
-                    Title
-                  </Label>
-                  <Input
-                    id="title"
-                    name="title"
-                    placeholder="Let’s give it a name"
-                    className="focus-visible:ring-0 focus-visible:border-neutral-300 shadow-none border-none p-0 h-6 rounded-none"
-                  />
-                </div>
-                <div className="flex flex-col gap-4">
-                  <Label htmlFor="description" className="text-right">
-                    Description
-                  </Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    placeholder="Add a short description of the project"
-                    className="focus-visible:ring-0 focus-visible:border-neutral-300 shadow-none border-none p-0 py-0 h-auto min-h-20 max-h-48 resize-none rounded-none"
-                  />
-                </div>
-                <div className="ml-auto">
-                  <Button
-                    type="submit"
-                    variant="outline"
-                    className={cn(
-                      "cursor-pointer w-fit rounded font-normal border-neutral-400 text-xs max-w-[115px]",
-                    )}
-                  >
-                    <CirclePlus className="size-4" />
-                    Create Task
-                  </Button>
-                </div>
-              </form>
-            </div>
-          }
-        />
-      </div>
+      <CustomDialog
+        {...taskDialogHeader}
+        isOpen={isTaskDialogOpen}
+        setIsOpen={setIsTaskDialogOpen}
+        contentSlot={
+          <EditTaskDialogContent
+            mode={dialogTaskMode}
+            task={
+              dialogTaskMode === "read"
+                ? tasks?.find((task) => task.id === selectedTaskId)
+                : undefined
+            }
+            projectMembers={projectMembers}
+            taskStatus={id}
+            setIsOpen={setIsTaskDialogOpen}
+          />
+        }
+      />
     </div>
   );
 };

@@ -23,8 +23,8 @@ import { LinkLoadingIndicator } from "@/components/LinkLoadingIndicator";
 import { WorkspaceProjectForm } from "@/components/forms/WorkspaceProjectForm";
 import { URL_PROJECTS } from "@/constants/urls";
 import { useUpdateProject } from "@/hooks/use-update-project";
+import type { Project } from "@/types/models/api-get-project-by-id";
 import { IconDots, IconFolder, IconTrash } from "@tabler/icons-react";
-import type { Project } from "@workspace/db";
 import { Edit, PlusCircle } from "lucide-react";
 
 interface NavProjectsProps {
