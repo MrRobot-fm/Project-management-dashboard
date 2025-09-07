@@ -446,7 +446,7 @@ export const FileList = ({
       </div>
       {showGradient && (
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent flex justify-center items-end pb-1">
-          <ChevronDown className="size-5  text-neutral-500 animate-bounce" />
+          <ChevronDown className="size-5 text-neutral-500 animate-bounce" />
         </div>
       )}
     </div>

@@ -39,17 +39,7 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
       };
   }, [dialogTaskMode]);
 
-  const sortedTasks = useMemo(() => {
-    if (!tasks) return [];
-    return [...tasks].sort((a, b) => {
-      const posA = a.position ?? 0;
-      const posB = b.position ?? 0;
-
-      return posA - posB;
-    });
-  }, [tasks]);
-
-  const tasksIds = useMemo(() => sortedTasks?.map((task) => task.id), [sortedTasks]);
+  const tasksIds = useMemo(() => tasks?.map((task) => task.id), [tasks]);
 
   return (
     <div
@@ -86,7 +76,7 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
         )}
       >
         <SortableContext items={tasksIds || []}>
-          {sortedTasks?.map((task) => (
+          {tasks?.map((task) => (
             <TaskCad
               key={task.id}
               id={task.id}
