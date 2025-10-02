@@ -7,8 +7,6 @@ export default async function Tasks({ params }: PageProps<"/projects/[id]/tasks"
 
   const { project, error } = await getProjectById(id);
 
-  console.log({ project });
-
   if (error?.status === 404) {
     redirect("/");
   }

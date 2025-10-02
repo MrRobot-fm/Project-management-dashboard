@@ -1,6 +1,7 @@
 "use client";
 
-import { useLinkStatus } from "next/dist/client/link";
+// @ts-expect-error  useLinkStatus is available on Next.js 15.3+
+import { useLinkStatus } from "next/link";
 import { type LoaderVariants, Spinner } from "@workspace/ui/components/Spinner";
 import { type LucideProps } from "lucide-react";
 

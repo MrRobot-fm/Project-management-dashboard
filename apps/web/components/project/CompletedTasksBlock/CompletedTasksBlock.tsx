@@ -1,33 +1,51 @@
 "use client";
 
+import { useMemo } from "react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Card, CardContent } from "@workspace/ui/components/Card";
 import { type ChartConfig, ChartContainer } from "@workspace/ui/components/Chart";
 import { PATHS } from "@/constants/paths";
+import type { Project } from "@/types/models/api-get-project-by-id";
 import { ArrowRight } from "lucide-react";
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts";
 
-export const description = "A radial chart with text";
-
-const completedTasks = 70;
-const totalTasks = 286;
-const percentage = Math.round((completedTasks / totalTasks) * 100);
-
-const chartData = [{ browser: "safari", visitors: completedTasks, fill: "var(--color-safari)" }];
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  tasks: {
+    label: "Tasks",
   },
-  safari: {
-    label: "Safari",
+  completed: {
+    label: "Completed",
     color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
-export const CompletedTasksBlock = () => {
+interface CompletedTasksBlockProps {
+  tasks: Project["tasks"];
+}
+
+export const CompletedTasksBlock = ({ tasks }: CompletedTasksBlockProps) => {
   const { id } = useParams<{ id: string }>();
+
+  const { completedTasks, totalTasks, percentage, chartData } = useMemo(() => {
+    const completed = tasks.filter((task) => task.status === "DONE").length;
+    const total = tasks.length;
+    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+    return {
+      completedTasks: completed,
+      totalTasks: total,
+      percentage,
+      chartData: [
+        {
+          status: "completed",
+          tasks: completed,
+          fill: "var(--color-completed)",
+        },
+      ],
+    };
+  }, [tasks]);
 
   return (
     <div className="rounded-lg border border-neutral-200/70 shadow-neutral-100 shadow-md p-6 flex flex-col gap-4 h-full w-full">
@@ -58,7 +76,7 @@ export const CompletedTasksBlock = () => {
                 className="first:fill-muted last:fill-background"
                 polarRadius={[131, 115]}
               />
-              <RadialBar dataKey="visitors" background cornerRadius={10} />
+              <RadialBar dataKey="tasks" background cornerRadius={10} />
               <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
                 <Label
                   content={({ viewBox }) => {
@@ -75,14 +93,14 @@ export const CompletedTasksBlock = () => {
                             y={viewBox.cy}
                             className="fill-foreground text-2xl font-bold"
                           >
-                            {chartData?.[0]?.visitors.toLocaleString()} of {totalTasks}
+                            {completedTasks.toLocaleString()} of {totalTasks}
                           </tspan>
                           <tspan
                             x={viewBox.cx}
                             y={(viewBox.cy || 0) + 24}
                             className="fill-muted-foreground"
                           >
-                            Task completed
+                            {completedTasks === 1 ? "Task completed" : "Tasks completed"}
                           </tspan>
                         </text>
                       );

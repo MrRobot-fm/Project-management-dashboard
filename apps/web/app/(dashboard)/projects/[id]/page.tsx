@@ -12,6 +12,8 @@ export default async function SingleProject({ params }: PageProps<"/projects/[id
 
   const { project, error } = await getProjectById(id);
 
+  console.log({ project });
+
   if (error?.status === 404) {
     redirect("/");
   }
@@ -33,8 +35,8 @@ export default async function SingleProject({ params }: PageProps<"/projects/[id
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 w-full gap-6">
-          <ProjectTaskSummaryBlock />
-          <CompletedTasksBlock />
+          <ProjectTaskSummaryBlock tasks={project.tasks} />
+          <CompletedTasksBlock tasks={project.tasks} />
         </div>
       </div>
     </div>
