@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { getProjectById } from "@/services/projects/get-project-by-id";
 
-export default async function Tasks({ params }: { params: Promise<{ id: string }> }) {
+export default async function Tasks({ params }: PageProps<"/projects/[id]/tasks">) {
   const { id } = await params;
 
   const { project, error } = await getProjectById(id);

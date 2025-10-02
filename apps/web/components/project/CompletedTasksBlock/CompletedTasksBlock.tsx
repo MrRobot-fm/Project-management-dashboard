@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Card, CardContent } from "@workspace/ui/components/Card";
@@ -33,7 +34,7 @@ export const CompletedTasksBlock = () => {
       <div className="flex justify-between">
         <h2 className="font-medium text-md">Completed tasks</h2>
         <Link
-          href={PATHS.PROJECT_TASKS(id)}
+          href={PATHS.PROJECT_TASKS(id) as Route}
           className="flex items-center gap-2 text-xs text-neutral-500 hover:text-neutral-600 font-medium"
         >
           View all tasks

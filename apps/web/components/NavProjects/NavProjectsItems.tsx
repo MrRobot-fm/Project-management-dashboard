@@ -1,10 +1,11 @@
-import React from "react";
+import type { ReactNode } from "react";
+import type { Route } from "next";
 import Link from "next/link";
 import { Button } from "@workspace/ui/components/Button";
 import { DropdownMenuItem } from "@workspace/ui/components/DropdownMenu";
 
 type DropdownItem = {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   action?: () => Promise<void> | void;
   href?: string;
@@ -20,7 +21,7 @@ export const NavProjectsItems = ({ item }: NavProjectsItemsProps) => {
   if (item.isLink && item.href) {
     return (
       <DropdownMenuItem asChild>
-        <Link href={item.href} className="cursor-pointer">
+        <Link href={item.href as Route} className="cursor-pointer">
           {item.icon}
           <span>{item.label}</span>
         </Link>

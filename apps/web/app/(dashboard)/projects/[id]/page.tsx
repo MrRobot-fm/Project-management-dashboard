@@ -7,13 +7,7 @@ import { getProjectById } from "@/services/projects/get-project-by-id";
 
 export const dynamic = "force-dynamic";
 
-interface SingleProjectProps {
-  params: Promise<{
-    id: string;
-  }>;
-}
-
-export default async function SingleProject({ params }: SingleProjectProps) {
+export default async function SingleProject({ params }: PageProps<"/projects/[id]">) {
   const { id } = await params;
 
   const { project, error } = await getProjectById(id);

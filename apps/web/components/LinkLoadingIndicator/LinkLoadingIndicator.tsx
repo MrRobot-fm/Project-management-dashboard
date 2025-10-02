@@ -1,5 +1,7 @@
-import { useLinkStatus } from "next/link";
-import { type LoaderVariants, Spinner } from "../../../../packages/ui/src/components/Spinner";
+"use client";
+
+import { useLinkStatus } from "next/dist/client/link";
+import { type LoaderVariants, Spinner } from "@workspace/ui/components/Spinner";
 import { type LucideProps } from "lucide-react";
 
 interface LinkLoadingIndicatorProps extends LoaderVariants {

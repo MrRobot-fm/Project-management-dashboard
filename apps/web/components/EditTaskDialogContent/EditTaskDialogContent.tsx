@@ -8,6 +8,7 @@ import { Input } from "@workspace/ui/components/Input";
 import { Label } from "@workspace/ui/components/Label";
 import { MultipleSelector } from "@workspace/ui/components/MultipleSelector";
 import { Separator } from "@workspace/ui/components/Separator";
+import { Spinner } from "@workspace/ui/components/Spinner";
 import { Textarea } from "@workspace/ui/components/Textarea";
 import { cn } from "@workspace/ui/lib/utils";
 import { SubmitButtonContent } from "../SubmitButtonContent/SubmitButtonContent";
@@ -323,7 +324,7 @@ export const EditTaskDialogContent = ({
                   </Button>
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem asChild>
+              <DropdownMenuItem asChild onSelect={(e) => e.preventDefault()}>
                 <form action={formAction} className="!p-0 w-full">
                   <input type="hidden" name="taskId" value={task?.id} />
                   <Button
@@ -332,7 +333,8 @@ export const EditTaskDialogContent = ({
                     disabled={formPending}
                     className="p-2 h-fit text-xs justify-start text-rose-500 rounded w-full cursor-pointer hover:bg-rose-100 hover:text-rose-500"
                   >
-                    {formPending ? "Deleting..." : "Delete task"}
+                    Delete task
+                    {formPending && <Spinner size="xs" className="stroke-rose-500" />}
                   </Button>
                   {formState.error && (
                     <p className="text-red-500 text-xs mt-1">{formState.error.message}</p>
@@ -423,7 +425,7 @@ export const FileList = ({
 
   return (
     <div className="relative max-h-[105px]">
-      <div ref={scrollRef} className="h-full overflow-y-auto pr-2">
+      <div ref={scrollRef} className="h-full overflow-y-auto scrollbar-none">
         <div className="flex flex-wrap gap-3">
           {files.map((file, index) => (
             <AssetThumb

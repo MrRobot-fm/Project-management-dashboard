@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode } from "react";
+import { type CSSProperties } from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/Sidebar";
@@ -21,11 +21,7 @@ export const metadata: Metadata = {
   title: "Project management dashboard",
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: ReactNode;
-}>) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
   const { user, workspaces, projects, currentWorkspaceId } = await getAppLayout();
 
   return (

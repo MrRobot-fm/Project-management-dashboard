@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "5mb",
     },
   },
+  typedRoutes: true,
   images: {
     remotePatterns: [
       {

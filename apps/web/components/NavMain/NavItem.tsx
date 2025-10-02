@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -28,10 +29,7 @@ export function NavMain({
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           {items.map((item) => {
-            const isActive =
-              item.url === "/"
-                ? pathname === "/"
-                : pathname.startsWith(item.url);
+            const isActive = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url);
 
             return (
               <SidebarMenuItem key={item.title}>
@@ -41,7 +39,7 @@ export function NavMain({
                   className="hover:bg-primary/80 hover:text-primary-foreground data-[active=true]:bg-primary/90 data-[active=true]:text-primary-foreground min-w-8 duration-300 ease-linear transition-all"
                   isActive={isActive}
                 >
-                  <Link href={item.url}>
+                  <Link href={item.url as Route}>
                     {item.icon && <item.icon />}
                     <span className="mr-auto">{item.title}</span>
                     <LinkLoadingIndicator className="stroke-primary-foreground" />

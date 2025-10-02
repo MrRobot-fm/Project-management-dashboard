@@ -31,14 +31,6 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
     },
   });
 
-  const taskDialogHeader = useMemo(() => {
-    if (dialogTaskMode === "create")
-      return {
-        title: "Create a task",
-        description: "Define your task, set deadlines, and loop in the team.",
-      };
-  }, [dialogTaskMode]);
-
   const tasksIds = useMemo(() => tasks?.map((task) => task.id), [tasks]);
 
   return (
@@ -102,7 +94,6 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
         )}
       </div>
       <CustomDialog
-        {...taskDialogHeader}
         isOpen={isTaskDialogOpen}
         setIsOpen={setIsTaskDialogOpen}
         contentSlot={
