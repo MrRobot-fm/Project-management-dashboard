@@ -10,7 +10,10 @@ interface AssetThumbProps {
 
 export const AssetThumb = ({ file, removeButton }: AssetThumbProps) => {
   return (
-    <div className="flex items-center gap-3 py-1.5 pl-2 pr-3 min-w-32 rounded-sm border">
+    <div
+      data-test-id="asset-thumb"
+      className="flex items-center gap-3 py-1.5 pl-2 pr-3 min-w-32 rounded-sm border"
+    >
       <div className="size-5 flex items-center">
         <AssetIcon assetType={file.type} />
       </div>

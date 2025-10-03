@@ -33,6 +33,7 @@ export const TaskCad = ({ id, content, activeTaskId, onClick }: TaskCadProps) =>
 
   return (
     <div
+      data-test-id="task-card"
       ref={setNodeRef}
       style={style}
       className={cn(

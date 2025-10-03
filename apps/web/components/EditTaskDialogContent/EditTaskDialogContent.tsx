@@ -26,6 +26,7 @@ import type { createTask } from "@/services/tasks/create-task";
 import type { editTask } from "@/services/tasks/edit-task";
 import type { Project, ProjectMember } from "@/types/models/api-get-project-by-id";
 import type { TaskPriority, TaskStatus } from "@workspace/db";
+import { EditTaskSchema } from "@workspace/schemas";
 import {
   ChevronDown,
   CirclePlus,
@@ -72,7 +73,11 @@ export const EditTaskDialogContent = ({
     removedAssetIds,
     removedAssigneeIds,
     setRemovedAssigneeIds,
+    hasChanges,
   } = useTaskForm(projectMembers, task, taskStatus);
+
+  const validate = EditTaskSchema.safeParse({ title: taskDetails.title });
+  console.log({ hasChanges, validate: validate.success });
 
   const [formState, formAction, formPending] = useActionState<FormState<TaskActionFn>, FormData>(
     async (_prev, formData) => {
@@ -283,7 +288,7 @@ export const EditTaskDialogContent = ({
           <Button
             type="submit"
             variant="outline"
-            disabled={formPending}
+            disabled={formPending || (isCreateMode ? !validate.success : !hasChanges)}
             className={cn(
               "cursor-pointer w-fit rounded font-normal border-neutral-400 text-xs max-w-[115px]",
             )}
@@ -303,6 +308,7 @@ export const EditTaskDialogContent = ({
           className="p-2 flex-col flex items-start rounded-sm"
           triggerSlot={
             <Button
+              data-test-id="task-dialog-menu"
               type="button"
               variant="ghost"
               size="icon"

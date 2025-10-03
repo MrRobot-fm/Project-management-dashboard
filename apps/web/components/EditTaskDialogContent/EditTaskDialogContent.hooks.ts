@@ -36,6 +36,21 @@ export const useTaskForm = (
   const [removedAssetIds, setRemovedAssetIds] = useState<string[]>([]);
   const [removedAssigneeIds, setRemovedAssigneeIds] = useState<string[]>([]);
 
+  const hasChanges = useMemo(() => {
+    if (!task) return true;
+
+    return (
+      task.title !== taskDetails.title ||
+      (task.description ?? "") !== taskDetails.description ||
+      new Date(task.startDate).getDay() !== taskDetails.startDate?.getDay() ||
+      new Date(task.dueDate).getDay() !== taskDetails.dueDate?.getDay() ||
+      task.priority !== taskDetails.priority ||
+      task.status !== taskDetails.status ||
+      task.assignees.length !== taskDetails.assignees.length ||
+      task.assets.length !== taskDetails.assets.length
+    );
+  }, [task, taskDetails]);
+
   const members = useMemo(
     () =>
       initialMembers.map((member) => ({
@@ -79,6 +94,7 @@ export const useTaskForm = (
     removedAssetIds,
     removedAssigneeIds,
     setRemovedAssigneeIds,
+    hasChanges,
   };
 };
 

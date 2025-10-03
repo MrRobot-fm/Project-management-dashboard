@@ -49,6 +49,7 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
         </div>
         <div>
           <Button
+            data-test-id={`add-task-btn-${title?.toLowerCase().replace(" ", "-")}`}
             variant="ghost"
             className="flex items-center rounded text-xs text-neutral-600 font-semibold p-0 h-fit py-1 cursor-pointer"
             onClick={() => {
