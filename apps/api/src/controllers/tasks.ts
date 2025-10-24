@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { supabase } from "@/supabase";
+import { getSignedUrl } from "@/utils/storage/get-signed-url";
 import { prisma } from "@workspace/db";
 import { BadRequestError, NotFoundError } from "@workspace/exceptions";
 
@@ -268,4 +269,36 @@ export const updateTask = async (req: Request, res: Response) => {
     uploadedFiles: uploadedFiles,
     deletedFiles: assetsToDelete,
   });
+};
+
+export const getTasksByProject = async (req: Request, res: Response) => {
+  const { projectId } = req.params;
+
+  const tasks = await prisma.task.findMany({
+    where: {
+      projectId: projectId,
+    },
+    include: {
+      assignees: {
+        include: {
+          user: true,
+        },
+      },
+      assets: true,
+    },
+  });
+
+  const tasksWithSignedUrls = await Promise.all(
+    tasks.map(async (task) => {
+      const assetsWithUrls = await Promise.all(
+        task.assets.map(async (asset) => {
+          return await getSignedUrl(asset);
+        }),
+      );
+
+      return { ...task, assets: assetsWithUrls };
+    }),
+  );
+
+  return res.status(200).json({ tasks: tasksWithSignedUrls });
 };

@@ -12,8 +12,6 @@ export default async function SingleProject({ params }: PageProps<"/projects/[id
 
   const { project, error } = await getProjectById(id);
 
-  console.log({ project });
-
   if (error?.status === 404) {
     redirect("/");
   }

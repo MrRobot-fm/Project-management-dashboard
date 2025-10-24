@@ -12,7 +12,7 @@ import {
   updateProject,
   updateProjectLogo,
 } from "@/controllers/projects";
-import { createTask } from "@/controllers/tasks";
+import { createTask, getTasksByProject } from "@/controllers/tasks";
 import { authMiddleware } from "@/middlewares/auth";
 import { verifyProjectPermissions, verifyWorkspacePermissions } from "@/middlewares/permissions";
 import { upload } from "@/middlewares/upload-file";
@@ -46,15 +46,31 @@ projectsRouter.post(
   updateProjectLogo,
 );
 
+projectsRouter.get("/:projectId/tasks", [authMiddleware], getTasksByProject);
+
 projectsRouter.post(
   "/:projectId/tasks",
-  [authMiddleware, uploadAssets.array("assets[]", 10)],
+  [authMiddleware, verifyProjectPermissions, uploadAssets.array("assets[]", 10)],
   createTask,
 );
 
-projectsRouter.post("/:projectId/members", [authMiddleware], addProjectMember);
-projectsRouter.put("/:projectId/members/:userId", [authMiddleware], changeMemberRole);
-projectsRouter.delete("/:projectId/members/:userId", [authMiddleware], removeProjectMember);
+projectsRouter.post(
+  "/:projectId/members",
+  [authMiddleware, verifyProjectPermissions],
+  addProjectMember,
+);
+
+projectsRouter.put(
+  "/:projectId/members/:userId",
+  [authMiddleware, verifyProjectPermissions],
+  changeMemberRole,
+);
+
+projectsRouter.delete(
+  "/:projectId/members/:userId",
+  [authMiddleware, verifyProjectPermissions],
+  removeProjectMember,
+);
 
 export const workspaceProjectsRouter = Router({ mergeParams: true });
 

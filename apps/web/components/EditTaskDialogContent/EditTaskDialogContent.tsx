@@ -77,7 +77,6 @@ export const EditTaskDialogContent = ({
   } = useTaskForm(projectMembers, task, taskStatus);
 
   const validate = EditTaskSchema.safeParse({ title: taskDetails.title });
-  console.log({ hasChanges, validate: validate.success });
 
   const [formState, formAction, formPending] = useActionState<FormState<TaskActionFn>, FormData>(
     async (_prev, formData) => {
