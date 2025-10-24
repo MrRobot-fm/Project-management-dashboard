@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { KanbanBoard } from "@/components/KanbanBoard";
 import { getProjectById } from "@/services/projects/get-project-by-id";
+import { ArrowLeft } from "lucide-react";
 
 export default async function Tasks({ params }: PageProps<"/projects/[id]/tasks">) {
   const { id } = await params;
@@ -20,6 +22,10 @@ export default async function Tasks({ params }: PageProps<"/projects/[id]/tasks"
           <p className="text-neutral-600 font-medium">Tasks</p>
           <h1 className="font-semibold text-4xl">{project.name}</h1>
         </div>
+        <Link href={`/projects/${id}`} className="flex gap-1 items-center">
+          <ArrowLeft className="size-4 text-neutral-600" />
+          <p className="text-neutral-600 text-xs">Go back</p>
+        </Link>
       </div>
       <KanbanBoard tasks={project.tasks} projectMembers={project.members} />
     </div>
