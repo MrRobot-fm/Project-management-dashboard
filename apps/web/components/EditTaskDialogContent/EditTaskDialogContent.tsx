@@ -22,6 +22,7 @@ import { DatePicker } from "@/components/DatePicker";
 import { PriorityBadge } from "@/components/badges/PriorityBadge";
 import { StatusBadge } from "@/components/badges/StatusBadge";
 import { priorityBadgeData, taskStatusBadgeData } from "@/constants/badges";
+import { useScrollGradient } from "@/hooks/use-scroll-gradients";
 import type { createTask } from "@/services/tasks/create-task";
 import type { editTask } from "@/services/tasks/edit-task";
 import type { Project, ProjectMember } from "@/types/models/api-get-project-by-id";
@@ -262,6 +263,7 @@ export const EditTaskDialogContent = ({
           <FileList
             files={taskDetails.assets}
             removeFileAction={removeFile}
+            canDownloadFile={isReadMode}
             disabled={isReadMode}
           />
           {fieldErrors?.assets && (
@@ -402,31 +404,34 @@ export const FileList = ({
   files,
   removeFileAction,
   disabled,
+  canDownloadFile = false,
 }: {
   files: TaskAsset[];
   removeFileAction: (index: number) => void;
   disabled?: boolean;
+  canDownloadFile?: boolean;
 }) => {
+  const prevFilesCount = useRef(files.length);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [showGradient, setShowGradient] = useState(false);
+
+  const { showBottomGradient, showTopGradient } = useScrollGradient(scrollRef, [files]);
 
   useEffect(() => {
     const element = scrollRef.current;
     if (!element) return;
 
-    const updateGradient = () => {
+    if (files.length > prevFilesCount.current) {
       const hasOverflow = element.scrollHeight > element.clientHeight;
-      const atBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - 2;
+      if (hasOverflow) {
+        element.scrollTo({
+          top: element.scrollHeight,
+          behavior: "smooth",
+        });
+      }
+    }
 
-      setShowGradient(hasOverflow && !atBottom);
-    };
-
-    updateGradient();
-
-    element.addEventListener("scroll", updateGradient);
-
-    return () => element.removeEventListener("scroll", updateGradient);
-  }, [files]);
+    prevFilesCount.current = files.length;
+  }, [files.length]);
 
   return (
     <div className="relative max-h-[105px]">
@@ -436,11 +441,14 @@ export const FileList = ({
             <AssetThumb
               key={index}
               file={file}
+              canDownload={canDownloadFile}
               removeButton={
                 disabled ? undefined : (
                   <button
                     type="button"
-                    onClick={() => removeFileAction(index)}
+                    onClick={() => {
+                      removeFileAction(index);
+                    }}
                     className="p-1 rounded-full bg-neutral-100 cursor-pointer hover:bg-neutral-200 transition-colors"
                   >
                     <X className="size-3" />
@@ -451,8 +459,11 @@ export const FileList = ({
           ))}
         </div>
       </div>
-      {showGradient && (
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent flex justify-center items-end pb-1">
+      {showTopGradient && (
+        <div className="pointer-events-none absolute top-0 left-0 right-0 h-6 bg-gradient-to-b from-white to-transparent z-10" />
+      )}
+      {showBottomGradient && (
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent flex justify-center items-end pb-1 z-10">
           <ChevronDown className="size-5 text-neutral-500 animate-bounce" />
         </div>
       )}

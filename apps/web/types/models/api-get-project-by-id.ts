@@ -37,7 +37,7 @@ export interface Task {
 //   color: string;
 // }
 
-interface Assets {
+export interface Assets {
   id: string;
   taskId: string;
   path: string;
