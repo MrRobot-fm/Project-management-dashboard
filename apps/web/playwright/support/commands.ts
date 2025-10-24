@@ -200,7 +200,7 @@ export class PlaywrightCommands {
   }
 
   async createTask(userName: string) {
-    const taskPageLink = this.page.getByRole("link", { name: /no tasks available/i });
+    const taskPageLink = this.page.getByRole("link", { name: /create a new task/i });
     await taskPageLink.click();
     await this.page.waitForURL(/\/projects\/[a-f0-9-]+\/tasks$/, { timeout: 10000 });
 

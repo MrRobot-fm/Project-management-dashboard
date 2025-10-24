@@ -10,13 +10,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from "@/components/ui/card";
+} from "@workspace/ui/components/Card";
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent
-} from "@/components/ui/chart";
+} from "@workspace/ui/components/Chart";
 
 export const description = "A mixed bar chart";
 
