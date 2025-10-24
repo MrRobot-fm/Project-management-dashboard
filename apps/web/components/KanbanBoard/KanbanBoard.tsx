@@ -66,7 +66,7 @@ export const KanbanBoard = ({ tasks: projectTasks, projectMembers }: KanbanBoard
         onDragEnd={onDragEnd}
         sensors={sensors}
       >
-        <div className="flex gap-4 flex-col lg:flex-row">
+        <div className="flex gap-4 flex-col xl:flex-row">
           <SortableContext items={tasksIds}>
             {columns.map((column) => (
               <TaskColumn
@@ -82,7 +82,9 @@ export const KanbanBoard = ({ tasks: projectTasks, projectMembers }: KanbanBoard
         </div>
         {typeof window !== "undefined" &&
           createPortal(
-            <DragOverlay>{activeTask && <TaskContent task={activeTask} isOverlay />}</DragOverlay>,
+            <DragOverlay>
+              {activeTask && <TaskContent task={activeTask} hasStatusBadge={false} isOverlay />}
+            </DragOverlay>,
             document.body,
           )}
       </DndContext>

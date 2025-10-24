@@ -36,7 +36,7 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
   return (
     <div
       className={cn(
-        "lg:w-1/3 min-w-[300px] h-full min-h-[550px] lg:max-h-[750px] rounded-lg bg-white border border-neutral-200/90 shadow-neutral-100 shadow-md flex flex-col p-4 pb-8",
+        "xl:w-1/3 min-w-[300px] h-full min-h-[550px] xl:max-h-[750px] rounded-lg bg-white border border-neutral-200/90 shadow-neutral-100 shadow-md flex flex-col p-4 pb-8",
         isOver && "border-2 border-neutral-200",
       )}
     >
@@ -64,7 +64,7 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
       <div
         ref={setNodeRef}
         className={cn(
-          "grid grid-cols-1 sm:grid-cols-2 auto-rows-fr lg:grid-cols-1 gap-4 py-2 rounded-md transition-all duration-200 overflow-y-auto scrollbar-none",
+          "grid grid-cols-1 sm:grid-cols-2 auto-rows-fr xl:grid-cols-1 gap-4 py-2 rounded-md transition-all duration-200 overflow-y-auto scrollbar-none",
           isOver && "bg-neutral-100/30",
         )}
       >
@@ -84,13 +84,8 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
           ))}
         </SortableContext>
         {tasks?.length === 0 && (
-          <div
-            className={cn(
-              "text-gray-400 text-center py-8 transition-all duration-200",
-              isOver && "text-blue-500 font-medium",
-            )}
-          >
-            {isOver ? "Rilascia qui la task" : "Trascina qui una task"}
+          <div className={cn("text-gray-400 text-center py-8 transition-all duration-200")}>
+            Nothing here yet — add your first task!
           </div>
         )}
       </div>

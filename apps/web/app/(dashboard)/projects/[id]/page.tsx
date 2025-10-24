@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { AboutProjectBlock } from "@/components/project/AboutProjectBlock/AboutProjectBlock";
 import { CompletedTasksBlock } from "@/components/project/CompletedTasksBlock";
 import { ProjectMembersBlock } from "@/components/project/ProjectMembersBlock";
-import { ProjectTaskSummaryBlock } from "@/components/project/ProjectTaskSummaryBlock";
+import { TaskSummaryBlock } from "@/components/project/TaskSummaryBlock";
 import { getProjectById } from "@/services/projects/get-project-by-id";
 
 export const dynamic = "force-dynamic";
@@ -32,8 +32,8 @@ export default async function SingleProject({ params }: PageProps<"/projects/[id
             projectId={id}
           />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 w-full gap-6">
-          <ProjectTaskSummaryBlock tasks={project.tasks} />
+        <div className="grid grid-cols-1 lg:grid-cols-5 w-full gap-6">
+          <TaskSummaryBlock project={project} />
           <CompletedTasksBlock tasks={project.tasks} />
         </div>
       </div>

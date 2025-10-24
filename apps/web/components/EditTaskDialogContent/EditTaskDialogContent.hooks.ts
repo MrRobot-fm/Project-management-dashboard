@@ -16,9 +16,9 @@ export interface TaskDetails {
 }
 
 export const useTaskForm = (
-  initialMembers: ProjectMember[],
   task: Project["tasks"][number] | undefined,
   status: TaskStatus,
+  initialMembers?: ProjectMember[],
 ) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -53,7 +53,7 @@ export const useTaskForm = (
 
   const members = useMemo(
     () =>
-      initialMembers.map((member) => ({
+      initialMembers?.map((member) => ({
         value: member.id,
         label: member.name,
         logo: member.logo,

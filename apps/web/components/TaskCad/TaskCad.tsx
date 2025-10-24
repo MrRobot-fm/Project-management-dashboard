@@ -3,6 +3,7 @@
 import { cn } from "@workspace/ui/lib/utils";
 import { AvatarStack } from "../AvatarStack";
 import { PriorityBadge } from "../badges/PriorityBadge";
+import { StatusBadge } from "../badges/StatusBadge";
 import type { Project } from "@/types/models/api-get-project-by-id";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -13,9 +14,18 @@ interface TaskCadProps {
   content: Project["tasks"][number];
   activeTaskId?: string | null;
   onClick?: () => void;
+  hasStatusBadge?: boolean;
+  variant?: "expanded" | "compact";
 }
 
-export const TaskCad = ({ id, content, activeTaskId, onClick }: TaskCadProps) => {
+export const TaskCad = ({
+  id,
+  content,
+  activeTaskId,
+  onClick,
+  hasStatusBadge = false,
+  variant = "expanded",
+}: TaskCadProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: id,
     data: {
@@ -37,14 +47,15 @@ export const TaskCad = ({ id, content, activeTaskId, onClick }: TaskCadProps) =>
       ref={setNodeRef}
       style={style}
       className={cn(
-        "bg-white h-[152px] w-full rounded-md p-4 cursor-pointer border border-neutral-300/70 shadow-neutral-100 shadow-md",
+        "bg-white h-[145px] w-full rounded-md p-4 cursor-pointer border border-neutral-300/70 shadow-neutral-100 shadow-md",
         isActuallyBeingDragged && "opacity-60",
+        variant === "compact" && "h-fit",
       )}
       onClick={onClick}
       {...attributes}
       {...listeners}
     >
-      <TaskContent task={content} />
+      <TaskContent task={content} hasStatusBadge={hasStatusBadge} variant={variant} />
     </div>
   );
 };
@@ -52,16 +63,20 @@ export const TaskCad = ({ id, content, activeTaskId, onClick }: TaskCadProps) =>
 export const TaskContent = ({
   task,
   isOverlay,
+  hasStatusBadge,
+  variant = "expanded",
 }: {
   task: Project["tasks"][number];
   isOverlay?: boolean;
+  hasStatusBadge: boolean;
+  variant?: "expanded" | "compact";
 }) => {
   const hasAssets = task.assets.length > 0;
 
   return (
     <div
       className={cn(
-        "flex flex-col justify-between h-full gap-6 text-black rounded",
+        "flex flex-col justify-between h-full gap-4 text-black rounded",
         isOverlay && "border-dashed border-2 border-gray-300 p-4 cursor-grab",
       )}
     >
@@ -78,7 +93,7 @@ export const TaskContent = ({
             }
           />
         </div>
-        {task.description && (
+        {variant === "expanded" && task.description && (
           <p className="text-xs font-medium text-neutral-500 line-clamp-2">{task.description}</p>
         )}
       </div>
@@ -89,12 +104,20 @@ export const TaskContent = ({
             {task.assets.length}
           </div>
         )}
-        <PriorityBadge
-          shape="square"
-          priority={task.priority}
-          withIcon={false}
-          className={cn(!hasAssets && "ml-auto")}
-        />
+        {hasStatusBadge ? (
+          <StatusBadge
+            status={task.status}
+            shape="square"
+            className={cn(!hasAssets && "ml-auto")}
+          />
+        ) : (
+          <PriorityBadge
+            shape="square"
+            priority={task.priority}
+            withIcon={false}
+            className={cn(!hasAssets && "ml-auto")}
+          />
+        )}
       </div>
     </div>
   );

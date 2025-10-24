@@ -49,18 +49,20 @@ export const CompletedTasksBlock = ({ tasks }: CompletedTasksBlockProps) => {
   }, [tasks]);
 
   return (
-    <div className="rounded-lg border border-neutral-200/70 shadow-neutral-100 shadow-md p-6 flex flex-col gap-4 h-full w-full">
+    <div className="rounded-lg border col-span-3 border-neutral-200/70 shadow-neutral-100 shadow-md p-6 flex flex-col gap-4 h-full w-full">
       <div className="flex justify-between">
         <h2 className="font-medium text-md">Completed tasks</h2>
-        <Link
-          href={PATHS.PROJECT_TASKS(id) as Route}
-          className="flex items-center gap-2 text-xs text-neutral-500 hover:text-neutral-600 font-medium"
-        >
-          View all tasks
-          <LinkLoadingIndicator className="text-neutral-500 size-3.5">
-            <ArrowRight className="size-3.5" />
-          </LinkLoadingIndicator>
-        </Link>
+        {tasks.length > 0 && (
+          <Link
+            href={PATHS.PROJECT_TASKS(id) as Route}
+            className="flex items-center gap-2 text-xs text-neutral-500 hover:text-neutral-600 font-medium"
+          >
+            View all tasks
+            <LinkLoadingIndicator className="text-neutral-500 size-3.5">
+              <ArrowRight className="size-3.5" />
+            </LinkLoadingIndicator>
+          </Link>
+        )}
       </div>
       <Card className="flex flex-col border-none shadow-none p-0">
         <CardContent className="flex-1 p-0">

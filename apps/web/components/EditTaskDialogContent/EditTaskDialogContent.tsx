@@ -38,11 +38,12 @@ import {
 } from "lucide-react";
 
 interface EditTaskDialogContentProps {
-  projectMembers: ProjectMember[];
+  projectMembers?: ProjectMember[];
   task?: Project["tasks"][number];
   mode?: "create" | "edit" | "read";
   taskStatus?: TaskStatus;
   setIsOpen?: (isOpen: boolean) => void;
+  onlyReadMode?: boolean;
 }
 
 type TaskActionFn = typeof createTask | typeof editTask;
@@ -55,10 +56,12 @@ export const EditTaskDialogContent = ({
   mode = "create",
   taskStatus = "TODO",
   setIsOpen,
+  onlyReadMode = false,
 }: EditTaskDialogContentProps) => {
   const { id } = useParams();
   const titleInputRef = useRef<HTMLInputElement>(null);
   const [displayMode, setDisplayMode] = useState(mode);
+  const [editModeActionType, setEditModeActionType] = useState<"edit" | "delete">("edit");
 
   const isReadMode = displayMode === "read";
   const isEditMode = displayMode === "edit";
@@ -75,7 +78,7 @@ export const EditTaskDialogContent = ({
     removedAssigneeIds,
     setRemovedAssigneeIds,
     hasChanges,
-  } = useTaskForm(projectMembers, task, taskStatus);
+  } = useTaskForm(task, taskStatus, projectMembers);
 
   const validate = EditTaskSchema.safeParse({ title: taskDetails.title });
 
@@ -83,7 +86,7 @@ export const EditTaskDialogContent = ({
     async (_prev, formData) => {
       const response = await updateTaskAction({
         formData,
-        actionType: isCreateMode ? "create" : isEditMode ? "edit" : "delete",
+        actionType: isCreateMode ? "create" : isEditMode ? editModeActionType : "delete",
         removedAssetIds,
         removedAssigneeIds,
         taskDetails,
@@ -108,7 +111,7 @@ export const EditTaskDialogContent = ({
 
   const mappedAssigneesValues = useMemo(() => {
     return taskDetails.assignees.map((userId) => {
-      const member = members.find((m) => m.value === userId);
+      const member = members?.find((m) => m.value === userId);
 
       return {
         label: member?.label ?? "",
@@ -303,7 +306,7 @@ export const EditTaskDialogContent = ({
           </Button>
         </div>
       )}
-      {(isReadMode || isEditMode) && (
+      {!onlyReadMode && (isReadMode || isEditMode) && (
         <CustomDropdown
           align="end"
           className="p-2 flex-col flex items-start rounded-sm"
@@ -337,6 +340,7 @@ export const EditTaskDialogContent = ({
                   <Button
                     type="submit"
                     variant="ghost"
+                    onClick={() => setEditModeActionType("delete")}
                     disabled={formPending}
                     className="p-2 h-fit text-xs justify-start text-rose-500 rounded w-full cursor-pointer hover:bg-rose-100 hover:text-rose-500"
                   >
