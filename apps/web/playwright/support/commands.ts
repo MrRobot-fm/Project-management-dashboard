@@ -193,4 +193,65 @@ export class PlaywrightCommands {
 
     return response;
   }
+
+  async openProject() {
+    await this.page.getByTestId("project-item").click();
+    await this.page.waitForURL(/\/projects\/[a-f0-9-]+/, { timeout: 10000 });
+  }
+
+  async createTask(userName: string) {
+    const taskPageLink = this.page.getByRole("link", { name: /create a new task/i });
+    await taskPageLink.click();
+    await this.page.waitForURL(/\/projects\/[a-f0-9-]+\/tasks$/, { timeout: 10000 });
+
+    await expect(this.page.getByText(/tasks/i)).toBeVisible({ timeout: 10000 });
+
+    await this.page.getByTestId("add-task-btn-to-do").click();
+
+    const dialog = this.page.getByRole("dialog");
+    await expect(dialog).toBeVisible();
+
+    await this.page.getByRole("textbox", { name: /title/i }).fill("Test Task");
+    await this.page.getByRole("textbox", { name: /description/i }).fill("Test Description");
+
+    await this.page.getByTestId("search-members-input").fill(userName);
+    const searchItem = this.page.getByTestId("search-user-item");
+    await expect(searchItem).toContainText(userName);
+    await searchItem.click();
+
+    const fileInput = this.page.locator('input[type="file"]');
+    await fileInput.setInputFiles(path.join(__dirname, "..", "fixtures", "super_mario.jpeg"));
+
+    await expect(this.page.getByTestId("asset-thumb")).toContainText("super_mario.jpeg");
+
+    const createTaskButton = this.page.getByRole("button", { name: /create task/i });
+    await expect(createTaskButton).toBeEnabled();
+
+    await this.waitForResponse({
+      url: "/projects/",
+      method: "POST",
+      action: createTaskButton.click(),
+    });
+
+    await expect(dialog).not.toBeVisible();
+    await expect(this.page.getByTestId("task-card")).toContainText("Test Task");
+  }
+
+  async deleteTask() {
+    const taskCard = this.page.getByTestId("task-card");
+    await taskCard.click();
+    await expect(this.page.getByRole("dialog")).toBeVisible();
+
+    await this.page.getByTestId("task-dialog-menu").click();
+    const deleteTaskButton = this.page.getByRole("button", { name: /delete task/i });
+    await expect(deleteTaskButton).toBeVisible();
+
+    await this.waitForResponse({
+      url: "/projects/",
+      method: "POST",
+      action: deleteTaskButton.click(),
+    });
+
+    await expect(taskCard).not.toBeVisible();
+  }
 }

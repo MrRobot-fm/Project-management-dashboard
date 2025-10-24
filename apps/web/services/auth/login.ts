@@ -1,5 +1,6 @@
 "server only";
 
+import type { Route } from "next";
 import { redirect } from "next/navigation";
 import { HttpExceptionError } from "@workspace/exceptions";
 
@@ -38,6 +39,6 @@ export const login = async (value: { email: string; password: string }) => {
   }
 
   if (response.redirected) {
-    redirect(response.url);
+    redirect(response.url as Route);
   }
 };

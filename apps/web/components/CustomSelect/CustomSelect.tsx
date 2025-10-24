@@ -8,7 +8,7 @@ import {
 } from "@workspace/ui/components/Select";
 import { cn } from "@workspace/ui/lib/utils";
 
-type ItemType<V> = { id?: string | number; value: V; label?: string };
+type ItemType<V> = { id?: string | number; value: V; label?: string; avatar?: string | null };
 
 type ExtractValue<T> = T extends ItemType<infer V> ? V : never;
 
@@ -21,6 +21,7 @@ interface CustomSelectProps<T extends ItemType<string>>
   triggerProps?: ComponentProps<typeof SelectTrigger>;
   itemProps?: Partial<ComponentProps<typeof SelectItem>>;
   onValueChange?: (value: ExtractValue<T>) => void;
+  placeholder?: string;
 }
 
 export const CustomSelect = <T extends ItemType<string>>({
@@ -31,6 +32,7 @@ export const CustomSelect = <T extends ItemType<string>>({
   triggerProps,
   contentProps,
   itemProps,
+  placeholder,
   ...rest
 }: CustomSelectProps<T>) => {
   return (
@@ -39,7 +41,7 @@ export const CustomSelect = <T extends ItemType<string>>({
         {...triggerProps}
         className={cn("focus-visible:ring-0 cursor-pointer", triggerProps?.className)}
       >
-        <SelectValue placeholder="Select" />
+        <SelectValue placeholder={placeholder || "Select"} />
       </SelectTrigger>
       <SelectContent {...contentProps}>
         {data.map((item) => (

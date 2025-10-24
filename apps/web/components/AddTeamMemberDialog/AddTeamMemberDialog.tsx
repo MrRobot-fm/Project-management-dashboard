@@ -150,7 +150,7 @@ const CreateMembersButton = ({ disable = false }: { disable?: boolean }) => {
   );
 };
 
-const UserItem = ({ label, email, logo }: Partial<Option>) => {
+export const UserItem = ({ label, email, logo }: Partial<Option>) => {
   return (
     <div className="flex items-center gap-2">
       <Avatar size="md" image={logo ?? ""} fallback={label} />

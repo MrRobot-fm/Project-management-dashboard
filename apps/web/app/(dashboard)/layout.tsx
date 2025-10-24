@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode } from "react";
+import { type CSSProperties } from "react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SidebarInset, SidebarProvider } from "@workspace/ui/components/Sidebar";
@@ -21,11 +21,7 @@ export const metadata: Metadata = {
   title: "Project management dashboard",
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: ReactNode;
-}>) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
   const { user, workspaces, projects, currentWorkspaceId } = await getAppLayout();
 
   return (
@@ -47,9 +43,11 @@ export default async function RootLayout({
             currentWorkspaceId={currentWorkspaceId}
             variant="floating"
           />
-          <SidebarInset className="overflow-hidden">
+          <SidebarInset>
             <SiteHeader user={user} />
-            <main className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 py-10">{children}</main>
+            <main className="w-full max-w-[1320px] mx-auto px-4 sm:px-6 py-10 h-full overflow-x-hidden">
+              {children}
+            </main>
           </SidebarInset>
         </SidebarProvider>
       </body>

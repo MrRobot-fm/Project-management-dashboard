@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { getBasePath, removeExistingFiles, uploadFile } from "@/utils/storage";
+import { getSignedUrl } from "@/utils/storage/get-signed-url";
 import { prisma } from "@workspace/db";
 import { BadRequestError, NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { randomUUID } from "crypto";
@@ -146,7 +147,20 @@ export const getProjectById = async (req: Request, res: Response) => {
           createdAt: "asc",
         },
       },
-      tasks: true,
+      tasks: {
+        include: {
+          assignees: {
+            include: {
+              user: {
+                omit: {
+                  password: true,
+                },
+              },
+            },
+          },
+          assets: true,
+        },
+      },
     },
     orderBy: {
       createdAt: "asc",
@@ -155,8 +169,21 @@ export const getProjectById = async (req: Request, res: Response) => {
 
   if (!project) throw new NotFoundError("No projects found");
 
+  const tasksWithSignedUrls = await Promise.all(
+    project.tasks.map(async (task) => {
+      const assetsWithUrls = await Promise.all(
+        task.assets.map(async (asset) => {
+          return await getSignedUrl(asset);
+        }),
+      );
+
+      return { ...task, assets: assetsWithUrls };
+    }),
+  );
+
   const formattedProject = {
     ...project,
+    tasks: tasksWithSignedUrls,
     members: project?.members.map((member) => ({
       ...member.user,
       role: member.role,

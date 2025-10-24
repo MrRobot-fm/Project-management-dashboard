@@ -4,9 +4,15 @@ import { cn } from "@workspace/ui/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { AlertTriangle, Flag, Lightbulb, ShieldAlert } from "lucide-react";
 
-type PriorityBadgeProps = PriorityBadgeVariants & Pick<ComponentProps<"span">, "className">;
+type PriorityBadgeProps = PriorityBadgeVariants &
+  Pick<ComponentProps<"span">, "className"> & { withIcon?: boolean };
 
-export const PriorityBadge = ({ priority, className }: PriorityBadgeProps) => {
+export const PriorityBadge = ({
+  priority,
+  shape,
+  withIcon = true,
+  className,
+}: PriorityBadgeProps) => {
   const { icon: Icon, label } = useMemo(() => {
     switch (priority) {
       case "LOW":
@@ -23,8 +29,8 @@ export const PriorityBadge = ({ priority, className }: PriorityBadgeProps) => {
   }, [priority]);
 
   return (
-    <Badge className={cn(priorityBadgeVariants({ priority, className }))}>
-      <Icon className="!size-3.5 text-inherit" />
+    <Badge className={cn(priorityBadgeVariants({ priority, shape, className }))}>
+      {withIcon && <Icon className="!size-3.5 text-inherit" />}
       {label}
     </Badge>
   );
@@ -42,9 +48,14 @@ const priorityBadgeVariants = cva(
         HIGH: "text-orange-600 bg-orange-100 border-orange-600",
         CRITICAL: "text-red-600 bg-red-100 border-red-600",
       },
+      shape: {
+        rounded: "rounded-full",
+        square: "rounded",
+      },
     },
     defaultVariants: {
       priority: "LOW",
+      shape: "rounded",
     },
   },
 );

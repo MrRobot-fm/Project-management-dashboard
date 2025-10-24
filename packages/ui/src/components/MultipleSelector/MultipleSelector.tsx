@@ -397,6 +397,12 @@ export const MultipleSelector = React.forwardRef<
       return undefined;
     }, [creatable, commandProps?.filter]);
 
+    useEffect(() => {
+      if (selected.length === arrayDefaultOptions.length && !onSearch) {
+        setOpen(false);
+      }
+    }, [arrayDefaultOptions.length, onSearch, options, selected.length]);
+
     return (
       <Command
         ref={dropdownRef}
@@ -480,6 +486,15 @@ export const MultipleSelector = React.forwardRef<
                   setOpen(false);
                 }
                 inputProps?.onBlur?.(event);
+              }}
+              onFocus={() => {
+                if (
+                  !disabled &&
+                  !onSearch &&
+                  arrayDefaultOptions.length > selected.length
+                ) {
+                  setOpen(true);
+                }
               }}
               placeholder={
                 hidePlaceholderWhenSelected && selected.length !== 0

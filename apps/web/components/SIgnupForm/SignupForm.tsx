@@ -1,6 +1,7 @@
 "use client";
 
 import { type ComponentProps, useState } from "react";
+import type { Route } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@workspace/ui/components/Button";
@@ -46,7 +47,7 @@ export const SignupForm = ({ className, ...props }: SignupFormProps) => {
       }
 
       if (response.redirected) {
-        redirect(response.url);
+        redirect(response.url as Route);
       }
     },
   });

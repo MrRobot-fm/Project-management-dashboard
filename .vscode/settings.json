@@ -1,3 +1,5 @@
 {
-  "vitest.disableWorkspaceWarning": true
+  "vitest.disableWorkspaceWarning": true,
+  "workbench.colorTheme": "Monokai Pro",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

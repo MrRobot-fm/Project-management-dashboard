@@ -1,6 +1,7 @@
 import { useTransition } from "react";
+import type { Project } from "@/types/models/api-get-project-by-id";
 import { useForm } from "@tanstack/react-form";
-import type { Workspace, Project } from "@workspace/db";
+import type { Workspace } from "@workspace/db";
 import {
   CreateProjectsSchema,
   CreateWorkspaceSchema,

@@ -16,7 +16,8 @@ import { PriorityBadge } from "@/components/badges/PriorityBadge";
 import { StatusBadge } from "@/components/badges/StatusBadge";
 import { FieldInfo } from "@/components/forms/FieldInfo";
 import { priorityBadgeData, statusBadgeData } from "@/constants/badges";
-import type { Project, Workspace } from "@workspace/db";
+import type { Project } from "@/types/models/api-get-project-by-id";
+import type { Workspace } from "@workspace/db";
 import { CirclePlus, PencilLine } from "lucide-react";
 
 interface WorkspaceProjectFormProps<T extends Project | Workspace> {
@@ -183,7 +184,7 @@ export const WorkspaceProjectForm = <T extends Project | Workspace>({
                 {isPending ? (
                   <Spinner size="xs" className="text-black" />
                 ) : isCreateMode ? (
-                  <CirclePlus className="size 4 " />
+                  <CirclePlus className="size-4" />
                 ) : (
                   <PencilLine className="size-4" />
                 )}

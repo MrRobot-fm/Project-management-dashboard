@@ -14,32 +14,48 @@ export interface ProjectMember {
   role: UserRole;
 }
 
-interface Task {
+export interface Task {
   id: string;
   title: string;
   description: string | null;
   status: TaskStatus;
   priority: TaskPriority;
   position: number | null;
-  assigneeId: string | null;
   projectId: string;
   createdAt: string;
   updatedAt: string;
-  assignee?: Assignee;
-  labels: Label[];
+  startDate: string;
+  dueDate: string;
+  assignees: Assignee[];
+  // labels: Label[];
+  assets: Assets[];
 }
 
-interface Label {
+// interface Label {
+//   id: string;
+//   name: string;
+//   color: string;
+// }
+
+export interface Assets {
   id: string;
+  taskId: string;
+  path: string;
   name: string;
-  color: string;
+  size: number;
+  type: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface Assignee {
-  id: string;
-  name: string;
-  email: string;
-  logo: string | null;
+  taskId: string;
+  userId: string;
+  user: {
+    email: string;
+    name: string;
+    logo: string | null;
+  };
 }
 
 export interface Project {
