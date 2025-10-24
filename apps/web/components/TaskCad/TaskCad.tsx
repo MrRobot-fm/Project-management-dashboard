@@ -37,7 +37,7 @@ export const TaskCad = ({ id, content, activeTaskId, onClick }: TaskCadProps) =>
       ref={setNodeRef}
       style={style}
       className={cn(
-        "bg-white h-fit w-full rounded-md p-4 cursor-pointer border border-neutral-300/70 shadow-neutral-100 shadow-md",
+        "bg-white h-[152px] w-full rounded-md p-4 cursor-pointer border border-neutral-300/70 shadow-neutral-100 shadow-md",
         isActuallyBeingDragged && "opacity-60",
       )}
       onClick={onClick}
@@ -61,7 +61,7 @@ export const TaskContent = ({
   return (
     <div
       className={cn(
-        "flex flex-col justify-between gap-6 text-black rounded",
+        "flex flex-col justify-between h-full gap-6 text-black rounded",
         isOverlay && "border-dashed border-2 border-gray-300 p-4 cursor-grab",
       )}
     >

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { KanbanBoard } from "@/components/KanbanBoard";
+import { LinkLoadingIndicator } from "@/components/LinkLoadingIndicator";
 import { getProjectById } from "@/services/projects/get-project-by-id";
 import { ArrowLeft } from "lucide-react";
 
@@ -23,7 +24,9 @@ export default async function Tasks({ params }: PageProps<"/projects/[id]/tasks"
           <h1 className="font-semibold text-4xl">{project.name}</h1>
         </div>
         <Link href={`/projects/${id}`} className="flex gap-1 items-center">
-          <ArrowLeft className="size-4 text-neutral-600" />
+          <LinkLoadingIndicator size="xs" className="text-neutral-600">
+            <ArrowLeft className="size-4 text-neutral-600" />
+          </LinkLoadingIndicator>
           <p className="text-neutral-600 text-xs">Go back</p>
         </Link>
       </div>

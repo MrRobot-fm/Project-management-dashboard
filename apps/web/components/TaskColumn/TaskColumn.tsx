@@ -36,7 +36,7 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
   return (
     <div
       className={cn(
-        "w-1/3 min-w-[300px] h-full min-h-[550px] max-h-[750px] rounded-lg bg-white border border-neutral-200/90 shadow-neutral-100 shadow-md flex flex-col p-4 pb-8",
+        "lg:w-1/3 min-w-[300px] h-full min-h-[550px] lg:max-h-[750px] rounded-lg bg-white border border-neutral-200/90 shadow-neutral-100 shadow-md flex flex-col p-4 pb-8",
         isOver && "border-2 border-neutral-200",
       )}
     >
@@ -64,7 +64,7 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
       <div
         ref={setNodeRef}
         className={cn(
-          "flex flex-col gap-4 flex-grow py-2 rounded-md transition-all duration-200 overflow-y-auto scrollbar-none",
+          "grid grid-cols-1 sm:grid-cols-2 auto-rows-fr lg:grid-cols-1 gap-4 py-2 rounded-md transition-all duration-200 overflow-y-auto scrollbar-none",
           isOver && "bg-neutral-100/30",
         )}
       >

@@ -13,6 +13,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@workspace/ui/components/Chart";
+import { LinkLoadingIndicator } from "@/components/LinkLoadingIndicator";
 import { PATHS } from "@/constants/paths";
 import type { Project } from "@/types/models/api-get-project-by-id";
 import { ArrowRight } from "lucide-react";
@@ -44,7 +45,9 @@ export const ProjectTaskSummaryBlock = ({ tasks }: ProjectTaskSummeryBlock) => {
           className="flex items-center gap-2 text-xs text-neutral-500 hover:text-neutral-600 font-medium"
         >
           View all tasks
-          <ArrowRight className="size-3.5" />
+          <LinkLoadingIndicator className="text-neutral-500 size-3.5">
+            <ArrowRight className="size-3.5" />
+          </LinkLoadingIndicator>
         </Link>
       </div>
       <Card className="flex flex-col gap-2 border-none shadow-none py-0 h-full">
