@@ -1,9 +1,9 @@
 "use client";
 
 import { cn } from "@workspace/ui/lib/utils";
-import { AvatarStack } from "../AvatarStack";
-import { PriorityBadge } from "../badges/PriorityBadge";
-import { StatusBadge } from "../badges/StatusBadge";
+import { AvatarStack } from "@/components/AvatarStack";
+import { PriorityBadge } from "@/components/badges/PriorityBadge";
+import { StatusBadge } from "@/components/badges/StatusBadge";
 import type { Project } from "@/types/models/api-get-project-by-id";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -15,7 +15,6 @@ interface TaskCadProps {
   activeTaskId?: string | null;
   onClick?: () => void;
   hasStatusBadge?: boolean;
-  variant?: "expanded" | "compact";
 }
 
 export const TaskCad = ({
@@ -24,7 +23,6 @@ export const TaskCad = ({
   activeTaskId,
   onClick,
   hasStatusBadge = false,
-  variant = "expanded",
 }: TaskCadProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: id,
@@ -49,13 +47,12 @@ export const TaskCad = ({
       className={cn(
         "bg-white h-[145px] w-full rounded-md p-4 cursor-pointer border border-neutral-300/70 shadow-neutral-100 shadow-md",
         isActuallyBeingDragged && "opacity-60",
-        variant === "compact" && "h-fit",
       )}
       onClick={onClick}
       {...attributes}
       {...listeners}
     >
-      <TaskContent task={content} hasStatusBadge={hasStatusBadge} variant={variant} />
+      <TaskContent task={content} hasStatusBadge={hasStatusBadge} />
     </div>
   );
 };
@@ -64,12 +61,10 @@ export const TaskContent = ({
   task,
   isOverlay,
   hasStatusBadge,
-  variant = "expanded",
 }: {
   task: Project["tasks"][number];
   isOverlay?: boolean;
   hasStatusBadge: boolean;
-  variant?: "expanded" | "compact";
 }) => {
   const hasAssets = task.assets.length > 0;
 
@@ -93,7 +88,7 @@ export const TaskContent = ({
             }
           />
         </div>
-        {variant === "expanded" && task.description && (
+        {task.description && (
           <p className="text-xs font-medium text-neutral-500 line-clamp-2">{task.description}</p>
         )}
       </div>

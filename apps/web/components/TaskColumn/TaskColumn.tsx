@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { Button } from "@workspace/ui/components/Button";
 import { cn } from "@workspace/ui/lib/utils";
-import { CustomDialog } from "../CustomDialog";
 import { EditTaskDialogContent } from "../EditTaskDialogContent";
+import { CustomDialog } from "@/components/CustomDialog";
 import { TaskCad } from "@/components/TaskCad";
 import type { Project, ProjectMember } from "@/types/models/api-get-project-by-id";
 import { useDroppable } from "@dnd-kit/core";

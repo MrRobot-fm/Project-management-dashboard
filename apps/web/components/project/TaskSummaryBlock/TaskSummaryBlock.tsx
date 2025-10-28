@@ -70,7 +70,6 @@ export const TaskSummaryBlock = ({ project }: TaskSummaryBlockProps) => {
               key={index}
               id={task.id}
               content={task}
-              variant="compact"
               onClick={() => {
                 setSelectedTaskId(task.id);
                 setIsTaskDialogOpen(true);
