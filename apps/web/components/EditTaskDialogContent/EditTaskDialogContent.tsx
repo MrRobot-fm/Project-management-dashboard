@@ -438,7 +438,7 @@ export const FileList = ({
   }, [files.length]);
 
   return (
-    <div className="relative max-h-[105px]">
+    <div className="relative max-h-[135px]">
       <div ref={scrollRef} className="h-full overflow-y-auto scrollbar-none">
         <div className="flex flex-wrap gap-3">
           {files.map((file, index) => (

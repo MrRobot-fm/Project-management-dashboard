@@ -3,12 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { TaskContent } from "../TaskCad";
+import { filterTasks } from "../filters/TaskFilter/TaskFilter.utils";
 import { useReorderTasks } from "./KanbanBoard.hooks";
 import { TaskColumn } from "@/components/TaskColumn";
 import type { Project, ProjectMember } from "@/types/models/api-get-project-by-id";
 import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext } from "@dnd-kit/sortable";
 import type { TaskStatus } from "@workspace/db";
+import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 
 interface Column {
   id: TaskStatus;
@@ -21,6 +23,10 @@ interface KanbanBoardProps {
 }
 
 export const KanbanBoard = ({ tasks: projectTasks, projectMembers }: KanbanBoardProps) => {
+  const [status] = useQueryState("status", parseAsArrayOf(parseAsString).withDefault([]));
+  const [members] = useQueryState("members", parseAsArrayOf(parseAsString).withDefault([]));
+  const [priority] = useQueryState("priority", parseAsArrayOf(parseAsString).withDefault([]));
+
   const [columns] = useState<Column[]>([
     { id: "TODO", title: "To Do" },
     { id: "IN_PROGRESS", title: "In Progress" },
@@ -56,6 +62,11 @@ export const KanbanBoard = ({ tasks: projectTasks, projectMembers }: KanbanBoard
   );
 
   const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
+  console.log({ members });
+
+  const filteredTasks = useMemo(() => {
+    return filterTasks(tasks, { status, members, priority });
+  }, [tasks, status, members, priority]);
 
   return (
     <div>
@@ -73,7 +84,7 @@ export const KanbanBoard = ({ tasks: projectTasks, projectMembers }: KanbanBoard
                 key={column.id}
                 id={column.id}
                 title={column.title}
-                tasks={tasks.filter((task) => task.status === column.id)}
+                tasks={filteredTasks.filter((task) => task.status === column.id)}
                 projectMembers={projectMembers}
                 activeTaskId={activeTaskId}
               />

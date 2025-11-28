@@ -64,7 +64,7 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
       <div
         ref={setNodeRef}
         className={cn(
-          "grid grid-cols-1 sm:grid-cols-2 auto-rows-fr xl:grid-cols-1 gap-4 py-2 rounded-md transition-all duration-200 overflow-y-auto scrollbar-none",
+          "grid grid-cols-1 sm:grid-cols-2 auto-rows-auto xl:grid-cols-1 gap-4 py-2 rounded-md transition-all duration-200 overflow-y-auto scrollbar-none",
           isOver && "bg-neutral-100/30",
         )}
       >

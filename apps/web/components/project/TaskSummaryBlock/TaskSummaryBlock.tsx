@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -10,28 +10,50 @@ import { CustomDialog } from "@/components/CustomDialog";
 import { EditTaskDialogContent } from "@/components/EditTaskDialogContent";
 import { LinkLoadingIndicator } from "@/components/LinkLoadingIndicator";
 import { TaskCad } from "@/components/TaskCad";
+import { TaskFilter, type TaskFilterData } from "@/components/filters/TaskFilter";
+import { filterTasks } from "@/components/filters/TaskFilter/TaskFilter.utils";
 import { PATHS } from "@/constants/paths";
 import { useScrollGradient } from "@/hooks/use-scroll-gradients";
 import type { Project } from "@/types/models/api-get-project-by-id";
 import { ArrowRight, ChevronDown } from "lucide-react";
+import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 
-interface TaskSummaryBlockProps {
+interface TaskListBlockProps {
   project: Project;
+  taskFilterData?: TaskFilterData[];
 }
 
-export const TaskSummaryBlock = ({ project }: TaskSummaryBlockProps) => {
+export const TaskListBlock = ({ project, taskFilterData }: TaskListBlockProps) => {
   const { id } = useParams<{ id: string }>();
   const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [status] = useQueryState("status", parseAsArrayOf(parseAsString).withDefault([]));
+  const [members] = useQueryState("members", parseAsArrayOf(parseAsString).withDefault([]));
+  const [priority] = useQueryState("priority", parseAsArrayOf(parseAsString).withDefault([]));
 
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const filteredTasks = useMemo(() => {
+    return filterTasks(project.tasks, { status, members, priority });
+  }, [project.tasks, status, members, priority]);
 
   const { showBottomGradient, showTopGradient } = useScrollGradient(scrollRef, []);
 
   return (
     <div className="col-span-2 rounded-lg border border-neutral-200/70 shadow-neutral-100 shadow-md p-6 flex flex-col gap-4">
       <div className="flex justify-between">
-        <h2 className="font-medium text-md">Tasks summary</h2>
+        <div className="flex items-center justify-center gap-1.5">
+          <h2 className="font-medium text-md">Tasks list</h2>
+          {project.tasks.length > 0 && (
+            <TaskFilter
+              size="sm"
+              contentAlign="center"
+              data={taskFilterData || []}
+              tasks={project.tasks}
+              hasLabel={false}
+            />
+          )}
+        </div>
         {project.tasks.length > 0 && (
           <Link
             href={PATHS.PROJECT_TASKS(id) as Route}
@@ -65,7 +87,7 @@ export const TaskSummaryBlock = ({ project }: TaskSummaryBlockProps) => {
           ref={scrollRef}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 items-center max-h-[350px] overflow-hidden overflow-y-scroll scrollbar-none px-0"
         >
-          {project.tasks.map((task, index) => (
+          {filteredTasks.map((task, index) => (
             <TaskCad
               key={index}
               id={task.id}

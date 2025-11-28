@@ -6,6 +6,7 @@ import "@workspace/ui/globals.css";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SiteHeader } from "@/components/SiteHeader";
 import { getAppLayout } from "@/services/get-app-layout";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const fontSans = Geist({
   subsets: ["latin"],
@@ -36,19 +37,21 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             } as CSSProperties
           }
         >
-          <AppSidebar
-            userId={user?.id}
-            workspaces={workspaces}
-            projects={projects}
-            currentWorkspaceId={currentWorkspaceId}
-            variant="floating"
-          />
-          <SidebarInset>
-            <SiteHeader user={user} />
-            <main className="w-full max-w-[1320px] mx-auto px-4 sm:px-6 py-10 h-full overflow-x-hidden">
-              {children}
-            </main>
-          </SidebarInset>
+          <NuqsAdapter>
+            <AppSidebar
+              userId={user?.id}
+              workspaces={workspaces}
+              projects={projects}
+              currentWorkspaceId={currentWorkspaceId}
+              variant="floating"
+            />
+            <SidebarInset>
+              <SiteHeader user={user} />
+              <main className="w-full max-w-[1320px] mx-auto px-4 sm:px-6 py-10 h-full overflow-x-hidden">
+                {children}
+              </main>
+            </SidebarInset>
+          </NuqsAdapter>
         </SidebarProvider>
       </body>
     </html>
