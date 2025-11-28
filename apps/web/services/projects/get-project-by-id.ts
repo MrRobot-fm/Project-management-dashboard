@@ -4,8 +4,12 @@ import { errorData } from "@/utils/error-data";
 import { fetchInstance } from "@/utils/fetch-instance";
 import { getCookie } from "@/utils/get-cookie";
 
+export type ProjectResponse =
+  | (Project & { members: ProjectMember[] } & { tasks: Project["tasks"] })
+  | undefined;
+
 type GetProjectByIdResponse = {
-  project: (Project & { members: ProjectMember[] } & { tasks: Project["tasks"] }) | undefined;
+  project: ProjectResponse;
 };
 
 export const getProjectById = async (

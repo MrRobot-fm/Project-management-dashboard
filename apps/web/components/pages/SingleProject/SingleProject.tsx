@@ -1,8 +1,9 @@
 import { redirect } from "next/navigation";
+import { parsedTaskFilterData } from "@/components/filters/TaskFilter/TaskFilter.utils";
 import { AboutProjectBlock } from "@/components/project/AboutProjectBlock/AboutProjectBlock";
 import { CompletedTasksBlock } from "@/components/project/CompletedTasksBlock";
 import { ProjectMembersBlock } from "@/components/project/ProjectMembersBlock";
-import { TaskSummaryBlock } from "@/components/project/TaskSummaryBlock";
+import { TaskListBlock } from "@/components/project/TaskSummaryBlock";
 import { getProjectById } from "@/services/projects/get-project-by-id";
 
 interface SingleProjectProps {
@@ -11,6 +12,8 @@ interface SingleProjectProps {
 
 export const SingleProject = async ({ projectId }: SingleProjectProps) => {
   const { project, error } = await getProjectById(projectId);
+
+  const taskFilterData = parsedTaskFilterData({ tasks: project?.tasks, members: project?.members });
 
   if (error?.status === 404) {
     redirect("/");
@@ -33,7 +36,7 @@ export const SingleProject = async ({ projectId }: SingleProjectProps) => {
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-5 w-full gap-6">
-          <TaskSummaryBlock project={project} />
+          <TaskListBlock project={project} taskFilterData={taskFilterData} />
           <CompletedTasksBlock tasks={project.tasks} />
         </div>
       </div>
