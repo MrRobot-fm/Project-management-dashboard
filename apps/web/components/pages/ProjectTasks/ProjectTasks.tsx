@@ -20,7 +20,7 @@ export const ProjectTasks = async ({ projectId }: ProjectTasksPageProps) => {
   if (!project) return;
 
   return (
-    <div className="flex flex-col gap-10 w-full h-full">
+    <div className="flex flex-col gap-10 w-full h-full max-w-[920px] mx-auto">
       <div className="flex justify-between items-end">
         <div className="flex flex-col gap-0.5">
           <p className="text-neutral-600 font-medium">Tasks</p>

@@ -77,7 +77,7 @@ export const KanbanBoard = ({ tasks: projectTasks, projectMembers }: KanbanBoard
         onDragEnd={onDragEnd}
         sensors={sensors}
       >
-        <div className="flex gap-4 flex-col xl:flex-row">
+        <div className="flex flex-col gap-6">
           <SortableContext items={tasksIds}>
             {columns.map((column) => (
               <TaskColumn

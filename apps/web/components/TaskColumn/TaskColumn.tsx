@@ -33,19 +33,31 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
 
   const tasksIds = useMemo(() => tasks?.map((task) => task.id), [tasks]);
 
+  const getStatusColor = (status: TaskStatus) => {
+    switch (status) {
+      case "TODO":
+        return "bg-neutral-400";
+      case "IN_PROGRESS":
+        return "bg-blue-500";
+      case "DONE":
+        return "bg-orange-500";
+      default:
+        return "bg-neutral-400";
+    }
+  };
+
   return (
     <div
       className={cn(
-        "xl:w-1/3 min-w-[300px] h-full min-h-[550px] xl:max-h-[750px] rounded-lg bg-white border border-neutral-200/90 shadow-neutral-100 shadow-md flex flex-col p-4 pb-8",
-        isOver && "border-2 border-neutral-200",
+        "w-full rounded-lg bg-white flex flex-col pt-4 pb-6",
+        isOver && "ring-2 ring-neutral-200",
       )}
     >
-      <div className="flex gap-2 items-center justify-between pb-2">
+      <div className="flex gap-3 items-center justify-between">
         <div className="flex gap-2 items-center">
-          <h2 className="font-semibold">{title}</h2>
-          <div className="rounded-full font-medium bg-neutral-50 border aspect-square px-2 py-2 size-6 flex items-center justify-center text-xs">
-            {tasks?.length ?? 0}
-          </div>
+          <div className={cn("size-2 rounded-full", getStatusColor(id))} />
+          <h2 className="font-semibold text-sm">{title}</h2>
+          <span className="text-xs text-neutral-500 font-normal">{tasks?.length ?? 0}</span>
         </div>
         <div>
           <Button
@@ -64,7 +76,7 @@ export const TaskColumn = ({ id, title, tasks, projectMembers, activeTaskId }: T
       <div
         ref={setNodeRef}
         className={cn(
-          "grid grid-cols-1 sm:grid-cols-2 auto-rows-auto xl:grid-cols-1 gap-4 py-2 rounded-md transition-all duration-200 overflow-y-auto scrollbar-none",
+          "flex flex-col gap-2 py-2 rounded-md transition-all duration-200",
           isOver && "bg-neutral-100/30",
         )}
       >

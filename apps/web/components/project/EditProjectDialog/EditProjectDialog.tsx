@@ -10,9 +10,10 @@ import { PencilLine } from "lucide-react";
 
 interface EditProjectDialogProps {
   project: Project;
+  iconOnly?: boolean;
 }
 
-export const EditProjectDialog = ({ project }: EditProjectDialogProps) => {
+export const EditProjectDialog = ({ project, iconOnly = false }: EditProjectDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { createAction, createProjectState } = useUpdateProject({ projects: [project] });
 
@@ -31,10 +32,12 @@ export const EditProjectDialog = ({ project }: EditProjectDialogProps) => {
       triggerSlot={
         <Button
           variant="outline"
-          className="cursor-pointer rounded-sm text-xs font-medium text-neutral-600"
+          size={iconOnly ? "icon" : "default"}
+          className="cursor-pointer border-none shadow-none text-xs font-medium text-neutral-600"
+          aria-label="Modifica progetto"
         >
-          <PencilLine />
-          Edit this project
+          <PencilLine className={iconOnly ? "size-4" : undefined} />
+          {!iconOnly && "Edit this project"}
         </Button>
       }
       contentSlot={

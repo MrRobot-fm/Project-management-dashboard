@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
+import { Separator } from "@workspace/ui/components/Separator";
 import { parsedTaskFilterData } from "@/components/filters/TaskFilter/TaskFilter.utils";
 import { AboutProjectBlock } from "@/components/project/AboutProjectBlock/AboutProjectBlock";
 import { CompletedTasksBlock } from "@/components/project/CompletedTasksBlock";
-import { ProjectMembersBlock } from "@/components/project/ProjectMembersBlock";
+import { EditProjectDialog } from "@/components/project/EditProjectDialog";
+import { TeamMembersSection } from "@/components/project/ProjectMembersBlock/TeamMembersSection";
 import { TaskListBlock } from "@/components/project/TaskSummaryBlock";
 import { getProjectById } from "@/services/projects/get-project-by-id";
 
@@ -22,23 +24,51 @@ export const SingleProject = async ({ projectId }: SingleProjectProps) => {
   if (!project) return;
 
   return (
-    <div className="flex flex-col gap-10">
-      <h1 className="font-semibold text-4xl">{project.name}</h1>
-      <div className="flex-col flex gap-6">
-        <div className="w-full shrink-0 flex flex-col gap-6">
+    <div className="flex flex-col gap-8">
+      <h1 className="font-semibold text-4xl mb-2">{project.name}</h1>
+      <div className="grid grid-cols-1 xl:grid-cols-[4fr_auto_4fr] w-full gap-10 lg:gap-6 items-stretch">
+        <section className="rounded-lg bg-white p-2 flex flex-col col-span-full">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-blue-500 shrink-0" aria-hidden />
+              <h2 className="text-base font-semibold text-neutral-900">About</h2>
+            </div>
+            <EditProjectDialog project={project} iconOnly />
+          </div>
           <AboutProjectBlock project={project} />
-        </div>
-        <div className="flex flex-col gap-6 w-full">
-          <ProjectMembersBlock
+        </section>
+        <Separator
+          orientation="horizontal"
+          className="hidden lg:block h-full mx-0 w-px bg-neutral-200/70 col-span-full"
+          decorative
+        />
+        <section className="col-span-full">
+          <TeamMembersSection
             members={project.members}
             workspaceId={project.workspaceId}
             projectId={projectId}
           />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-5 w-full gap-6">
+        </section>
+        <Separator
+          orientation="horizontal"
+          className="hidden lg:block col-span-full h-full mx-0 w-px bg-neutral-200/70"
+          decorative
+        />
+        <section className="rounded-lg bg-white p-2">
           <TaskListBlock project={project} taskFilterData={taskFilterData} />
+        </section>
+        <Separator
+          orientation="vertical"
+          className="hidden lg:block h-full mx-0 w-px bg-neutral-200/70"
+          decorative
+        />
+        <section className="rounded-lg bg-white p-2">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-2 h-2 rounded-full bg-violet-500 shrink-0" aria-hidden />
+            <h2 className="text-base font-semibold text-neutral-900">Progress</h2>
+          </div>
           <CompletedTasksBlock tasks={project.tasks} />
-        </div>
+        </section>
       </div>
     </div>
   );

@@ -47,7 +47,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             />
             <SidebarInset>
               <SiteHeader user={user} />
-              <main className="w-full max-w-[1320px] mx-auto px-4 sm:px-6 py-10 h-full overflow-x-hidden">
+              <main className="w-full max-w-[1320px] mx-auto px-4 sm:px-4 lg:px-6 2xl:px-8 py-10 h-full overflow-x-hidden">
                 {children}
               </main>
             </SidebarInset>

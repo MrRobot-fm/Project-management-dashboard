@@ -49,9 +49,8 @@ export const CompletedTasksBlock = ({ tasks }: CompletedTasksBlockProps) => {
   }, [tasks]);
 
   return (
-    <div className="rounded-lg border col-span-3 border-neutral-200/70 shadow-neutral-100 shadow-md p-6 flex flex-col gap-4 h-full w-full">
+    <div className="flex flex-col gap-4 h-full w-full">
       <div className="flex justify-between">
-        <h2 className="font-medium text-md">Completed tasks</h2>
         {tasks.length > 0 && (
           <Link
             href={PATHS.PROJECT_TASKS(id) as Route}
