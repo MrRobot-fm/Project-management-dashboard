@@ -1,7 +1,6 @@
 import type { ComponentProps } from "react";
 import Image from "next/image";
 import { cn } from "@workspace/ui/lib/utils";
-import { EditProjectDialog } from "../EditProjectDialog";
 import { Avatar } from "@/components/Avatar";
 import { PriorityBadge } from "@/components/badges/PriorityBadge";
 import { StatusBadge } from "@/components/badges/StatusBadge";
@@ -45,12 +44,7 @@ export const AboutProjectBlock = ({ project, className }: AboutProjectBlockProps
     }
   };
   return (
-    <div
-      className={cn(
-        "relative p-6 rounded-lg border border-neutral-200/70 shadow-neutral-100 shadow-md flex flex-col gap-4 h-full",
-        className,
-      )}
-    >
+    <div className={cn("relative flex flex-col gap-4 h-full", className)}>
       <div className="flex flex-col md:flex-row w-full flex-1 gap-8">
         <div className="relative h-auto w-full max-w-3xs rounded-md hidden md:block overflow-hidden border border-neutral-200">
           <Image
@@ -83,9 +77,6 @@ export const AboutProjectBlock = ({ project, className }: AboutProjectBlockProps
               </li>
             ))}
           </ul>
-        </div>
-        <div className="block ml-auto sm:absolute top-6 right-6">
-          <EditProjectDialog project={project} />
         </div>
       </div>
     </div>

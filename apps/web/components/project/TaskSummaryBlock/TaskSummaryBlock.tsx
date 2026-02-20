@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import type { Route } from "next";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { Button } from "@workspace/ui/components/Button";
 import { Card, CardContent } from "@workspace/ui/components/Card";
 import { cn } from "@workspace/ui/lib/utils";
 import { CustomDialog } from "@/components/CustomDialog";
@@ -15,7 +16,7 @@ import { filterTasks } from "@/components/filters/TaskFilter/TaskFilter.utils";
 import { PATHS } from "@/constants/paths";
 import { useScrollGradient } from "@/hooks/use-scroll-gradients";
 import type { Project } from "@/types/models/api-get-project-by-id";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown, Plus } from "lucide-react";
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 
 interface TaskListBlockProps {
@@ -27,6 +28,8 @@ export const TaskListBlock = ({ project, taskFilterData }: TaskListBlockProps) =
   const { id } = useParams<{ id: string }>();
   const [isTaskDialogOpen, setIsTaskDialogOpen] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const [dialogTaskMode, setDialogTaskMode] = useState<"create" | "read">("read");
+
   const [status] = useQueryState("status", parseAsArrayOf(parseAsString).withDefault([]));
   const [members] = useQueryState("members", parseAsArrayOf(parseAsString).withDefault([]));
   const [priority] = useQueryState("priority", parseAsArrayOf(parseAsString).withDefault([]));
@@ -39,11 +42,46 @@ export const TaskListBlock = ({ project, taskFilterData }: TaskListBlockProps) =
 
   const { showBottomGradient, showTopGradient } = useScrollGradient(scrollRef, []);
 
+  const openTaskDialog = ({
+    taskId,
+    mode,
+  }: {
+    taskId?: string | null;
+    mode: "create" | "read";
+  }) => {
+    if (taskId) {
+      setSelectedTaskId(taskId);
+    }
+    setDialogTaskMode(mode);
+    setIsTaskDialogOpen(true);
+  };
+
+  const taskDialogData = useMemo(() => {
+    if (dialogTaskMode === "create") {
+      return undefined;
+    }
+
+    return project.tasks?.find((task) => task.id === selectedTaskId);
+  }, [dialogTaskMode, project.tasks, selectedTaskId]);
+
   return (
-    <div className="col-span-2 rounded-lg border border-neutral-200/70 shadow-neutral-100 shadow-md p-6 flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0" aria-hidden />
+          <h2 className="text-base font-semibold text-neutral-900">Tasks</h2>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="cursor-pointer size-8 shrink-0"
+          onClick={() => openTaskDialog({ mode: "create" })}
+        >
+          <Plus className="size-5" />
+        </Button>
+      </div>
       <div className="flex justify-between">
         <div className="flex items-center justify-center gap-1.5">
-          <h2 className="font-medium text-md">Tasks list</h2>
           {project.tasks.length > 0 && (
             <TaskFilter
               size="sm"
@@ -92,11 +130,9 @@ export const TaskListBlock = ({ project, taskFilterData }: TaskListBlockProps) =
               key={index}
               id={task.id}
               content={task}
-              onClick={() => {
-                setSelectedTaskId(task.id);
-                setIsTaskDialogOpen(true);
-              }}
+              onClick={() => openTaskDialog({ taskId: task.id, mode: "read" })}
               hasStatusBadge
+              showDueDate={false}
             />
           ))}
         </CardContent>
@@ -114,11 +150,10 @@ export const TaskListBlock = ({ project, taskFilterData }: TaskListBlockProps) =
         setIsOpen={setIsTaskDialogOpen}
         contentSlot={
           <EditTaskDialogContent
-            mode="read"
-            task={project.tasks?.find((task) => task.id === selectedTaskId)}
+            mode={dialogTaskMode}
+            task={taskDialogData}
             projectMembers={project.members}
             setIsOpen={setIsTaskDialogOpen}
-            onlyReadMode
           />
         }
       />

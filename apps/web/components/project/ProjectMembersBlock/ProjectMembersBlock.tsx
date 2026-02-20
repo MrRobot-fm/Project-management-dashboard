@@ -17,53 +17,59 @@ interface ProjectMembersBlockProps {
   members: ProjectMember[];
   workspaceId: string;
   projectId: string;
+  onAddMemberClick?: () => void;
 }
 
 export const ProjectMembersBlock = ({
   members,
   workspaceId,
   projectId,
+  onAddMemberClick,
 }: ProjectMembersBlockProps) => {
   const [showDialog, setShowDialog] = useState(false);
 
   return (
-    <div className="rounded-lg border border-neutral-200/70 shadow-neutral-100 shadow-md p-6 flex flex-col gap-4">
-      <h2 className="font-medium text-md">Team Members</h2>
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-        {members.map((member) => (
-          <MemberCard
-            key={member.id}
-            member={member}
-            projectId={projectId}
-            workspaceId={workspaceId}
-            hasRole
-            endEnchant={
-              member.role !== "OWNER" && <MemberCardMenu member={member} projectId={projectId} />
-            }
-          />
-        ))}
-        <div>
-          <Button
-            data-test-id="add-team-member-btn"
-            variant="transparent"
-            className="cursor-pointer h-full justify-start px-2"
-            onClick={() => setShowDialog(true)}
-          >
-            <div className="p-2 rounded-full bg-neutral-100">
-              <Plus />
-            </div>
-            Add team member
-          </Button>
+    <>
+      <div className="flex gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
+          {members.map((member) => (
+            <MemberCard
+              key={member.id}
+              member={member}
+              projectId={projectId}
+              workspaceId={workspaceId}
+              hasRole
+              endEnchant={
+                member.role !== "OWNER" && <MemberCardMenu member={member} projectId={projectId} />
+              }
+            />
+          ))}
         </div>
       </div>
-      <AddTeamMemberDialog
-        isOpen={showDialog}
-        setIsOpen={setShowDialog}
-        members={members}
-        workspaceId={workspaceId}
-        projectId={projectId}
-      />
-    </div>
+      {!onAddMemberClick && (
+        <AddTeamMemberDialog
+          isOpen={showDialog}
+          setIsOpen={setShowDialog}
+          members={members}
+          workspaceId={workspaceId}
+          projectId={projectId}
+        />
+      )}
+    </>
+  );
+};
+
+export const AddTeamMemberButton = ({ onClick }: { onClick: () => void }) => {
+  return (
+    <Button
+      data-test-id="add-team-member-btn"
+      variant="ghost"
+      size="icon"
+      className="cursor-pointer h-8 w-8"
+      onClick={onClick}
+    >
+      <Plus className="size-5" />
+    </Button>
   );
 };
 
