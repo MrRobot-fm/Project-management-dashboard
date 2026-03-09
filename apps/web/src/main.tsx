@@ -2,6 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import ReactDOM from "react-dom/client";
 import { getRouter } from "./router";
+import "@workspace/ui/globals.css";
+import "./styles.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {

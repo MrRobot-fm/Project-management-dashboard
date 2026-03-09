@@ -1,5 +1,5 @@
 {
-  "$schema": "https://v2-8-10.turborepo.dev/schema.json",
+  "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "tasks": {
     "build": {
@@ -9,11 +9,11 @@
     },
     "web#build": {
       "dependsOn": ["^build"],
-      "env": ["NEXT_PUBLIC_API_BASE_URL", "NODE_ENV","DATABASE_URL"],
+      "env": ["NEXT_PUBLIC_API_BASE_URL", "NODE_ENV", "DATABASE_URL"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "api#build": {
-      "dependsOn": ["^build","db:generate"],
+      "dependsOn": ["^build", "db:generate"],
       "env": [
         "PORT",
         "JWT_SECRET",
