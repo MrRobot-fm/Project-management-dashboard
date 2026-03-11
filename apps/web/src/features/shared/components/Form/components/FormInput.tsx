@@ -8,16 +8,15 @@ type FormInputProps = Omit<
 >;
 
 export function FormInput({ type, ...props }: FormInputProps) {
-  const { name, value, onChange } = useFormField();
+  const { field } = useFormField();
 
   return (
     <Input
-      id={name}
-      name={name}
+      id={field.name}
       type={type}
-      value={value as string}
-      onChange={onChange}
       className="rounded"
+      spellCheck={false}
+      {...field}
       {...props}
     />
   );

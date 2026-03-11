@@ -7,7 +7,7 @@ interface FormLabelProps {
 }
 
 export const FormLabel = ({ children }: FormLabelProps) => {
-  const { name } = useFormField();
+  const { field } = useFormField();
 
-  return <FieldLabel htmlFor={name}>{children}</FieldLabel>;
+  return <FieldLabel htmlFor={field.name}>{children}</FieldLabel>;
 };

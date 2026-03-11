@@ -7,7 +7,12 @@ interface FormFieldProps {
   name: string;
 }
 export const FormField = ({ name, children }: FormFieldProps) => {
-  const { control } = useRHFContext();
+  const {
+    control,
+    formState: { errors }
+  } = useRHFContext();
+
+  console.log({ errors });
 
   return (
     <Controller
@@ -16,9 +21,7 @@ export const FormField = ({ name, children }: FormFieldProps) => {
       render={({ field }) => (
         <FormFieldContext
           value={{
-            name,
-            value: field.value,
-            onChange: field.onChange
+            field
           }}
         >
           <div className="flex flex-col items-start gap-2">{children}</div>

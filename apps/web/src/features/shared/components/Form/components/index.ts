@@ -14,6 +14,7 @@ import {
   FieldGroup,
   FieldSeparator
 } from "@workspace/ui/components/Field";
+import { FormError } from "./FormError";
 
 export const Form = {
   Root: FormRoot,
@@ -23,11 +24,12 @@ export const Form = {
   Label: FormLabel,
   Field: FormField,
   InputPassword: FormInputPassword,
-  PasswordFiled: FormPasswordField,
+  PasswordField: FormPasswordField,
   Icon: FormIcon,
   PasswordIcon: FormPasswordIcon,
   Description: FieldDescription,
   Separator: FieldSeparator,
   Box: Field,
-  Group: FieldGroup
+  Group: FieldGroup,
+  Error: FormError
 };

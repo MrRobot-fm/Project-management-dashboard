@@ -1,37 +1,28 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { type ReactNode } from "react";
 import {
-  useForm,
   FormProvider as RHFProvider,
+  useForm,
   type DefaultValues,
   type FieldValues
 } from "react-hook-form";
-import { FormContext } from "./use-form-context";
+import type { ZodTypeAny } from "zod";
 
 interface FormProviderProps<T extends FieldValues> {
   initialValues: T;
   children: ReactNode;
+  schema?: ZodTypeAny;
 }
 
 export const FormProvider = <T extends FieldValues>({
   initialValues,
+  schema,
   children
 }: FormProviderProps<T>) => {
   const methods = useForm<T>({
-    defaultValues: initialValues as DefaultValues<T>
+    defaultValues: initialValues as DefaultValues<T>,
+    resolver: schema ? zodResolver(schema) : undefined
   });
 
-  const reset = () => methods.reset(initialValues);
-
-  return (
-    <RHFProvider {...methods}>
-      <FormContext
-        value={{
-          state: { values: methods.watch() },
-          actions: { reset }
-        }}
-      >
-        {children}
-      </FormContext>
-    </RHFProvider>
-  );
+  return <RHFProvider {...methods}>{children}</RHFProvider>;
 };

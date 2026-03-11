@@ -4,14 +4,14 @@ import { Form } from "@/features/shared/components/Form/components";
 import { FormProvider } from "@/features/shared/components/Form/context/FormProvider";
 import { Link } from "@tanstack/react-router";
 import { GoogleAuthButton } from "./GoogleAuthButton";
-import { isPasswordField } from "@/features/auth/utils/is-password-field";
+import { RegisterUserSchemaWithRepeatPassword } from "@workspace/schemas";
 
 export const SignupForm = () => {
   const initialValues = {
     name: "",
     email: "",
     password: "",
-    confirmPassword: ""
+    repeatPassword: ""
   } as const;
 
   const values = Object.keys(initialValues) as (keyof typeof initialValues)[];
@@ -23,27 +23,32 @@ export const SignupForm = () => {
   };
 
   return (
-    <FormProvider initialValues={initialValues}>
+    <FormProvider
+      initialValues={initialValues}
+      schema={RegisterUserSchemaWithRepeatPassword}
+    >
       <Form.Root onSubmit={onSubmit}>
         <Form.Group>
           {values.map(field => {
-            const { label, placeholder, type } = getAuthFieldConfig(field);
-
-            const PasswordComponent = isPasswordField(field)
-              ? Form.PasswordFiled
-              : Form.Input;
+            const {
+              label,
+              placeholder,
+              type,
+              component: InputComponent
+            } = getAuthFieldConfig(field);
 
             return (
               <Form.Field key={field} name={field}>
                 <Form.Label>{label}</Form.Label>
-                <PasswordComponent placeholder={placeholder} type={type} />
+                <InputComponent placeholder={placeholder} type={type} />
+                <Form.Error />
               </Form.Field>
             );
           })}
           <Form.Submit disabled={isPending}>
             {isPending ? "Registering..." : "Register"}
           </Form.Submit>
-          <Form.Separator>Or continue with</Form.Separator>
+          <Form.Separator className="my-2">Or continue with</Form.Separator>
           <Form.Box>
             <GoogleAuthButton />
             <Form.Description className="text-center">

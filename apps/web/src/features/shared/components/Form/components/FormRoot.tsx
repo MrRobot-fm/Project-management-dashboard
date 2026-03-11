@@ -16,7 +16,11 @@ export const FormRoot = <T extends FieldValues>({
   const { handleSubmit } = useRHFContext<T>();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+    <form
+      noValidate
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col gap-6"
+    >
       {children}
     </form>
   );

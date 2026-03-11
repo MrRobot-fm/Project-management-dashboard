@@ -1,16 +1,16 @@
 import { useLogin } from "@/features/auth/hooks/use-login";
+import { getAuthFieldConfig } from "@/features/auth/utils/get-auth-field-config";
 import { Form } from "@/features/shared/components/Form/components";
 import { FormProvider } from "@/features/shared/components/Form/context/FormProvider";
 import { Link } from "@tanstack/react-router";
-import { Button } from "@workspace/ui/components/Button";
+import { LoginUserSchema } from "@workspace/schemas";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldSeparator
 } from "@workspace/ui/components/Field";
-import { getAuthFieldConfig } from "@/features/auth/utils/get-auth-field-config";
-import { isPasswordField } from "@/features/auth/utils/is-password-field";
+import { GoogleAuthButton } from "./GoogleAuthButton";
 
 export const LoginForm = () => {
   const initialValues = {
@@ -27,36 +27,31 @@ export const LoginForm = () => {
   };
 
   return (
-    <FormProvider initialValues={initialValues}>
+    <FormProvider initialValues={initialValues} schema={LoginUserSchema}>
       <Form.Root onSubmit={onSubmit}>
         <FieldGroup>
           {values.map(field => {
-            const { label, placeholder, type } = getAuthFieldConfig(field);
-
-            const PasswordComponent = isPasswordField(field)
-              ? Form.PasswordFiled
-              : Form.Input;
+            const {
+              type,
+              label,
+              placeholder,
+              component: InputComponent
+            } = getAuthFieldConfig(field);
 
             return (
               <Form.Field key={field} name={field}>
                 <Form.Label>{label}</Form.Label>
-                <PasswordComponent placeholder={placeholder} type={type} />
+                <InputComponent placeholder={placeholder} type={type} />
+                <Form.Error />
               </Form.Field>
             );
           })}
           <Form.Submit disabled={isPending}>
             {isPending ? "Logging in..." : "Login"}
           </Form.Submit>
-          <FieldSeparator>Or continue with</FieldSeparator>
+          <FieldSeparator className="my-2">Or continue with</FieldSeparator>
           <Field>
-            <Button variant="outline" type="button" className="text-stone-600">
-              <img
-                src="/images/google-logo.svg"
-                alt="Google logo"
-                className="size-3.5"
-              />
-              Continue with Google
-            </Button>
+            <GoogleAuthButton />
             <FieldDescription className="text-center">
               Don&apos;t have an account?{" "}
               <Link to="/signup" className="underline underline-offset-4">

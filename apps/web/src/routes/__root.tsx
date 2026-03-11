@@ -4,6 +4,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import "../styles.css";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "@workspace/ui/components/Sonner";
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -17,6 +18,7 @@ function RootComponent() {
   return (
     <>
       <Outlet />
+      <Toaster />
       <TanStackDevtools
         config={{
           position: "bottom-right"

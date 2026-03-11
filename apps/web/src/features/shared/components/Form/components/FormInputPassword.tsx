@@ -10,5 +10,5 @@ type FormInputPasswordProps = Omit<
 export function FormInputPassword({ ...props }: FormInputPasswordProps) {
   const { visible } = useFormPassword();
 
-  return <Form.Input type={visible ? "text" : "password"} {...props} />;
+  return <Form.Input {...props} type={visible ? "text" : "password"} />;
 }

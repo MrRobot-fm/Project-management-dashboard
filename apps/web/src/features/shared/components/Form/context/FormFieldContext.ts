@@ -1,9 +1,8 @@
-import { createContext, useContext, type ChangeEvent } from "react";
+import { createContext, useContext } from "react";
+import type { ControllerRenderProps, FieldValues } from "react-hook-form";
 
 interface FormFieldContextInterface {
-  name: string;
-  value: unknown;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  field: ControllerRenderProps<FieldValues, string>;
 }
 
 export const FormFieldContext = createContext<FormFieldContextInterface | null>(
