@@ -306,6 +306,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      js-cookie:
+        specifier: ^3.0.5
+        version: 3.0.5
       lucide-react:
         specifier: ^0.545.0
         version: 0.545.0(react@19.2.0)
@@ -10313,7 +10316,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.6.2)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.31.1)(msw@2.12.10(@types/node@24.6.2)(typescript@5.9.3))(tsx@4.20.6)
+      vitest: 3.2.4(@types/node@22.18.8)(@vitest/ui@3.2.4)(jiti@2.6.1)(jsdom@27.4.0(@noble/hashes@1.8.0))(lightningcss@1.31.1)(msw@2.12.10(@types/node@22.18.8)(typescript@5.9.3))(tsx@4.20.6)
 
   '@vitest/utils@1.6.1':
     dependencies:

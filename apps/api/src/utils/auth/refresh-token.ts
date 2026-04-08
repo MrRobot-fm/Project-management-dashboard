@@ -30,9 +30,13 @@ export const refreshToken = async (req: Request, res: Response) => {
   const newToken = createJwtToken({
     userId: user.id,
     secretOrPrivateKey: process.env.JWT_SECRET as string,
+    options: {
+      expiresIn: "15m",
+    },
   });
 
   setCookie({
+    req,
     res,
     cookieName: "jwt_token",
     cookieValue: newToken,

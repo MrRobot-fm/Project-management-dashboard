@@ -10,8 +10,7 @@ import {
 } from "@workspace/ui/components/Sidebar";
 import { type Icon } from "@tabler/icons-react";
 
-interface NavSecondaryProps
-  extends ComponentPropsWithoutRef<typeof SidebarGroup> {
+interface NavSecondaryProps extends ComponentPropsWithoutRef<typeof SidebarGroup> {
   items: {
     title: string;
     url: string;

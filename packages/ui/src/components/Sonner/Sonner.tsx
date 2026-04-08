@@ -1,5 +1,4 @@
 import {
-  Ban,
   CircleCheckIcon,
   CircleX,
   InfoIcon,

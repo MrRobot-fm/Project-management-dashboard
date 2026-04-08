@@ -14,6 +14,10 @@ import { Route as publicSignupRouteImport } from './routes/(public)/signup'
 import { Route as publicLoginRouteImport } from './routes/(public)/login'
 import { Route as privateDashboardRouteImport } from './routes/(private)/_dashboard'
 import { Route as privateDashboardDashboardRouteImport } from './routes/(private)/_dashboard/dashboard'
+import { Route as privateDashboardWorkspacesIndexRouteImport } from './routes/(private)/_dashboard/workspaces/index'
+import { Route as privateDashboardWorkspacesWorkspaceIdRouteImport } from './routes/(private)/_dashboard/workspaces/$workspaceId'
+import { Route as privateDashboardWorkspacesWorkspaceIdProjectsIndexRouteImport } from './routes/(private)/_dashboard/workspaces/$workspaceId_/projects/index'
+import { Route as privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRouteImport } from './routes/(private)/_dashboard/workspaces/$workspaceId_/projects/$projectId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,18 +44,50 @@ const privateDashboardDashboardRoute =
     path: '/dashboard',
     getParentRoute: () => privateDashboardRoute,
   } as any)
+const privateDashboardWorkspacesIndexRoute =
+  privateDashboardWorkspacesIndexRouteImport.update({
+    id: '/workspaces/',
+    path: '/workspaces/',
+    getParentRoute: () => privateDashboardRoute,
+  } as any)
+const privateDashboardWorkspacesWorkspaceIdRoute =
+  privateDashboardWorkspacesWorkspaceIdRouteImport.update({
+    id: '/workspaces/$workspaceId',
+    path: '/workspaces/$workspaceId',
+    getParentRoute: () => privateDashboardRoute,
+  } as any)
+const privateDashboardWorkspacesWorkspaceIdProjectsIndexRoute =
+  privateDashboardWorkspacesWorkspaceIdProjectsIndexRouteImport.update({
+    id: '/workspaces/$workspaceId_/projects/',
+    path: '/workspaces/$workspaceId/projects/',
+    getParentRoute: () => privateDashboardRoute,
+  } as any)
+const privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRoute =
+  privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRouteImport.update({
+    id: '/workspaces/$workspaceId_/projects/$projectId',
+    path: '/workspaces/$workspaceId/projects/$projectId',
+    getParentRoute: () => privateDashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof publicLoginRoute
   '/signup': typeof publicSignupRoute
   '/dashboard': typeof privateDashboardDashboardRoute
+  '/workspaces/$workspaceId': typeof privateDashboardWorkspacesWorkspaceIdRoute
+  '/workspaces/': typeof privateDashboardWorkspacesIndexRoute
+  '/workspaces/$workspaceId/projects/$projectId': typeof privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRoute
+  '/workspaces/$workspaceId/projects/': typeof privateDashboardWorkspacesWorkspaceIdProjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof publicLoginRoute
   '/signup': typeof publicSignupRoute
   '/dashboard': typeof privateDashboardDashboardRoute
+  '/workspaces/$workspaceId': typeof privateDashboardWorkspacesWorkspaceIdRoute
+  '/workspaces': typeof privateDashboardWorkspacesIndexRoute
+  '/workspaces/$workspaceId/projects/$projectId': typeof privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRoute
+  '/workspaces/$workspaceId/projects': typeof privateDashboardWorkspacesWorkspaceIdProjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -60,12 +96,32 @@ export interface FileRoutesById {
   '/(public)/login': typeof publicLoginRoute
   '/(public)/signup': typeof publicSignupRoute
   '/(private)/_dashboard/dashboard': typeof privateDashboardDashboardRoute
+  '/(private)/_dashboard/workspaces/$workspaceId': typeof privateDashboardWorkspacesWorkspaceIdRoute
+  '/(private)/_dashboard/workspaces/': typeof privateDashboardWorkspacesIndexRoute
+  '/(private)/_dashboard/workspaces/$workspaceId_/projects/$projectId': typeof privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRoute
+  '/(private)/_dashboard/workspaces/$workspaceId_/projects/': typeof privateDashboardWorkspacesWorkspaceIdProjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/signup' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/dashboard'
+    | '/workspaces/$workspaceId'
+    | '/workspaces/'
+    | '/workspaces/$workspaceId/projects/$projectId'
+    | '/workspaces/$workspaceId/projects/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/signup' | '/dashboard'
+  to:
+    | '/'
+    | '/login'
+    | '/signup'
+    | '/dashboard'
+    | '/workspaces/$workspaceId'
+    | '/workspaces'
+    | '/workspaces/$workspaceId/projects/$projectId'
+    | '/workspaces/$workspaceId/projects'
   id:
     | '__root__'
     | '/'
@@ -73,6 +129,10 @@ export interface FileRouteTypes {
     | '/(public)/login'
     | '/(public)/signup'
     | '/(private)/_dashboard/dashboard'
+    | '/(private)/_dashboard/workspaces/$workspaceId'
+    | '/(private)/_dashboard/workspaces/'
+    | '/(private)/_dashboard/workspaces/$workspaceId_/projects/$projectId'
+    | '/(private)/_dashboard/workspaces/$workspaceId_/projects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,15 +179,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof privateDashboardDashboardRouteImport
       parentRoute: typeof privateDashboardRoute
     }
+    '/(private)/_dashboard/workspaces/': {
+      id: '/(private)/_dashboard/workspaces/'
+      path: '/workspaces'
+      fullPath: '/workspaces/'
+      preLoaderRoute: typeof privateDashboardWorkspacesIndexRouteImport
+      parentRoute: typeof privateDashboardRoute
+    }
+    '/(private)/_dashboard/workspaces/$workspaceId': {
+      id: '/(private)/_dashboard/workspaces/$workspaceId'
+      path: '/workspaces/$workspaceId'
+      fullPath: '/workspaces/$workspaceId'
+      preLoaderRoute: typeof privateDashboardWorkspacesWorkspaceIdRouteImport
+      parentRoute: typeof privateDashboardRoute
+    }
+    '/(private)/_dashboard/workspaces/$workspaceId_/projects/': {
+      id: '/(private)/_dashboard/workspaces/$workspaceId_/projects/'
+      path: '/workspaces/$workspaceId/projects'
+      fullPath: '/workspaces/$workspaceId/projects/'
+      preLoaderRoute: typeof privateDashboardWorkspacesWorkspaceIdProjectsIndexRouteImport
+      parentRoute: typeof privateDashboardRoute
+    }
+    '/(private)/_dashboard/workspaces/$workspaceId_/projects/$projectId': {
+      id: '/(private)/_dashboard/workspaces/$workspaceId_/projects/$projectId'
+      path: '/workspaces/$workspaceId/projects/$projectId'
+      fullPath: '/workspaces/$workspaceId/projects/$projectId'
+      preLoaderRoute: typeof privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRouteImport
+      parentRoute: typeof privateDashboardRoute
+    }
   }
 }
 
 interface privateDashboardRouteChildren {
   privateDashboardDashboardRoute: typeof privateDashboardDashboardRoute
+  privateDashboardWorkspacesWorkspaceIdRoute: typeof privateDashboardWorkspacesWorkspaceIdRoute
+  privateDashboardWorkspacesIndexRoute: typeof privateDashboardWorkspacesIndexRoute
+  privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRoute: typeof privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRoute
+  privateDashboardWorkspacesWorkspaceIdProjectsIndexRoute: typeof privateDashboardWorkspacesWorkspaceIdProjectsIndexRoute
 }
 
 const privateDashboardRouteChildren: privateDashboardRouteChildren = {
   privateDashboardDashboardRoute: privateDashboardDashboardRoute,
+  privateDashboardWorkspacesWorkspaceIdRoute:
+    privateDashboardWorkspacesWorkspaceIdRoute,
+  privateDashboardWorkspacesIndexRoute: privateDashboardWorkspacesIndexRoute,
+  privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRoute:
+    privateDashboardWorkspacesWorkspaceIdProjectsProjectIdRoute,
+  privateDashboardWorkspacesWorkspaceIdProjectsIndexRoute:
+    privateDashboardWorkspacesWorkspaceIdProjectsIndexRoute,
 }
 
 const privateDashboardRouteWithChildren =
