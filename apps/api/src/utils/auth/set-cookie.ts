@@ -1,20 +1,25 @@
-import type { CookieOptions, Response } from "express";
+import type { CookieOptions, Request, Response } from "express";
 
 export const setCookie = ({
+  req,
   res,
   cookieName,
   cookieValue,
   cookieOpts,
 }: {
+  req?: Request;
   res: Response;
   cookieName: string;
   cookieValue: string;
   cookieOpts?: CookieOptions;
 }) => {
+  const origin = req?.headers.origin ?? "";
+  const isLocalhost = origin.includes("localhost");
+
   res.cookie(cookieName, cookieValue, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: !isLocalhost,
+    sameSite: isLocalhost ? "lax" : "none",
     ...cookieOpts,
   });
 };

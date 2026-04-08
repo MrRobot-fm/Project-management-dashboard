@@ -1,10 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import {
-  clearCookie,
-  createJwtToken,
-  refreshToken,
-  setCookie,
-} from "@/utils/auth";
+import { clearCookie, createJwtToken, refreshToken, setCookie } from "@/utils/auth";
 import { prisma } from "@workspace/db";
 import { NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { LoginUserSchema, RegisterUserSchema } from "@workspace/schemas";
@@ -61,6 +56,7 @@ export const loginController = async (req: Request, res: Response) => {
   });
 
   setCookie({
+    req,
     res,
     cookieName: "jwt_token",
     cookieValue: token,
@@ -69,10 +65,11 @@ export const loginController = async (req: Request, res: Response) => {
     },
   });
   setCookie({
+    req,
     res,
     cookieName: "refresh_token",
     cookieValue: refreshToken,
-    cookieOpts: { maxAge: 7 * 24 * 60 * 60 * 1000 },
+    cookieOpts: { maxAge: 7 * 24 * 60 * 60 * 1000, path: "/api/auth/refresh" },
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -95,24 +92,20 @@ export const logoutController = async (req: Request, res: Response) => {
     });
   }
 
-  if (req.cookies.refresh_token) {
-    clearCookie({
-      res,
-      cookieName: "refresh_token",
-      cookieOpts: {
-        expires: pastDate,
-      },
-    });
-  }
+  clearCookie({
+    req,
+    res,
+    cookieName: "refresh_token",
+    cookieOpts: {
+      expires: pastDate,
+      path: "/api/auth/refresh",
+    },
+  });
 
   res.status(200).json({ message: "Logged out successfully", success: true });
 };
 
-export const refreshTokenController = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const refreshTokenController = async (req: Request, res: Response, next: NextFunction) => {
   await refreshToken(req, res);
 
   next();

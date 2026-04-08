@@ -5,6 +5,12 @@ import { prisma } from "@workspace/db";
 import { BadRequestError, NotFoundError, UnauthorizedError } from "@workspace/exceptions";
 import { randomUUID } from "crypto";
 
+const touchWorkspace = (workspaceId: string) =>
+  prisma.workspace.update({
+    where: { id: workspaceId },
+    data: { updatedAt: new Date() },
+  });
+
 export const createProject = async (req: Request, res: Response) => {
   const { body, params, file, user } = req;
 
@@ -43,6 +49,12 @@ export const createProject = async (req: Request, res: Response) => {
         role: "OWNER",
       },
     });
+
+    await tx.workspace.update({
+      where: { id: params.workspaceId },
+      data: { updatedAt: new Date() },
+    });
+
     return createdProject;
   });
 
@@ -204,13 +216,22 @@ export const updateProject = async (req: Request, res: Response) => {
     throw new BadRequestError("Project ID is required");
   }
 
-  const project = await prisma.project.update({
-    where: {
-      id: params.projectId,
-    },
-    data: {
-      ...body,
-    },
+  const project = await prisma.$transaction(async (tx) => {
+    const updatedProject = await tx.project.update({
+      where: {
+        id: params.projectId,
+      },
+      data: {
+        ...body,
+      },
+    });
+
+    await tx.workspace.update({
+      where: { id: updatedProject.workspaceId },
+      data: { updatedAt: new Date() },
+    });
+
+    return updatedProject;
   });
 
   res.status(200).json({ project, success: true });
@@ -223,10 +244,19 @@ export const deleteProject = async (req: Request, res: Response) => {
     throw new BadRequestError("Project ID is required");
   }
 
-  const project = await prisma.project.delete({
-    where: {
-      id: params.projectId,
-    },
+  const project = await prisma.$transaction(async (tx) => {
+    const deletedProject = await tx.project.delete({
+      where: {
+        id: params.projectId,
+      },
+    });
+
+    await tx.workspace.update({
+      where: { id: deletedProject.workspaceId },
+      data: { updatedAt: new Date() },
+    });
+
+    return deletedProject;
   });
 
   res.status(200).json({ project, success: true });
@@ -266,6 +296,11 @@ export const addProjectMember = async (req: Request, res: Response) => {
       }),
     );
 
+    await tx.workspace.update({
+      where: { id: workspaceId },
+      data: { updatedAt: new Date() },
+    });
+
     return members;
   });
 
@@ -297,6 +332,11 @@ export const changeMemberRole = async (req: Request, res: Response) => {
       },
     });
 
+    await tx.workspace.update({
+      where: { id: workspaceId },
+      data: { updatedAt: new Date() },
+    });
+
     return projectMember;
   });
 
@@ -306,13 +346,22 @@ export const changeMemberRole = async (req: Request, res: Response) => {
 export const removeProjectMember = async (req: Request, res: Response) => {
   const { projectId, userId } = req.params;
 
-  const projectMember = await prisma.projectMember.delete({
-    where: {
-      userId_projectId: {
-        userId,
-        projectId,
+  const projectMember = await prisma.$transaction(async (tx) => {
+    const deletedMember = await tx.projectMember.delete({
+      where: {
+        userId_projectId: {
+          userId,
+          projectId,
+        },
       },
-    },
+    });
+
+    await tx.workspace.update({
+      where: { id: deletedMember.workspaceId },
+      data: { updatedAt: new Date() },
+    });
+
+    return deletedMember;
   });
 
   res.status(200).json({ member: projectMember, success: true });
@@ -331,7 +380,7 @@ export const deleteProjectLogo = async (req: Request, res: Response) => {
 
   await removeExistingFiles("project-logo", basePath);
 
-  await prisma.project.update({
+  const project = await prisma.project.update({
     where: {
       id: projectId,
     },
@@ -339,6 +388,8 @@ export const deleteProjectLogo = async (req: Request, res: Response) => {
       logo: null,
     },
   });
+
+  await touchWorkspace(project.workspaceId);
 
   res.status(200).json({ success: true });
 };
@@ -360,7 +411,7 @@ export const updateProjectLogo = async (req: Request, res: Response) => {
     projectId: params.projectId,
   });
 
-  await prisma.project.update({
+  const project = await prisma.project.update({
     where: {
       id: params.projectId,
     },
@@ -368,6 +419,8 @@ export const updateProjectLogo = async (req: Request, res: Response) => {
       logo: publicUrl,
     },
   });
+
+  await touchWorkspace(project.workspaceId);
 
   res.status(200).json({ success: true });
 };

@@ -1,5 +1,7 @@
 import { createUsers, loginUser } from "@/tests/utils/auth";
 import { generateUser } from "@/tests/utils/generate-user";
+import { addProjectMembers, createProject } from "@/tests/utils/projects";
+import { createTask } from "@/tests/utils/tasks";
 import {
   createWorkspace,
   deleteWorkspace,
@@ -45,6 +47,54 @@ describe("API Workspaces", () => {
     const response = await getWorkspaces(cookie);
 
     expect(response.workspaces.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("GET /api/workspaces - returns projects, project members and tasks counts", async () => {
+    const collaborator = generateUser();
+    await createUsers([collaborator]);
+    const collaboratorLogin = await loginUser(collaborator.email, collaborator.password);
+
+    const workspaceResponse = await createWorkspace(cookie, faker.company.name());
+    const workspaceId = workspaceResponse.workspace.id;
+
+    const projectResponse = await createProject(
+      cookie,
+      {
+        name: faker.company.name().slice(0, 10),
+        description: faker.lorem.words({ min: 2, max: 4 }),
+        logo: "",
+      },
+      workspaceId,
+    );
+
+    await addProjectMembers({
+      projectId: projectResponse.project.id,
+      workspaceId,
+      cookie,
+      userIds: [collaboratorLogin.userId],
+    });
+
+    const taskResponse = await createTask({
+      projectId: projectResponse.project.id,
+      cookie,
+      newTask: {
+        title: faker.lorem.words(3),
+        description: faker.lorem.sentence(),
+        status: "TODO",
+      },
+    });
+
+    expect(taskResponse.status).toBe(201);
+
+    const response = await getWorkspaces(cookie);
+    const workspace = response.workspaces.find(
+      (item: { id: string }) => item.id === workspaceId,
+    );
+
+    expect(workspace).toBeDefined();
+    expect(workspace.projectsCount).toBe(1);
+    expect(workspace.projectMembersCount).toBe(2);
+    expect(workspace.tasksCount).toBe(1);
   });
 
   it("DELETE /api/workspaces/:workspaceId - delete a workspace", async () => {

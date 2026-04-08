@@ -63,14 +63,17 @@ export const getWorkspaces = async (req: Request, res: Response) => {
       },
     },
     include: {
-      members: {
+      _count: {
         select: {
-          role: true,
-          user: {
+          projects: true,
+          projectMembers: true,
+        },
+      },
+      projects: {
+        select: {
+          _count: {
             select: {
-              id: true,
-              name: true,
-              email: true,
+              tasks: true,
             },
           },
         },
@@ -81,13 +84,16 @@ export const getWorkspaces = async (req: Request, res: Response) => {
     },
   });
 
-  const formattedWorkspaces = workspaces.map((workspace) => ({
-    ...workspace,
-    members: workspace.members.map((member) => ({
-      ...member.user,
-      role: member.role,
-    })),
-  }));
+  const formattedWorkspaces = workspaces.map((workspace) => {
+    const { _count, projects, ...workspaceData } = workspace;
+
+    return {
+      ...workspaceData,
+      projectsCount: _count.projects,
+      projectMembersCount: _count.projectMembers,
+      tasksCount: projects.reduce((total, project) => total + project._count.tasks, 0),
+    };
+  });
 
   res.status(200).json({ workspaces: formattedWorkspaces });
 };
